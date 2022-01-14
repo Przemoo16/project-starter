@@ -1,12 +1,21 @@
 # Please keep names sorted alphabetically
 # prod
+alembic
+asyncpg
 celery
 fastapi
 psycopg2-binary
 redis
+sqlmodel
 uvicorn[standard]
 # dev
+bandit
+black
+flake8
 freezegun
+isort
+mypy
 pip-tools
+pylint
 pytest
 pytest-cov

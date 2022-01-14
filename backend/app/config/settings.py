@@ -4,6 +4,9 @@ import pydantic
 
 
 class Settings(pydantic.BaseSettings):
+    # Database
+    DATABASE_URL: str
+
     # Celery
     CELERY_BROKER_URL: pydantic.RedisDsn
     CELERY_RESULT_BACKEND: pydantic.RedisDsn
