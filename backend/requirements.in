@@ -1,0 +1,12 @@
+# Please keep names sorted alphabetically
+# prod
+celery
+fastapi
+psycopg2-binary
+redis
+uvicorn[standard]
+# dev
+freezegun
+pip-tools
+pytest
+pytest-cov

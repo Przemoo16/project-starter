@@ -1,0 +1,67 @@
+version: "3.9"
+
+services:
+  postgres:
+    restart: always
+    image: postgres:14.1-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_HOST: ${DB_HOST}
+      POSTGRES_PORT: ${DB_PORT}
+      POSTGRES_DB: ${DB_NAME}
+
+  backend:
+    build:
+      context: .
+      dockerfile: config/backend.Dockerfile
+    depends_on:
+      - postgres
+      - redis
+    volumes:
+      - ./backend:/backend
+    ports:
+      - "8000:80"
+    env_file:
+      - .env
+
+  celery:
+    build:
+      context: .
+      dockerfile: config/backend.Dockerfile
+    command: "celery -A app.celery.worker worker -l INFO"
+    volumes:
+      - ./backend:/backend
+    depends_on:
+      - postgres
+      - redis
+    env_file:
+      - .env
+
+  celery-beat:
+    build:
+      context: .
+      dockerfile: config/backend.Dockerfile
+    command: "celery -A app.celery beat -l INFO"
+    volumes:
+      - ./backend:/backend
+    depends_on:
+      - postgres
+      - redis
+    env_file:
+      - .env
+
+  flower:
+    image: mher/flower
+    env_file:
+      - .env
+    ports:
+      - 8888:8888
+
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    command: redis-server --requirepass ${REDIS_PASSWORD}
