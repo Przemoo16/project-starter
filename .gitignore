@@ -1,0 +1,26 @@
+# Frontend
+build/
+dist/
+node_modules/
+
+# Python
+__pycache__/
+*.py[cod]
+
+# mypy
+.mypy_cache/
+
+# Visual Studio Code
+.vscode/
+
+# Tests / Coverage reports
+.coverage
+.coveragerc
+.pytest_cache/
+htmlcov/
+
+# dotenv
+*.env
+
+# Celery
+celerybeat-schedule
