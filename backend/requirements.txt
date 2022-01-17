@@ -4,6 +4,8 @@
 #
 #    pip-compile
 #
+aiosqlite==0.17.0
+    # via -r requirements.in
 alembic==1.7.5
     # via -r requirements.in
 amqp==5.0.9
@@ -26,6 +28,10 @@ black==21.12b0
     # via -r requirements.in
 celery==5.2.3
     # via -r requirements.in
+certifi==2021.10.8
+    # via requests
+charset-normalizer==2.0.10
+    # via requests
 click-didyoumean==0.3.0
     # via celery
 click-plugins==1.1.1
@@ -62,7 +68,9 @@ h11==0.12.0
 httptools==0.3.0
     # via uvicorn
 idna==3.3
-    # via anyio
+    # via
+    #   anyio
+    #   requests
 iniconfig==1.1.1
     # via pytest
 isort==5.10.1
@@ -123,11 +131,14 @@ pylint==2.12.2
     # via -r requirements.in
 pyparsing==3.0.6
     # via packaging
+pytest-asyncio==0.17.1
+    # via -r requirements.in
 pytest-cov==3.0.0
     # via -r requirements.in
 pytest==6.2.5
     # via
     #   -r requirements.in
+    #   pytest-asyncio
     #   pytest-cov
 python-dateutil==2.8.2
     # via freezegun
@@ -140,6 +151,8 @@ pyyaml==6.0
     #   bandit
     #   uvicorn
 redis==4.1.0
+    # via -r requirements.in
+requests==2.27.1
     # via -r requirements.in
 six==1.16.0
     # via
@@ -173,10 +186,14 @@ tomli==1.2.3
     #   pep517
 typing-extensions==4.0.1
     # via
+    #   aiosqlite
     #   black
     #   mypy
     #   pydantic
+    #   pytest-asyncio
     #   sqlalchemy2-stubs
+urllib3==1.26.8
+    # via requests
 uvicorn[standard]==0.16.0
     # via -r requirements.in
 uvloop==0.16.0

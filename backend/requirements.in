@@ -6,9 +6,11 @@ celery
 fastapi
 psycopg2-binary
 redis
+requests
 sqlmodel
 uvicorn[standard]
 # dev
+aiosqlite
 bandit
 black
 flake8
@@ -18,4 +20,5 @@ mypy
 pip-tools
 pylint
 pytest
+pytest-asyncio
 pytest-cov

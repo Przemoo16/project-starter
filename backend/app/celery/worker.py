@@ -1,12 +1,12 @@
-from celery import Celery
+import celery
 
-from app.config.settings import get_settings
+from app.config import general
 
 APPS = ["app"]
 
-settings = get_settings()
+settings = general.get_settings()
 
-app = Celery(
+app = celery.Celery(
     "celery",
     broker=settings.CELERY_BROKER_URL,
     backend=settings.CELERY_RESULT_BACKEND,

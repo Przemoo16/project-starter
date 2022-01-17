@@ -1,2 +1,2 @@
-# Import the models, so that SQLModel registers them when imported by Alembic
+# Import the models, so that they can be registered in SQLModel.metadata
 from app.models.user import User
