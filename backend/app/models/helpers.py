@@ -1,15 +1,15 @@
-from datetime import datetime
+import datetime
 import uuid
 
 
-def get_utcnow() -> datetime:
+def get_utcnow() -> datetime.datetime:
     """
     Return datetime in UTC.
 
     It allows deferring initialization of the datetime module, thus mock it using
     freezegun.
     """
-    return datetime.utcnow()
+    return datetime.datetime.utcnow()
 
 
 def generate_fixed_uuid() -> uuid.UUID:

@@ -9,10 +9,12 @@ settings = general.get_settings()
 
 engine = asyncio.create_async_engine(settings.DATABASE_URL)
 
+AsyncSession = asyncio.AsyncSession
 
-async def get_session() -> AsyncGenerator[asyncio.AsyncSession, None]:
+
+async def get_session() -> AsyncGenerator[AsyncSession, None]:  # pragma: no cover
     async_session = orm.sessionmaker(
-        engine, class_=asyncio.AsyncSession, expire_on_commit=False
+        engine, class_=AsyncSession, expire_on_commit=False
     )
     async with async_session() as session:
         yield session

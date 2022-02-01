@@ -4,6 +4,8 @@ ENV PYTHONUNBUFFERED 1
 
 ENV PYTHONPATH "${PYTHONPATH}:/backend/"
 
+RUN pip install --upgrade pip
+
 WORKDIR /backend
 
 COPY ./backend/requirements.txt /backend/requirements.txt
