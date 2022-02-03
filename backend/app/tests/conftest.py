@@ -8,10 +8,15 @@ from sqlalchemy.ext import asyncio
 import sqlmodel
 from sqlmodel import pool
 
-from app import database, main
-from app import models  # noqa: F401 # pylint: disable=unused-import # Detect all models
+from app import (  # noqa: F401 # pylint: disable=unused-import # Detect all models
+    main,
+    models,
+)
+from app.db import base
 
 TEST_DB_ENGINE = "sqlite+aiosqlite://"
+
+AsyncSession = asyncio.AsyncSession
 
 
 @pytest.fixture(name="engine", scope="session")
@@ -37,9 +42,9 @@ async def create_tables_fixture(
 @pytest_asyncio.fixture(name="session")
 async def session_fixture(
     engine: asyncio.AsyncEngine, create_tables: None  # pylint: disable=unused-argument
-) -> AsyncGenerator[asyncio.AsyncSession, None]:
+) -> AsyncGenerator[AsyncSession, None]:
     async_session = orm.sessionmaker(
-        engine, class_=asyncio.AsyncSession, expire_on_commit=False
+        engine, class_=AsyncSession, expire_on_commit=False
     )
     async with async_session() as session:
         yield session
@@ -47,9 +52,9 @@ async def session_fixture(
 
 @pytest.fixture(name="client")
 def client_fixture(
-    session: asyncio.AsyncSession,
+    session: AsyncSession,
 ) -> Generator[testclient.TestClient, None, None]:
-    main.app.dependency_overrides[database.get_session] = lambda: session
+    main.app.dependency_overrides[base.get_session] = lambda: session
     client = testclient.TestClient(main.app)
     yield client
     main.app.dependency_overrides.clear()
