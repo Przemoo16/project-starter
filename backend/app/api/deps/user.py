@@ -5,9 +5,9 @@ import fastapi_jwt_auth as jwt_auth
 from sqlalchemy import exc
 
 from app.db import base
-from app.models import user as user_model
+from app.models import user as user_models
 from app.services import auth, exceptions
-from app.services import user as user_service
+from app.services import user as user_services
 from app.utils import converters
 
 log = logging.getLogger(__name__)
@@ -17,7 +17,7 @@ async def get_current_user(
     session: base.AsyncSession = fastapi.Depends(base.get_session),
     Authorize: jwt_auth.AuthJWT = fastapi.Depends(),
     token: str = fastapi.Depends(auth.oauth2_scheme),  # pylint: disable=unused-argument
-) -> user_model.User:
+) -> user_models.User:
     """
     Get current user.
 
@@ -30,7 +30,7 @@ async def get_current_user(
         log.info("User ID not found in the JWT subject")
         raise exceptions.UnauthorizedError()
     try:
-        return await user_service.UserCRUD(session).read(
+        return await user_services.UserCRUD(session).read(
             id=converters.change_to_uuid(str(user_id))
         )
     except exc.NoResultFound as e:
@@ -39,8 +39,8 @@ async def get_current_user(
 
 
 async def get_current_active_user(
-    user: user_model.User = fastapi.Depends(get_current_user),
-) -> user_model.User:
+    user: user_models.User = fastapi.Depends(get_current_user),
+) -> user_models.User:
     if not user.is_active:
         log.info("User with ID %r is not active", user.id)
         raise exceptions.ForbiddenError(context={"user": user.email})
@@ -48,8 +48,8 @@ async def get_current_active_user(
 
 
 async def check_user_requests_own_data(
-    user_id: user_model.UserID,
-    user: user_model.User = fastapi.Depends(get_current_active_user),
+    user_id: user_models.UserID,
+    user: user_models.User = fastapi.Depends(get_current_active_user),
 ) -> None:
     if user_id == user.id:
         return

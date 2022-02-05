@@ -1,6 +1,6 @@
 import typing
 
-from app.models import user as user_model
+from app.models import user as user_models
 
 if typing.TYPE_CHECKING:
     from app.tests import conftest
@@ -8,8 +8,8 @@ if typing.TYPE_CHECKING:
 
 async def create_user(
     session: "conftest.AsyncSession", **kwargs: typing.Any
-) -> user_model.User:
-    user = user_model.User(**kwargs)
+) -> user_models.User:
+    user = user_models.User(**kwargs)
     session.add(user)
     await session.commit()
     await session.refresh(user)

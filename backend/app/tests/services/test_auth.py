@@ -13,32 +13,6 @@ if typing.TYPE_CHECKING:
     from app.tests import conftest
 
 
-def test_hash_password() -> None:
-    password = "plain_password"
-
-    hashed_password = auth.hash_password(password)
-
-    assert hashed_password != password
-
-
-def test_verify_password() -> None:
-    password = "plain_password"
-    hashed_password = "$2b$12$q8JcpltDZkSLOdMuPyt/jORzExLKp9HsKgCoFJQ1IzzITc2/Pg42q"
-
-    verified_password = auth.verify_password(password, hashed_password)
-
-    assert verified_password is True
-
-
-def test_verify_password_wrong_password() -> None:
-    password = "plain_password"
-    hashed_password = "$2b$12$q8JcpltDZkSLOdMuPyt/jORzExLKp9HsKgCoFJQ1IzzITc2/Pg42Q"
-
-    verified_password = auth.verify_password(password, hashed_password)
-
-    assert verified_password is False
-
-
 @pytest.mark.asyncio
 @freezegun.freeze_time("2022-02-05 18:30:00")
 async def test_token_service_create_tokens(session: "conftest.AsyncSession") -> None:

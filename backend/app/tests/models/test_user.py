@@ -5,7 +5,7 @@ import freezegun
 import pydantic
 import pytest
 
-from app.models import user as user_model
+from app.models import user as user_models
 
 if typing.TYPE_CHECKING:
     from app.tests import conftest
@@ -16,7 +16,7 @@ if typing.TYPE_CHECKING:
 async def test_user_model(session: "conftest.AsyncSession") -> None:
     email = "test@email.com"
     password = "hashed_password"
-    user = user_model.User(email=email, password=password)
+    user = user_models.User(email=email, password=password)
     session.add(user)
     await session.commit()
     await session.refresh(user)
@@ -36,7 +36,7 @@ async def test_user_model(session: "conftest.AsyncSession") -> None:
 @pytest.mark.asyncio
 async def test_user_updated_at_field(session: "conftest.AsyncSession") -> None:
     with freezegun.freeze_time("2022-01-16 22:00:00"):
-        user = user_model.User(
+        user = user_models.User(
             email="test@email.com",
             password="hashed_password",
         )
