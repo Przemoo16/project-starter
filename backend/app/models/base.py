@@ -1,4 +1,4 @@
-from typing import Any, Callable
+import typing
 
 import orjson
 import sqlmodel
@@ -10,7 +10,9 @@ expression.SelectOfScalar.inherit_cache = True  # type: ignore
 expression.Select.inherit_cache = True  # type: ignore
 
 
-def orjson_dumps(data: Any, *, default: Callable[[Any], Any] | None) -> str:
+def orjson_dumps(
+    data: typing.Any, *, default: typing.Callable[[typing.Any], typing.Any] | None
+) -> str:
     return orjson.dumps(
         data, default=default, option=orjson.OPT_NAIVE_UTC | orjson.OPT_UTC_Z
     ).decode()

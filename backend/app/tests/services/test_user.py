@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING
+import typing
 from unittest import mock
 
 import freezegun
@@ -12,7 +12,7 @@ from app.services import user as user_service
 from app.tests import helpers
 from app.utils import converters
 
-if TYPE_CHECKING:
+if typing.TYPE_CHECKING:
     from app.tests import conftest
 
 

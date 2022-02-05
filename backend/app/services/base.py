@@ -1,11 +1,11 @@
-from typing import TYPE_CHECKING, TypeVar
+import typing
 
 import sqlmodel
 
-if TYPE_CHECKING:
+if typing.TYPE_CHECKING:
     from app.db import base
 
-ModelInstance = TypeVar("ModelInstance", bound=sqlmodel.SQLModel)
+ModelInstance = typing.TypeVar("ModelInstance", bound=sqlmodel.SQLModel)
 
 
 class DBSessionContext:

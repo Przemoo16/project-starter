@@ -1,9 +1,9 @@
-from typing import Any
+import typing
 
 import fastapi
 from fastapi import status
 
-Context = dict[str, Any]
+Context = dict[str, typing.Any]
 
 
 class ResourceExceptionCase(fastapi.HTTPException):
@@ -11,8 +11,8 @@ class ResourceExceptionCase(fastapi.HTTPException):
         self,
         status_code: int,
         detail: str,
-        context: dict[str, Any] | None = None,
-        headers: dict[str, Any] | None = None,
+        context: Context | None = None,
+        headers: dict[str, typing.Any] | None = None,
     ) -> None:
         super().__init__(status_code, detail, headers)
         self.exception_case = self.__class__.__name__

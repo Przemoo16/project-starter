@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING
+import typing
 from unittest import mock
 
 import fastapi_jwt_auth as jwt_auth
@@ -10,7 +10,7 @@ from app.services import exceptions as app_exceptions
 from app.tests import helpers
 from app.utils import converters
 
-if TYPE_CHECKING:
+if typing.TYPE_CHECKING:
     from app.tests import conftest
 
 
