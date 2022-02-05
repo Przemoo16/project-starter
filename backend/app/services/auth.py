@@ -29,7 +29,9 @@ class OAuth2PasswordBearer(security.OAuth2):
             auto_error=auto_error,
         )
 
-    async def __call__(self, request: starlette_requests.Request) -> str | None:
+    async def __call__(
+        self, request: starlette_requests.Request
+    ) -> str | None:  # pragma: no cover
         authorization: str = request.headers.get("Authorization")
         scheme, param = utils.get_authorization_scheme_param(authorization)
         if not authorization or scheme.lower() != "bearer":

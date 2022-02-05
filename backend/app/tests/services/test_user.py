@@ -51,7 +51,7 @@ async def test_user_service_get_user(session: "conftest.AsyncSession") -> None:
 
     retrieved_user = await user_service.UserService(session).get_user(user.id)
 
-    assert retrieved_user.id == user.id
+    assert retrieved_user == user
 
 
 @pytest.mark.asyncio
