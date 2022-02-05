@@ -11,8 +11,8 @@ if typing.TYPE_CHECKING:
     from app.tests import conftest
 
 
-@freezegun.freeze_time("2022-01-16 22:00:00")
 @pytest.mark.asyncio
+@freezegun.freeze_time("2022-01-16 22:00:00")
 async def test_user_model(session: "conftest.AsyncSession") -> None:
     email = "test@email.com"
     password = "hashed_password"

@@ -148,7 +148,9 @@ pydantic[email]==1.9.0
 pyflakes==2.4.0
     # via flake8
 pyjwt==1.7.1
-    # via fastapi-jwt-auth
+    # via
+    #   -r requirements.in
+    #   fastapi-jwt-auth
 pylint==2.12.2
     # via -r requirements.in
 pyparsing==3.0.6

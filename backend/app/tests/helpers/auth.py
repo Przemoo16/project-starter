@@ -2,22 +2,12 @@ import typing
 
 import fastapi
 import fastapi_jwt_auth as jwt_auth
+import jwt
 from starlette import datastructures
 
-from app.models import user as user_model
+from app.config import general
 
-if typing.TYPE_CHECKING:
-    from app.tests import conftest
-
-
-async def create_user(
-    session: "conftest.AsyncSession", **kwargs: typing.Any
-) -> user_model.User:
-    user = user_model.User(**kwargs)
-    session.add(user)
-    await session.commit()
-    await session.refresh(user)
-    return user
+settings = general.get_settings()
 
 
 def create_auth_handler(subject: typing.Any) -> jwt_auth.AuthJWT:
@@ -29,3 +19,13 @@ def create_auth_handler(subject: typing.Any) -> jwt_auth.AuthJWT:
         }
     )
     return jwt_auth.AuthJWT(request)
+
+
+def is_token_fresh(token: str) -> bool:
+    decoded_token = jwt.decode(
+        jwt=token,
+        key=settings.AUTHJWT_SECRET_KEY,
+        algorithms=list(settings.AUTHJWT_DECODE_ALGORITHMS),
+        options={"verify_exp": False},
+    )
+    return decoded_token["fresh"]
