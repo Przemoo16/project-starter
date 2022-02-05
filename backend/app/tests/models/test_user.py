@@ -1,5 +1,5 @@
 import datetime
-from typing import TYPE_CHECKING
+import typing
 
 import freezegun
 import pydantic
@@ -7,7 +7,7 @@ import pytest
 
 from app.models import user as user_model
 
-if TYPE_CHECKING:
+if typing.TYPE_CHECKING:
     from app.tests import conftest
 
 

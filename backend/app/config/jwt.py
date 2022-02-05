@@ -1,5 +1,5 @@
 import functools
-from typing import Any
+import typing
 
 import fastapi_jwt_auth as jwt_auth
 import redis
@@ -20,7 +20,7 @@ def get_jwt_db() -> redis.Redis:  # type: ignore
 
 
 @jwt_auth.AuthJWT.token_in_denylist_loader
-def check_if_token_in_denylist(decrypted_token: dict[str, Any]) -> bool:
+def check_if_token_in_denylist(decrypted_token: dict[str, typing.Any]) -> bool:
     jti = decrypted_token["jti"]
     is_revoked = get_jwt_db().get(jti)
     return is_revoked == "true"

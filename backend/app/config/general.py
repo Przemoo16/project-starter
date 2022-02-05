@@ -1,7 +1,7 @@
 import datetime
 import functools
 import logging
-from typing import Any
+import typing
 
 import pydantic
 
@@ -34,7 +34,7 @@ class Settings(pydantic.BaseSettings):
     CELERY_RESULT_SERIALIZER: str = "json"
 
     # Logging
-    LOGGING: dict[str, Any] = {
+    LOGGING: dict[str, typing.Any] = {
         "version": 1,
         "disable_existing_loggers": False,
         "formatters": {

@@ -1,6 +1,6 @@
 import datetime
 import logging
-from typing import Any
+import typing
 
 from sqlalchemy import exc
 import sqlmodel
@@ -79,7 +79,7 @@ class UserCRUD(base.AppCRUD):
         db_user = user_model.User.from_orm(user)
         return await self.save(db_user)
 
-    async def read(self, **kwargs: Any) -> user_model.User:
+    async def read(self, **kwargs: typing.Any) -> user_model.User:
         read_statement = sqlmodel.select(user_model.User)
         for attr, value in kwargs.items():
             read_statement = read_statement.where(
@@ -88,7 +88,9 @@ class UserCRUD(base.AppCRUD):
         result = await self.session.execute(read_statement)
         return result.scalar_one()
 
-    async def update(self, user: user_model.User, **kwargs: Any) -> user_model.User:
+    async def update(
+        self, user: user_model.User, **kwargs: typing.Any
+    ) -> user_model.User:
         for key, value in kwargs.items():
             setattr(user, key, value)
         return await self.save(user)

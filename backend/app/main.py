@@ -1,4 +1,4 @@
-from typing import Any
+import typing
 
 import fastapi
 
@@ -6,5 +6,5 @@ app = fastapi.FastAPI()
 
 
 @app.get("/")
-async def root() -> Any:
+async def root() -> typing.Any:
     return {"message": "Hello World"}
