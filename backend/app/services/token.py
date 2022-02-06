@@ -3,15 +3,13 @@ import logging
 
 import fastapi_jwt_auth as jwt_auth
 from jose import jwt
-from sqlalchemy import exc as sqlalchemy_exceptions
+from sqlalchemy import exc
 
 from app.config import general
 from app.config import jwt as jwt_config
 from app.models import token as token_models
 from app.models import user as user_models
-from app.services import auth as auth_services
-from app.services import base
-from app.services import exceptions as resource_exceptions
+from app.services import auth, base, exceptions
 from app.services import user as user_services
 
 log = logging.getLogger(__name__)
@@ -25,13 +23,13 @@ class TokenService(base.AppService):
         self, email: str, password: str, Authorize: jwt_auth.AuthJWT
     ) -> token_models.Tokens:
         user_crud_service = user_services.UserCRUD(self.session)
-        unauthorized_exception = resource_exceptions.UnauthorizedError({"email": email})
+        unauthorized_exception = exceptions.UnauthorizedError({"email": email})
         try:
             user_db = await user_crud_service.read(email=email)
-        except sqlalchemy_exceptions.NoResultFound as e:
+        except exc.NoResultFound as e:
             log.info("User with the email %r not found", email)
             raise unauthorized_exception from e
-        if not auth_services.verify_password(password, user_db.password):
+        if not auth.verify_password(password, user_db.password):
             log.info("Invalid password for user with the email %r", email)
             raise unauthorized_exception
         if not user_db.is_active:
@@ -67,7 +65,7 @@ class TokenService(base.AppService):
             )
         except jwt.JWTError as e:
             log.info("Invalid token")
-            raise resource_exceptions.BadRequestError({"token": token}) from e
+            raise exceptions.BadRequestError({"token": token}) from e
         remaining_expiration = get_remaining_expiration(decoded_token["exp"])
         # Redis can only accept expiration values greater than 0
         jwt_db.setex(decoded_token["jti"], remaining_expiration or 1, "true")
