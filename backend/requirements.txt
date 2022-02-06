@@ -57,6 +57,8 @@ deprecated==1.2.13
     # via redis
 dnspython==2.2.0
     # via email-validator
+ecdsa==0.17.0
+    # via python-jose
 email-validator==1.1.3
     # via pydantic
 fastapi-jwt-auth==0.5.0
@@ -136,6 +138,10 @@ psycopg2-binary==2.9.3
     # via -r requirements.in
 py==1.11.0
     # via pytest
+pyasn1==0.4.8
+    # via
+    #   python-jose
+    #   rsa
 pycodestyle==2.8.0
     # via flake8
 pycparser==2.21
@@ -148,9 +154,7 @@ pydantic[email]==1.9.0
 pyflakes==2.4.0
     # via flake8
 pyjwt==1.7.1
-    # via
-    #   -r requirements.in
-    #   fastapi-jwt-auth
+    # via fastapi-jwt-auth
 pylint==2.12.2
     # via -r requirements.in
 pyparsing==3.0.6
@@ -168,6 +172,8 @@ python-dateutil==2.8.2
     # via freezegun
 python-dotenv==0.19.2
     # via uvicorn
+python-jose==3.3.0
+    # via -r requirements.in
 pytz==2021.3
     # via celery
 pyyaml==6.0
@@ -178,10 +184,13 @@ redis==4.1.0
     # via -r requirements.in
 requests==2.27.1
     # via -r requirements.in
+rsa==4.8
+    # via python-jose
 six==1.16.0
     # via
     #   bcrypt
     #   click-repl
+    #   ecdsa
     #   python-dateutil
 smmap==5.0.0
     # via gitdb

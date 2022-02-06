@@ -19,6 +19,13 @@ class ResourceExceptionCase(fastapi.HTTPException):
         self.context = context
 
 
+class BadRequestError(ResourceExceptionCase):
+    def __init__(self, context: Context | None = None) -> None:
+        status_code = status.HTTP_400_BAD_REQUEST
+        details = "Bad request"
+        super().__init__(status_code, details, context)
+
+
 class UnauthorizedError(ResourceExceptionCase):
     def __init__(self, context: Context | None = None) -> None:
         status_code = status.HTTP_401_UNAUTHORIZED
