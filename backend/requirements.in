@@ -9,7 +9,7 @@ orjson
 passlib[bcrypt]
 psycopg2-binary
 pydantic[email]
-pyjwt
+python-jose
 redis
 requests
 sqlmodel

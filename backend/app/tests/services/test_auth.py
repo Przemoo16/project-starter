@@ -85,3 +85,44 @@ async def test_token_service_create_tokens_inactive_user(
             email=user.email, password="plain_password", Authorize=auth_handler
         )
     assert exc_info.value.context == {"email": user.email}
+
+
+@pytest.mark.asyncio
+async def test_token_service_refresh_token(session: "conftest.AsyncSession") -> None:
+    user = await user_helpers.create_user(
+        session,
+        email="test@email.com",
+        password="hashed_password",
+        confirmed_email=True,
+    )
+    auth_handler = jwt_auth.AuthJWT()
+
+    tokens = auth.TokenService(session).refresh_token(user=user, Authorize=auth_handler)
+
+    assert tokens.access_token
+    assert tokens.token_type == "bearer"
+    assert not auth_helpers.is_token_fresh(tokens.access_token)
+
+
+def test_token_service_revoke_token(session: "conftest.AsyncSession") -> None:
+    token = jwt_auth.AuthJWT().create_access_token("dummy_id")
+
+    auth.TokenService(session).revoke_token(token=token)
+
+
+@freezegun.freeze_time("2022-02-06 13:30:00")
+def test_token_service_revoke_token_already_expired(
+    session: "conftest.AsyncSession",
+) -> None:
+    with freezegun.freeze_time("2021-02-05 13:30:00"):
+        token = jwt_auth.AuthJWT().create_access_token("dummy_id")
+
+    auth.TokenService(session).revoke_token(token=token)
+
+
+def test_token_service_revoke_token_invalid(session: "conftest.AsyncSession") -> None:
+    token = "invalid_token"
+
+    with pytest.raises(exceptions.BadRequestError) as exc_info:
+        auth.TokenService(session).revoke_token(token=token)
+    assert exc_info.value.context == {"token": token}
