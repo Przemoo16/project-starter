@@ -7,8 +7,7 @@ import sqlmodel
 
 from app.config import general
 from app.models import user as user_models
-from app.services import base, exceptions
-from app.utils import security
+from app.services import auth, base, exceptions
 
 log = logging.getLogger(__name__)
 
@@ -17,7 +16,7 @@ settings = general.get_settings()
 
 class UserService(base.AppService):
     async def create_user(self, user: user_models.UserCreate) -> user_models.User:
-        user.password = security.hash_password(user.password)
+        user.password = auth.hash_password(user.password)
         try:
             return await UserCRUD(self.session).create(user)
         except exc.IntegrityError as e:
@@ -34,7 +33,7 @@ class UserService(base.AppService):
     ) -> user_models.User:
         user_crud_service = UserCRUD(self.session)
         if user.password:
-            user.password = security.hash_password(user.password)
+            user.password = auth.hash_password(user.password)
         try:
             user_db = await user_crud_service.read(id=user_id)
         except exc.NoResultFound as e:
