@@ -7,7 +7,7 @@ import pytest
 
 from app.services import exceptions
 from app.services import token as token_services
-from app.tests.helpers import auth as auth_helpers
+from app.tests.helpers import auth
 from app.tests.helpers import user as user_helpers
 
 if typing.TYPE_CHECKING:
@@ -33,7 +33,7 @@ async def test_token_service_create_tokens(session: "conftest.AsyncSession") -> 
     assert tokens.access_token
     assert tokens.refresh_token
     assert tokens.token_type == "bearer"
-    assert auth_helpers.is_token_fresh(tokens.access_token)
+    assert auth.is_token_fresh(tokens.access_token)
     assert user.last_login == datetime.datetime(2022, 2, 5, 18, 0, 0)
 
 
@@ -104,7 +104,7 @@ async def test_token_service_refresh_token(session: "conftest.AsyncSession") -> 
 
     assert tokens.access_token
     assert tokens.token_type == "bearer"
-    assert not auth_helpers.is_token_fresh(tokens.access_token)
+    assert not auth.is_token_fresh(tokens.access_token)
 
 
 def test_token_service_revoke_token(session: "conftest.AsyncSession") -> None:
