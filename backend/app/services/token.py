@@ -63,14 +63,20 @@ class TokenService(base.AppService):
 
     @staticmethod
     def revoke_token(token: str) -> None:
+        bad_request_exception = exceptions.BadRequestError({"token": token})
         try:
             decoded_token = decode_token(token, options={"verify_exp": False})
         except jwt.JWTError as e:
             log.info("Invalid token: %r", token)
-            raise exceptions.BadRequestError({"token": token}) from e
-        remaining_expiration = get_remaining_expiration(decoded_token["exp"])
+            raise bad_request_exception from e
+        jti = decoded_token["jti"]
+        if not (expiration := decoded_token.get("exp")):
+            jwt_db.set(jti, "true")
+            log.info("Token without expiration has been revoked")
+            return
+        remaining_expiration = get_remaining_expiration(expiration)
         # Redis can only accept expiration values greater than 0
-        jwt_db.setex(decoded_token["jti"], remaining_expiration or 1, "true")
+        jwt_db.setex(jti, remaining_expiration or 1, "true")
         log.info("Token has been revoked")
 
 
