@@ -8,7 +8,7 @@ from jose import jwt
 import pytest
 
 from app.config import general
-from app.services import exceptions
+from app.exceptions import resource
 from app.services import token as token_services
 from app.tests.helpers import token as token_helpers
 from app.tests.helpers import user as user_helpers
@@ -47,7 +47,7 @@ async def test_token_service_create_tokens_no_user(
 ) -> None:
     email = "test@email.com"
 
-    with pytest.raises(exceptions.UnauthorizedError) as exc_info:
+    with pytest.raises(resource.UnauthorizedError) as exc_info:
         await token_services.TokenService(session).create_tokens(
             email=email, password="plain_password"
         )
@@ -64,7 +64,7 @@ async def test_token_service_create_tokens_invalid_password(
         password="$2b$12$q8JcpltDZkSLOdMuPyt/jORzExLKp9HsKgCoFJQ1IzzITc2/Pg42q",
     )
 
-    with pytest.raises(exceptions.UnauthorizedError) as exc_info:
+    with pytest.raises(resource.UnauthorizedError) as exc_info:
         await token_services.TokenService(session).create_tokens(
             email=user.email, password="invalid_password"
         )
@@ -91,7 +91,7 @@ async def test_token_service_refresh_token_invalid(
 ) -> None:
     token = "invalid_token"
 
-    with pytest.raises(exceptions.BadRequestError) as exc_info:
+    with pytest.raises(resource.BadRequestError) as exc_info:
         await token_services.TokenService(session).refresh_token(token=token)
     assert exc_info.value.context == {"token": token}
 
@@ -103,7 +103,7 @@ async def test_token_service_refresh_token_no_user(
     user_id = "0dd53909-fcda-4c72-afcd-1bf4886389f8"
     token = jwt_auth.AuthJWT().create_access_token(user_id)
 
-    with pytest.raises(exceptions.NotFoundError) as exc_info:
+    with pytest.raises(resource.NotFoundError) as exc_info:
         await token_services.TokenService(session).refresh_token(token=token)
     assert exc_info.value.context == {"token": token}
 
@@ -136,7 +136,7 @@ def test_token_service_revoke_token_already_expired(
 def test_token_service_revoke_token_invalid(session: "conftest.AsyncSession") -> None:
     token = "invalid_token"
 
-    with pytest.raises(exceptions.BadRequestError) as exc_info:
+    with pytest.raises(resource.BadRequestError) as exc_info:
         token_services.TokenService(session).revoke_token(token=token)
     assert exc_info.value.context == {"token": token}
 

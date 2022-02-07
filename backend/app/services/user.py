@@ -1,14 +1,15 @@
 import datetime
 import logging
 import typing
-import uuid
 
 from sqlalchemy import exc
 import sqlmodel
 
 from app.config import general
+from app.exceptions import resource
+from app.models import helpers
 from app.models import user as user_models
-from app.services import auth, base, exceptions
+from app.services import auth, base
 from app.tasks import user as user_tasks
 
 log = logging.getLogger(__name__)
@@ -22,7 +23,7 @@ class UserService(base.AppService):
         try:
             user_db = await UserCRUD(self.session).create(user)
         except exc.IntegrityError as e:
-            raise exceptions.ConflictError({"email": user.email}) from e
+            raise resource.ConflictError({"email": user.email}) from e
         user_tasks.send_email_to_confirm_email.delay(
             user_db.email, user_db.confirmation_email_key
         )
@@ -33,7 +34,7 @@ class UserService(base.AppService):
         try:
             return await UserCRUD(self.session).read(id=user_id)
         except exc.NoResultFound as e:
-            raise exceptions.NotFoundError({"id": user_id}) from e
+            raise resource.NotFoundError({"id": user_id}) from e
 
     async def update_user(
         self, user_id: user_models.UserID, user: user_models.UserUpdate
@@ -44,7 +45,7 @@ class UserService(base.AppService):
         try:
             user_db = await user_crud_service.read(id=user_id)
         except exc.NoResultFound as e:
-            raise exceptions.NotFoundError({"id": user_id}) from e
+            raise resource.NotFoundError({"id": user_id}) from e
         user_data = user.dict(exclude_unset=True)
         return await user_crud_service.update(user_db, **user_data)
 
@@ -53,11 +54,11 @@ class UserService(base.AppService):
         try:
             user_db = await user_crud_service.read(id=user_id)
         except exc.NoResultFound as e:
-            raise exceptions.NotFoundError({"id": user_id}) from e
+            raise resource.NotFoundError({"id": user_id}) from e
         return await user_crud_service.delete(user_db)
 
     async def confirm_email(self, key: user_models.ConfirmationEmailKey) -> None:
-        not_found_exception = exceptions.NotFoundError({"key": key})
+        not_found_exception = resource.NotFoundError({"key": key})
         try:
             user_db = await UserCRUD(self.session).read(confirmation_email_key=key)
         except exc.NoResultFound as e:
@@ -86,11 +87,11 @@ class UserService(base.AppService):
         try:
             user_db = await UserCRUD(self.session).read(reset_password_key=key)
         except exc.NoResultFound as e:
-            raise exceptions.NotFoundError({"key": key}) from e
+            raise resource.NotFoundError({"key": key}) from e
         await UserCRUD(self.session).update(
             user_db,
             password=auth.hash_password(password),
-            reset_password_key=uuid.uuid4(),
+            reset_password_key=helpers.generate_fixed_uuid(),
         )
 
 
