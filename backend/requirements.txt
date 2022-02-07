@@ -94,6 +94,8 @@ isort==5.10.1
     # via
     #   -r requirements.in
     #   pylint
+jinja2==3.0.3
+    # via -r requirements.in
 kombu==5.2.3
     # via celery
 lazy-object-proxy==1.7.1
@@ -101,7 +103,9 @@ lazy-object-proxy==1.7.1
 mako==1.1.6
     # via alembic
 markupsafe==2.0.1
-    # via mako
+    # via
+    #   jinja2
+    #   mako
 mccabe==0.6.1
     # via
     #   flake8

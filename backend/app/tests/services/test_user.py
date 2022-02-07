@@ -7,8 +7,8 @@ import pytest
 from sqlalchemy import exc
 import sqlmodel
 
+from app.exceptions import resource
 from app.models import user as user_models
-from app.services import exceptions
 from app.services import user as user_services
 from app.tests.helpers import user as user_helpers
 from app.utils import converters
@@ -47,7 +47,7 @@ async def test_user_service_create_user_already_exists(
         session=session, email=user_create.email, password="hashed_password"
     )
 
-    with pytest.raises(exceptions.ConflictError) as exc_info:
+    with pytest.raises(resource.ConflictError) as exc_info:
         await user_services.UserService(session).create_user(user_create)
     assert exc_info.value.context == {"email": user_create.email}
     mocked_send_email.assert_not_called()
@@ -70,7 +70,7 @@ async def test_user_service_get_user_not_found(
 ) -> None:
     user_id = converters.change_to_uuid("0dd53909-fcda-4c72-afcd-1bf4886389f8")
 
-    with pytest.raises(exceptions.NotFoundError) as exc_info:
+    with pytest.raises(resource.NotFoundError) as exc_info:
         await user_services.UserService(session).get_user(user_id)
     assert exc_info.value.context == {"id": user_id}
 
@@ -116,7 +116,7 @@ async def test_user_service_update_user_not_found(
     user_id = converters.change_to_uuid("0dd53909-fcda-4c72-afcd-1bf4886389f8")
     user_update = user_models.UserUpdate(email="new@email.com")
 
-    with pytest.raises(exceptions.NotFoundError) as exc_info:
+    with pytest.raises(resource.NotFoundError) as exc_info:
         await user_services.UserService(session).update_user(user_id, user_update)
     assert exc_info.value.context == {"id": user_id}
 
@@ -136,7 +136,7 @@ async def test_user_service_delete_user_not_found(
 ) -> None:
     user_id = converters.change_to_uuid("0dd53909-fcda-4c72-afcd-1bf4886389f8")
 
-    with pytest.raises(exceptions.NotFoundError) as exc_info:
+    with pytest.raises(resource.NotFoundError) as exc_info:
         await user_services.UserService(session).delete_user(user_id)
     assert exc_info.value.context == {"id": user_id}
 
@@ -158,7 +158,7 @@ async def test_user_service_confirm_email_not_found(
 ) -> None:
     key = converters.change_to_uuid("0dd53909-fcda-4c72-afcd-1bf4886389f8")
 
-    with pytest.raises(exceptions.NotFoundError) as exc_info:
+    with pytest.raises(resource.NotFoundError) as exc_info:
         await user_services.UserService(session).confirm_email(key)
     assert exc_info.value.context == {"key": key}
 
@@ -174,7 +174,7 @@ async def test_user_service_confirm_email_already_confirmed(
         confirmed_email=True,
     )
 
-    with pytest.raises(exceptions.NotFoundError) as exc_info:
+    with pytest.raises(resource.NotFoundError) as exc_info:
         await user_services.UserService(session).confirm_email(
             user.confirmation_email_key
         )
@@ -193,7 +193,7 @@ async def test_user_service_confirm_email_time_expired(
         )
 
     with freezegun.freeze_time("2023-01-05 10:00:00"):
-        with pytest.raises(exceptions.NotFoundError) as exc_info:
+        with pytest.raises(resource.NotFoundError) as exc_info:
             await user_services.UserService(session).confirm_email(
                 user.confirmation_email_key
             )
@@ -256,7 +256,7 @@ async def test_user_service_reset_password_no_user(
         "0dd53909-fcda-4c72-afcd-1bf4886389f8"
     )
 
-    with pytest.raises(exceptions.NotFoundError) as exc_info:
+    with pytest.raises(resource.NotFoundError) as exc_info:
         await user_services.UserService(session).reset_password(
             user_reset_password_key, "plain_password"
         )

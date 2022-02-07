@@ -37,6 +37,13 @@ class Settings(pydantic.BaseSettings):
     CELERY_TASK_SERIALIZER: str = "json"
     CELERY_RESULT_SERIALIZER: str = "json"
 
+    # Email
+    SMTP_HOST: str
+    SMTP_PORT: int
+    SMTP_USER: str
+    SMTP_PASSWORD: str
+    EMAIL_SENDER_EMAIL: pydantic.EmailStr
+
     # Logging
     LOGGING: dict[str, typing.Any] = {
         "version": 1,
