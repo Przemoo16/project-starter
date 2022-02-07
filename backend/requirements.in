@@ -5,6 +5,7 @@ asyncpg
 celery
 fastapi
 fastapi-jwt-auth
+jinja2
 orjson
 passlib[bcrypt]
 psycopg2-binary
