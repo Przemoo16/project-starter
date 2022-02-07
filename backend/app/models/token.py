@@ -1,14 +1,12 @@
 from app.models import base
 
-
-class Token(base.BaseModel):
-    token: str
+Token = str
 
 
 class AccessToken(base.BaseModel):
-    access_token: str
+    access_token: Token
     token_type: str
 
 
 class Tokens(AccessToken):
-    refresh_token: str
+    refresh_token: Token

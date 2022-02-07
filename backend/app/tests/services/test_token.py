@@ -103,7 +103,7 @@ async def test_token_service_refresh_token_no_user(
     user_id = "0dd53909-fcda-4c72-afcd-1bf4886389f8"
     token = jwt_auth.AuthJWT().create_access_token(user_id)
 
-    with pytest.raises(exceptions.BadRequestError) as exc_info:
+    with pytest.raises(exceptions.NotFoundError) as exc_info:
         await token_services.TokenService(session).refresh_token(token=token)
     assert exc_info.value.context == {"token": token}
 

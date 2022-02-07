@@ -7,6 +7,8 @@ import sqlmodel
 from app.models import base, helpers
 
 UserID = uuid.UUID
+UserEmail = pydantic.EmailStr
+UserPassword = str
 ConfirmationEmailKey = uuid.UUID
 ResetPasswordKey = uuid.UUID
 
@@ -15,10 +17,8 @@ class User(base.BaseModel, table=True):
     id: UserID = sqlmodel.Field(
         primary_key=True, index=True, default_factory=helpers.generate_fixed_uuid
     )
-    email: pydantic.EmailStr = sqlmodel.Field(
-        index=True, sa_column_kwargs={"unique": True}
-    )
-    password: str
+    email: UserEmail = sqlmodel.Field(index=True, sa_column_kwargs={"unique": True})
+    password: UserPassword
     confirmed_email: bool = False
     confirmation_email_key: ConfirmationEmailKey = sqlmodel.Field(
         default_factory=helpers.generate_fixed_uuid
