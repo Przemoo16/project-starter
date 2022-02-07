@@ -29,9 +29,7 @@ billiard==3.6.4.0
 black==21.12b0
     # via -r requirements.in
 celery==5.2.3
-    # via
-    #   -r requirements.in
-    #   pytest-celery
+    # via -r requirements.in
 certifi==2021.10.8
     # via requests
 cffi==1.15.0
@@ -166,8 +164,6 @@ pylint==2.12.2
 pyparsing==3.0.6
     # via packaging
 pytest-asyncio==0.17.1
-    # via -r requirements.in
-pytest-celery==0.0.0
     # via -r requirements.in
 pytest-cov==3.0.0
     # via -r requirements.in
