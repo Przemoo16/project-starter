@@ -9,6 +9,7 @@ import sqlmodel
 from app.config import general
 from app.models import user as user_models
 from app.services import auth, base, exceptions
+from app.tasks import user as user_tasks
 
 log = logging.getLogger(__name__)
 
@@ -19,10 +20,14 @@ class UserService(base.AppService):
     async def create_user(self, user: user_models.UserCreate) -> user_models.User:
         user.password = auth.hash_password(user.password)
         try:
-            return await UserCRUD(self.session).create(user)
+            user_db = await UserCRUD(self.session).create(user)
         except exc.IntegrityError as e:
             raise exceptions.ConflictError({"email": user.email}) from e
-        # TODO: Send email to confirm email
+        user_tasks.send_email_to_confirm_email.delay(
+            user_db.email, user_db.confirmation_email_key
+        )
+        log.info("The task to send email to confirm email has been invoked")
+        return user_db
 
     async def get_user(self, user_id: user_models.UserID) -> user_models.User:
         try:
@@ -57,22 +62,10 @@ class UserService(base.AppService):
             user_db = await UserCRUD(self.session).read(confirmation_email_key=key)
         except exc.NoResultFound as e:
             raise not_found_exception from e
-        if not await self._can_confirm_email(user_db):
+        if not can_confirm_email(user_db):
             raise not_found_exception
         await UserCRUD(self.session).update(user_db, confirmed_email=True)
         log.info("Email has been confirmed")
-
-    async def _can_confirm_email(self, user: user_models.User) -> bool:
-        if user.confirmed_email:
-            log.info("Email already confirmed")
-            return False
-        expiration_date = user.created_at + datetime.timedelta(
-            days=settings.ACCOUNT_ACTIVATION_DAYS
-        )
-        if expiration_date < datetime.datetime.utcnow():
-            log.info("Confirmation email expired")
-            return False
-        return True
 
     async def request_reset_password(self, email: user_models.UserEmail) -> None:
         try:
@@ -80,7 +73,10 @@ class UserService(base.AppService):
         except exc.NoResultFound:
             log.info("Message has not been sent because user not found")
             return
-        # TODO: Send email to reset password
+        user_tasks.send_email_to_reset_password.delay(
+            user_db.email, user_db.reset_password_key
+        )
+        log.info("The task to send email to reset password has been invoked")
 
     async def reset_password(
         self,
@@ -96,6 +92,19 @@ class UserService(base.AppService):
             password=auth.hash_password(password),
             reset_password_key=uuid.uuid4(),
         )
+
+
+def can_confirm_email(user: user_models.User) -> bool:
+    if user.confirmed_email:
+        log.info("Email already confirmed")
+        return False
+    expiration_date = user.created_at + datetime.timedelta(
+        days=settings.ACCOUNT_ACTIVATION_DAYS
+    )
+    if expiration_date < datetime.datetime.utcnow():
+        log.info("Confirmation email expired")
+        return False
+    return True
 
 
 class UserCRUD(base.AppCRUD):

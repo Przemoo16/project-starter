@@ -26,6 +26,10 @@ class Settings(pydantic.BaseSettings):
     # Database
     DATABASE_URL: str
 
+    # Links
+    FRONTEND_CONFIRM_EMAIL_URL: pydantic.AnyHttpUrl
+    FRONTEND_RESET_PASSWORD_URL: pydantic.AnyHttpUrl
+
     # Celery
     CELERY_BROKER_URL: pydantic.RedisDsn
     CELERY_RESULT_BACKEND: pydantic.RedisDsn
