@@ -41,19 +41,20 @@ class TokenService(base.AppService):
             token_type="bearer",
         )
 
-    async def refresh_token(self, token: str) -> token_models.AccessToken:
-        bad_request_exception = exceptions.BadRequestError({"token": token})
+    async def refresh_token(
+        self, token: token_models.Token
+    ) -> token_models.AccessToken:
         try:
             decoded_token = decode_token(token)
         except jwt.JWTError as e:
             log.info("Invalid token: %r", token)
-            raise bad_request_exception from e
+            raise exceptions.BadRequestError({"token": token}) from e
         user_id = decoded_token["sub"]
         try:
             user = await user_services.UserCRUD(self.session).read(id=user_id)
         except exc.NoResultFound as e:
             log.info("User with the ID %r not found", user_id)
-            raise bad_request_exception from e
+            raise exceptions.NotFoundError({"token": token}) from e
         return token_models.AccessToken(  # nosec
             access_token=jwt_auth.AuthJWT().create_access_token(
                 str(user.id), fresh=False
@@ -62,13 +63,12 @@ class TokenService(base.AppService):
         )
 
     @staticmethod
-    def revoke_token(token: str) -> None:
-        bad_request_exception = exceptions.BadRequestError({"token": token})
+    def revoke_token(token: token_models.Token) -> None:
         try:
             decoded_token = decode_token(token, options={"verify_exp": False})
         except jwt.JWTError as e:
             log.info("Invalid token: %r", token)
-            raise bad_request_exception from e
+            raise exceptions.BadRequestError({"token": token}) from e
         jti = decoded_token["jti"]
         if not (expiration := decoded_token.get("exp")):
             jwt_db.set(jti, "true")
@@ -81,7 +81,7 @@ class TokenService(base.AppService):
 
 
 def decode_token(
-    token: str, options: dict[str, typing.Any] | None = None
+    token: token_models.Token, options: dict[str, typing.Any] | None = None
 ) -> dict[str, typing.Any]:
     return dict(
         jwt.decode(

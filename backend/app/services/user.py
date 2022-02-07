@@ -1,6 +1,7 @@
 import datetime
 import logging
 import typing
+import uuid
 
 from sqlalchemy import exc
 import sqlmodel
@@ -21,6 +22,7 @@ class UserService(base.AppService):
             return await UserCRUD(self.session).create(user)
         except exc.IntegrityError as e:
             raise exceptions.ConflictError({"email": user.email}) from e
+        # TODO: Send email to confirm email
 
     async def get_user(self, user_id: user_models.UserID) -> user_models.User:
         try:
@@ -49,17 +51,18 @@ class UserService(base.AppService):
             raise exceptions.NotFoundError({"id": user_id}) from e
         return await user_crud_service.delete(user_db)
 
-    async def confirm_email(self, key: user_models.ConfirmationEmailKey) -> bool:
+    async def confirm_email(self, key: user_models.ConfirmationEmailKey) -> None:
         not_found_exception = exceptions.NotFoundError({"key": key})
         try:
             user_db = await UserCRUD(self.session).read(confirmation_email_key=key)
         except exc.NoResultFound as e:
             raise not_found_exception from e
-        if not await self._confirm_email(user_db):
+        if not await self._can_confirm_email(user_db):
             raise not_found_exception
-        return True
+        await UserCRUD(self.session).update(user_db, confirmed_email=True)
+        log.info("Email has been confirmed")
 
-    async def _confirm_email(self, user: user_models.User) -> bool:
+    async def _can_confirm_email(self, user: user_models.User) -> bool:
         if user.confirmed_email:
             log.info("Email already confirmed")
             return False
@@ -67,11 +70,32 @@ class UserService(base.AppService):
             days=settings.ACCOUNT_ACTIVATION_DAYS
         )
         if expiration_date < datetime.datetime.utcnow():
-            log.info("Email has not been confirmed because confirmation email expired")
+            log.info("Confirmation email expired")
             return False
-        await UserCRUD(self.session).update(user, confirmed_email=True)
-        log.info("Email has been confirmed")
         return True
+
+    async def request_reset_password(self, email: user_models.UserEmail) -> None:
+        try:
+            user_db = await UserCRUD(self.session).read(email=email)
+        except exc.NoResultFound:
+            log.info("Message has not been sent because user not found")
+            return
+        # TODO: Send email to reset password
+
+    async def reset_password(
+        self,
+        key: user_models.ResetPasswordKey,
+        password: user_models.UserPassword,
+    ) -> None:
+        try:
+            user_db = await UserCRUD(self.session).read(reset_password_key=key)
+        except exc.NoResultFound as e:
+            raise exceptions.NotFoundError({"key": key}) from e
+        await UserCRUD(self.session).update(
+            user_db,
+            password=auth.hash_password(password),
+            reset_password_key=uuid.uuid4(),
+        )
 
 
 class UserCRUD(base.AppCRUD):

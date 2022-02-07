@@ -2,6 +2,7 @@ import typing
 from unittest import mock
 
 import freezegun
+import pydantic
 import pytest
 from sqlalchemy import exc
 import sqlmodel
@@ -137,11 +138,8 @@ async def test_user_service_confirm_email(session: "conftest.AsyncSession") -> N
         session=session, email="test@email.com", password="hashed_password"
     )
 
-    confirmed_email = await user_services.UserService(session).confirm_email(
-        user.confirmation_email_key
-    )
+    await user_services.UserService(session).confirm_email(user.confirmation_email_key)
 
-    assert confirmed_email is True
     assert user.confirmed_email is True
 
 
@@ -191,6 +189,61 @@ async def test_user_service_confirm_email_time_expired(
                 user.confirmation_email_key
             )
         assert exc_info.value.context == {"key": user.confirmation_email_key}
+
+
+@pytest.mark.asyncio
+async def test_user_service_request_reset_password(
+    session: "conftest.AsyncSession",
+) -> None:
+    user = await user_helpers.create_user(
+        session=session, email="test@email.com", password="hashed_password"
+    )
+
+    await user_services.UserService(session).request_reset_password(user.email)
+
+
+@pytest.mark.asyncio
+async def test_user_service_request_reset_password_no_user(
+    session: "conftest.AsyncSession",
+) -> None:
+    email = pydantic.EmailStr("test@email.com")
+
+    await user_services.UserService(session).request_reset_password(email)
+
+
+@pytest.mark.asyncio
+async def test_user_service_reset_password(
+    session: "conftest.AsyncSession",
+) -> None:
+    old_password = "hashed_password"
+    user = await user_helpers.create_user(
+        session=session, email="test@email.com", password=old_password
+    )
+    old_reset_password_key = user.reset_password_key
+    new_plain_password = "plain_password"
+
+    await user_services.UserService(session).reset_password(
+        user.reset_password_key, new_plain_password
+    )
+
+    assert user.password != old_password
+    assert user.password != new_plain_password
+    assert user.reset_password_key != old_reset_password_key
+
+
+@pytest.mark.asyncio
+async def test_user_service_reset_password_no_user(
+    session: "conftest.AsyncSession",
+) -> None:
+    user_reset_password_key = converters.change_to_uuid(
+        "0dd53909-fcda-4c72-afcd-1bf4886389f8"
+    )
+
+    with pytest.raises(exceptions.NotFoundError) as exc_info:
+        await user_services.UserService(session).reset_password(
+            user_reset_password_key, "plain_password"
+        )
+    assert exc_info.value.context == {"key": user_reset_password_key}
 
 
 @pytest.mark.asyncio
