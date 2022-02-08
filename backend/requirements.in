@@ -27,5 +27,4 @@ pip-tools
 pylint
 pytest
 pytest-asyncio
-pytest-celery
 pytest-cov
