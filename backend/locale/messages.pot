@@ -1,0 +1,44 @@
+# Translations template for PROJECT.
+# Copyright (C) 2022 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2022.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2022-02-08 21:09+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.1\n"
+
+#: app/tasks/user.py:19
+msgid "Confirm email"
+msgstr ""
+
+#: app/tasks/user.py:20
+#, python-format
+msgid "Click the link to confirm your email: %(link)s"
+msgstr ""
+
+#: app/tasks/user.py:39
+msgid "Reset password"
+msgstr ""
+
+#: app/tasks/user.py:40
+#, python-format
+msgid "Click the link to reset your password: %(link)s"
+msgstr ""
+
+#: app/templates/confirm_email.html.jinja:6
+msgid "Click here to confirm your email"
+msgstr ""
+
+#: app/templates/reset_password_email.html.jinja:6
+msgid "Click here to reset your password"
+msgstr ""

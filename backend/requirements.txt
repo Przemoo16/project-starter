@@ -20,6 +20,8 @@ asyncpg==0.25.0
     # via -r requirements.in
 attrs==21.4.0
     # via pytest
+babel==2.9.1
+    # via -r requirements.in
 bandit==1.7.1
     # via -r requirements.in
 bcrypt==3.2.0
@@ -33,7 +35,9 @@ celery==5.2.3
 certifi==2021.10.8
     # via requests
 cffi==1.15.0
-    # via bcrypt
+    # via
+    #   bcrypt
+    #   cryptography
 charset-normalizer==2.0.10
     # via requests
 click-didyoumean==0.3.0
@@ -53,6 +57,8 @@ click==8.0.3
     #   uvicorn
 coverage[toml]==6.2
     # via pytest-cov
+cryptography==36.0.1
+    # via python-jose
 deprecated==1.2.13
     # via redis
 dnspython==2.2.0
@@ -176,10 +182,12 @@ python-dateutil==2.8.2
     # via freezegun
 python-dotenv==0.19.2
     # via uvicorn
-python-jose==3.3.0
+python-jose[cryptography]==3.3.0
     # via -r requirements.in
 pytz==2021.3
-    # via celery
+    # via
+    #   babel
+    #   celery
 pyyaml==6.0
     # via
     #   bandit
