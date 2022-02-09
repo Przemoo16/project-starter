@@ -5,6 +5,12 @@ build:
 	$(COMPOSE_DEV) build
 	$(UPGRADE_MIGRATIONS)
 
+compile-messages:
+	$(COMPOSE_DEV) run --rm backend pybabel compile -d locale
+
+extract-messages:
+	$(COMPOSE_DEV) run --rm backend pybabel extract -F babel.ini -k gettext_lazy -k _ -o locale/messages.pot .
+
 lint-backend:
 	$(COMPOSE_DEV) up -d backend
 	$(COMPOSE_DEV) exec -T backend isort .
@@ -29,3 +35,6 @@ setup:
 
 test-backend:
 	$(COMPOSE_DEV) run --rm backend pytest .
+
+update-messages:
+	$(COMPOSE_DEV) run --rm backend pybabel update -i locale/messages.pot -d locale

@@ -9,6 +9,7 @@ import pydantic
 class Settings(pydantic.BaseSettings):
     # App
     API_VERSION: str = "/api/v1"
+    LOCALES: list[str] = ["en"]
 
     # Security
     SECRET_KEY: str

@@ -4,8 +4,9 @@ import smtplib
 import ssl
 import typing
 
-from app.config import general, jinja
+from app.config import general
 from app.exceptions import email as email_exceptions
+from app.utils import jinja, translation
 
 log = logging.getLogger(__name__)
 
@@ -18,13 +19,16 @@ def load_template(template_name: str, **kwargs: typing.Any) -> str:
 
 
 def build_message(
-    message_html: str, message_text: str, subject: str, receiver: str
+    message_html: str,
+    message_text: str | translation.LazyString,
+    subject: str | translation.LazyString,
+    receiver: str,
 ) -> str:
     message = multipart.MIMEMultipart("alternative")
-    message["Subject"] = subject
+    message["Subject"] = str(subject)
     message["From"] = settings.EMAIL_SENDER_EMAIL
     message["To"] = receiver
-    message.attach(text.MIMEText(message_text, "plain"))
+    message.attach(text.MIMEText(str(message_text), "plain"))
     message.attach(text.MIMEText(message_html, "html"))
     return message.as_string()
 

@@ -44,7 +44,7 @@ services:
     build:
       context: .
       dockerfile: config/backend.Dockerfile
-    command: "celery -A app.celery beat -l INFO"
+    command: "celery -A app.celery.worker beat -l INFO"
     volumes:
       - ./backend:/backend
     depends_on:

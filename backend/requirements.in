@@ -2,6 +2,7 @@
 # prod
 alembic
 asyncpg
+babel
 celery
 fastapi
 fastapi-jwt-auth
@@ -10,7 +11,7 @@ orjson
 passlib[bcrypt]
 psycopg2-binary
 pydantic[email]
-python-jose
+python-jose[cryptography]
 redis
 requests
 sqlmodel
