@@ -3,13 +3,13 @@ import typing
 import sqlmodel
 
 if typing.TYPE_CHECKING:
-    from app.db import base
+    from app.config import db
 
 ModelInstance = typing.TypeVar("ModelInstance", bound=sqlmodel.SQLModel)
 
 
 class DBSessionContext:
-    def __init__(self, session: "base.AsyncSession"):
+    def __init__(self, session: "db.AsyncSession"):
         self.session = session
 
 

@@ -18,5 +18,4 @@ class ResourceException(fastapi.HTTPException):
         headers: dict[str, typing.Any] | None = None,
     ) -> None:
         super().__init__(status_code, detail, headers)
-        self.exception_case = self.__class__.__name__
         self.context = context

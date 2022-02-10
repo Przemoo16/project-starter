@@ -4,7 +4,7 @@ import fastapi
 import fastapi_jwt_auth as jwt_auth
 from sqlalchemy import exc
 
-from app.db import base
+from app.config import db
 from app.exceptions import resource
 from app.models import user as user_models
 from app.services import auth
@@ -15,7 +15,7 @@ log = logging.getLogger(__name__)
 
 
 async def get_current_user(
-    session: base.AsyncSession = fastapi.Depends(base.get_session),
+    session: db.AsyncSession = fastapi.Depends(db.get_session),
     Authorize: jwt_auth.AuthJWT = fastapi.Depends(),
     token: str = fastapi.Depends(auth.oauth2_scheme),  # pylint: disable=unused-argument
 ) -> user_models.User:

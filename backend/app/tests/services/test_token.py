@@ -76,7 +76,7 @@ async def test_token_service_refresh_token(session: "conftest.AsyncSession") -> 
     user = await user_helpers.create_user(
         session, email="test@email.com", password="hashed_password"
     )
-    token = jwt_auth.AuthJWT().create_access_token(str(user.id))
+    token = jwt_auth.AuthJWT().create_refresh_token(str(user.id))
 
     token = await token_services.TokenService(session).refresh_token(token=token)
 
@@ -91,7 +91,32 @@ async def test_token_service_refresh_token_invalid(
 ) -> None:
     token = "invalid_token"
 
-    with pytest.raises(resource.BadRequestError) as exc_info:
+    with pytest.raises(resource.UnprocessableEntityError) as exc_info:
+        await token_services.TokenService(session).refresh_token(token=token)
+    assert exc_info.value.context == {"token": token}
+
+
+@pytest.mark.asyncio
+async def test_token_service_refresh_no_refresh_type(
+    session: "conftest.AsyncSession",
+) -> None:
+    user_id = "0dd53909-fcda-4c72-afcd-1bf4886389f8"
+    token = jwt_auth.AuthJWT().create_access_token(user_id)
+
+    with pytest.raises(resource.UnprocessableEntityError) as exc_info:
+        await token_services.TokenService(session).refresh_token(token=token)
+    assert exc_info.value.context == {"token": token}
+
+
+@mock.patch("app.services.token.jwt_db.get", return_value="true")
+@pytest.mark.asyncio
+async def test_token_service_refresh_revoked_token(
+    _: mock.MagicMock, session: "conftest.AsyncSession"
+) -> None:
+    user_id = "0dd53909-fcda-4c72-afcd-1bf4886389f8"
+    token = jwt_auth.AuthJWT().create_refresh_token(user_id)
+
+    with pytest.raises(resource.UnprocessableEntityError) as exc_info:
         await token_services.TokenService(session).refresh_token(token=token)
     assert exc_info.value.context == {"token": token}
 
@@ -101,7 +126,7 @@ async def test_token_service_refresh_token_no_user(
     session: "conftest.AsyncSession",
 ) -> None:
     user_id = "0dd53909-fcda-4c72-afcd-1bf4886389f8"
-    token = jwt_auth.AuthJWT().create_access_token(user_id)
+    token = jwt_auth.AuthJWT().create_refresh_token(user_id)
 
     with pytest.raises(resource.NotFoundError) as exc_info:
         await token_services.TokenService(session).refresh_token(token=token)
@@ -119,24 +144,22 @@ def test_token_service_revoke_token(
     mocked_redis_setex.assert_called_once()
 
 
-@mock.patch("app.services.token.jwt_db.setex")
 @freezegun.freeze_time("2022-02-06 13:30:00")
 def test_token_service_revoke_token_already_expired(
-    mocked_redis_setex: mock.MagicMock,
     session: "conftest.AsyncSession",
 ) -> None:
     with freezegun.freeze_time("2021-02-05 13:30:00"):
         token = jwt_auth.AuthJWT().create_access_token("dummy_id")
 
-    token_services.TokenService(session).revoke_token(token=token)
-
-    mocked_redis_setex.assert_called_once()
+    with pytest.raises(resource.UnprocessableEntityError) as exc_info:
+        token_services.TokenService(session).revoke_token(token=token)
+    assert exc_info.value.context == {"token": token}
 
 
 def test_token_service_revoke_token_invalid(session: "conftest.AsyncSession") -> None:
     token = "invalid_token"
 
-    with pytest.raises(resource.BadRequestError) as exc_info:
+    with pytest.raises(resource.UnprocessableEntityError) as exc_info:
         token_services.TokenService(session).revoke_token(token=token)
     assert exc_info.value.context == {"token": token}
 
@@ -161,7 +184,11 @@ def test_token_service_revoke_token_missing_expiration(
 def test_get_remaining_expiration() -> None:
     exp = int(datetime.datetime(2022, 2, 6, 13, 0, 0).timestamp())
 
-    remaining_expiration = token_services.get_remaining_expiration(exp)
+    remaining_expiration = (
+        token_services._get_remaining_expiration(  # pylint: disable=protected-access
+            exp
+        )
+    )
 
     assert remaining_expiration == 1800
 
@@ -170,6 +197,10 @@ def test_get_remaining_expiration() -> None:
 def test_get_remaining_expiration_already_expired() -> None:
     exp = int(datetime.datetime(2022, 2, 6, 12, 0, 0).timestamp())
 
-    remaining_expiration = token_services.get_remaining_expiration(exp)
+    remaining_expiration = (
+        token_services._get_remaining_expiration(  # pylint: disable=protected-access
+            exp
+        )
+    )
 
     assert remaining_expiration == 0

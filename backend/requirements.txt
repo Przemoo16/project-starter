@@ -217,7 +217,9 @@ sqlalchemy==1.4.29
 sqlmodel==0.0.6
     # via -r requirements.in
 starlette==0.17.1
-    # via fastapi
+    # via
+    #   -r requirements.in
+    #   fastapi
 stevedore==3.5.0
     # via bandit
 toml==0.10.2
