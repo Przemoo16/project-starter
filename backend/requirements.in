@@ -15,6 +15,7 @@ python-jose[cryptography]
 redis
 requests
 sqlmodel
+starlette
 uvicorn[standard]
 # dev
 aiosqlite

@@ -12,7 +12,7 @@ from app import (  # noqa: F401 # pylint: disable=unused-import # Detect all mod
     main,
     models,
 )
-from app.db import base
+from app.config import db
 
 TEST_DB_ENGINE = "sqlite+aiosqlite://"
 
@@ -54,7 +54,6 @@ async def session_fixture(
 def client_fixture(
     session: AsyncSession,
 ) -> typing.Generator[testclient.TestClient, None, None]:
-    main.app.dependency_overrides[base.get_session] = lambda: session
-    client = testclient.TestClient(main.app)
-    yield client
+    main.app.dependency_overrides[db.get_session] = lambda: session
+    yield testclient.TestClient(main.app)
     main.app.dependency_overrides.clear()

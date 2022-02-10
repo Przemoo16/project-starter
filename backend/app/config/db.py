@@ -1,5 +1,7 @@
+import functools
 import typing
 
+import redis
 from sqlalchemy import orm
 from sqlalchemy.ext import asyncio
 
@@ -20,3 +22,8 @@ async def get_session() -> typing.AsyncGenerator[
     )
     async with async_session() as session:
         yield session
+
+
+@functools.lru_cache()
+def get_jwt_db() -> redis.Redis:  # type: ignore
+    return redis.Redis.from_url(settings.AUTHJWT_DATABASE_URL, decode_responses=True)

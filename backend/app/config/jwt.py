@@ -1,10 +1,7 @@
-import functools
-import typing
-
 import fastapi_jwt_auth as jwt_auth
-import redis
 
 from app.config import general
+from app.services import token  # TODO: Find better way than importing it from services
 
 settings = general.get_settings()
 
@@ -14,13 +11,4 @@ def get_jwt_settings() -> general.Settings:
     return general.get_settings()
 
 
-@functools.lru_cache()
-def get_jwt_db() -> redis.Redis:  # type: ignore
-    return redis.Redis.from_url(settings.AUTHJWT_DATABASE_URL, decode_responses=True)
-
-
-@jwt_auth.AuthJWT.token_in_denylist_loader
-def check_if_token_in_denylist(decrypted_token: dict[str, typing.Any]) -> bool:
-    jti = decrypted_token["jti"]
-    is_revoked = get_jwt_db().get(jti)
-    return is_revoked == "true"
+jwt_auth.AuthJWT.token_in_denylist_loader(callback=token.check_if_token_in_denylist)
