@@ -19,7 +19,7 @@ jwt_db = db.get_jwt_db()
 
 
 class TokenService(base.AppService):
-    async def create_tokens(self, email: str, password: str) -> token_models.Tokens:
+    async def obtain_tokens(self, email: str, password: str) -> token_models.Tokens:
         user_crud_service = user_services.UserCRUD(self.session)
         unauthorized_exception = resource.UnauthorizedError({"email": email})
         try:

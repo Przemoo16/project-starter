@@ -1,4 +1,5 @@
 from datetime import datetime
+import typing
 import uuid
 
 import pydantic
@@ -6,11 +7,11 @@ import sqlmodel
 
 from app.models import base, helpers
 
-UserID = uuid.UUID
-UserEmail = pydantic.EmailStr
-UserPassword = str
-ConfirmationEmailKey = uuid.UUID
-ResetPasswordKey = uuid.UUID
+UserID: typing.TypeAlias = uuid.UUID
+UserEmail: typing.TypeAlias = pydantic.EmailStr
+UserPassword: typing.TypeAlias = str
+ConfirmationEmailKey: typing.TypeAlias = uuid.UUID
+ResetPasswordKey: typing.TypeAlias = uuid.UUID
 
 
 class User(base.BaseModel, table=True):

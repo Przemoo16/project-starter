@@ -12,6 +12,7 @@ passlib[bcrypt]
 psycopg2-binary
 pydantic[email]
 python-jose[cryptography]
+python-multipart
 redis
 requests
 sqlmodel
@@ -23,6 +24,7 @@ bandit
 black
 flake8
 freezegun
+httpx
 isort
 mypy
 pip-tools

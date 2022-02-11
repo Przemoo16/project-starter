@@ -1,6 +1,7 @@
 import logging
 
-from app.celery import worker
+import celery
+
 from app.config import general
 from app.models import user as user_models
 from app.services import email as email_services
@@ -11,7 +12,7 @@ log = logging.getLogger(__name__)
 settings = general.get_settings()
 
 
-@worker.app.task
+@celery.shared_task
 def send_email_to_confirm_email(
     email: user_models.UserEmail, key: user_models.ConfirmationEmailKey
 ) -> None:
@@ -31,7 +32,7 @@ def send_email_to_confirm_email(
     log.info("Email to confirm email has been sent to %r", email)
 
 
-@worker.app.task
+@celery.shared_task
 def send_email_to_reset_password(
     email: user_models.UserEmail, key: user_models.ResetPasswordKey
 ) -> None:
