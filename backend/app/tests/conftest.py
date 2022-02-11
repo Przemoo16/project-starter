@@ -1,6 +1,6 @@
 import typing
 
-from fastapi import testclient
+import httpx
 import pytest
 import pytest_asyncio
 from sqlalchemy import orm
@@ -16,7 +16,8 @@ from app.config import db
 
 TEST_DB_ENGINE = "sqlite+aiosqlite://"
 
-AsyncSession = asyncio.AsyncSession
+AsyncSession: typing.TypeAlias = asyncio.AsyncSession
+TestClient: typing.TypeAlias = httpx.AsyncClient
 
 
 @pytest.fixture(name="engine", scope="session")
@@ -44,16 +45,17 @@ async def session_fixture(
     engine: asyncio.AsyncEngine, create_tables: None  # pylint: disable=unused-argument
 ) -> typing.AsyncGenerator[AsyncSession, None]:
     async_session = orm.sessionmaker(
-        engine, class_=AsyncSession, expire_on_commit=False
+        engine, class_=asyncio.AsyncSession, expire_on_commit=False
     )
     async with async_session() as session:
         yield session
 
 
-@pytest.fixture(name="client")
-def client_fixture(
+@pytest_asyncio.fixture(name="async_client")
+async def async_client_fixture(
     session: AsyncSession,
-) -> typing.Generator[testclient.TestClient, None, None]:
+) -> typing.AsyncGenerator[TestClient, None]:
     main.app.dependency_overrides[db.get_session] = lambda: session
-    yield testclient.TestClient(main.app)
+    async with httpx.AsyncClient(app=main.app, base_url="http://test") as client:
+        yield client
     main.app.dependency_overrides.clear()

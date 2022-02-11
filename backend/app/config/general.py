@@ -8,8 +8,16 @@ import pydantic
 
 class Settings(pydantic.BaseSettings):
     # App
-    API_VERSION: str = "/api/v1"
+    APP_NAME: str = "Project starter"
+    API_VERSION: str = "v1"
     LOCALES: list[str] = ["en"]
+
+    # Urls
+    API_URL: str = f"/api/{API_VERSION}"
+    TOKEN_URL: str = "/token"
+    REFRESH_TOKEN_URL: str = f"/{TOKEN_URL}/refresh"
+    FRONTEND_CONFIRM_EMAIL_URL: pydantic.AnyHttpUrl
+    FRONTEND_RESET_PASSWORD_URL: pydantic.AnyHttpUrl
 
     # Security
     SECRET_KEY: str
@@ -22,14 +30,10 @@ class Settings(pydantic.BaseSettings):
     AUTHJWT_ALGORITHM: str = "HS256"
     AUTHJWT_DECODE_ALGORITHMS: set[str] = {"HS256"}
     AUTHJWT_DATABASE_URL: pydantic.RedisDsn
-    ACCOUNT_ACTIVATION_DAYS = 7
+    ACCOUNT_ACTIVATION_DAYS: int = 7
 
     # Database
     DATABASE_URL: str
-
-    # Links
-    FRONTEND_CONFIRM_EMAIL_URL: pydantic.AnyHttpUrl
-    FRONTEND_RESET_PASSWORD_URL: pydantic.AnyHttpUrl
 
     # Celery
     CELERY_BROKER_URL: pydantic.RedisDsn

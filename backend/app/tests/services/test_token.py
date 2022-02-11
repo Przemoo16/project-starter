@@ -21,7 +21,7 @@ settings = general.get_settings()
 
 @pytest.mark.asyncio
 @freezegun.freeze_time("2022-02-05 18:30:00")
-async def test_token_service_create_tokens(session: "conftest.AsyncSession") -> None:
+async def test_token_service_obtain_tokens(session: "conftest.AsyncSession") -> None:
     user = await user_helpers.create_user(
         session,
         email="test@email.com",
@@ -30,7 +30,7 @@ async def test_token_service_create_tokens(session: "conftest.AsyncSession") -> 
     )
 
     with freezegun.freeze_time("2022-02-05 18:00:00"):
-        tokens = await token_services.TokenService(session).create_tokens(
+        tokens = await token_services.TokenService(session).obtain_tokens(
             email=user.email, password="plain_password"
         )
 
@@ -42,20 +42,20 @@ async def test_token_service_create_tokens(session: "conftest.AsyncSession") -> 
 
 
 @pytest.mark.asyncio
-async def test_token_service_create_tokens_no_user(
+async def test_token_service_obtain_tokens_no_user(
     session: "conftest.AsyncSession",
 ) -> None:
     email = "test@email.com"
 
     with pytest.raises(resource.UnauthorizedError) as exc_info:
-        await token_services.TokenService(session).create_tokens(
+        await token_services.TokenService(session).obtain_tokens(
             email=email, password="plain_password"
         )
     assert exc_info.value.context == {"email": email}
 
 
 @pytest.mark.asyncio
-async def test_token_service_create_tokens_invalid_password(
+async def test_token_service_obtain_tokens_invalid_password(
     session: "conftest.AsyncSession",
 ) -> None:
     user = await user_helpers.create_user(
@@ -65,7 +65,7 @@ async def test_token_service_create_tokens_invalid_password(
     )
 
     with pytest.raises(resource.UnauthorizedError) as exc_info:
-        await token_services.TokenService(session).create_tokens(
+        await token_services.TokenService(session).obtain_tokens(
             email=user.email, password="invalid_password"
         )
     assert exc_info.value.context == {"email": user.email}

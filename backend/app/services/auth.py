@@ -46,8 +46,8 @@ class OAuth2PasswordBearer(security.OAuth2):
 
 
 oauth2_scheme = OAuth2PasswordBearer(
-    tokenUrl=f"{settings.API_VERSION}/token",
-    refreshUrl=f"{settings.API_VERSION}/token/refresh",
+    tokenUrl=f"{settings.API_URL}/{settings.TOKEN_URL}",
+    refreshUrl=f"{settings.API_URL}/{settings.REFRESH_TOKEN_URL}",
 )
 
 pwd_context = context.CryptContext(schemes=["bcrypt"], deprecated="auto")

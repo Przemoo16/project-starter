@@ -1,6 +1,8 @@
+import typing
+
 from app.models import base
 
-Token = str
+Token: typing.TypeAlias = str
 
 
 class AccessToken(base.BaseModel):
