@@ -14,7 +14,7 @@ settings = general.get_settings()
 
 @celery.shared_task
 def send_email_to_confirm_email(
-    email: user_models.UserEmail, key: user_models.ConfirmationEmailKey
+    email: user_models.UserEmail, key: user_models.UserConfirmationEmailKey
 ) -> None:
     link = settings.FRONTEND_CONFIRM_EMAIL_URL.format(key=key)
     subject = _("Confirm email")
@@ -34,7 +34,7 @@ def send_email_to_confirm_email(
 
 @celery.shared_task
 def send_email_to_reset_password(
-    email: user_models.UserEmail, key: user_models.ResetPasswordKey
+    email: user_models.UserEmail, key: user_models.UserResetPasswordKey
 ) -> None:
     link = settings.FRONTEND_RESET_PASSWORD_URL.format(key=key)
     subject = _("Reset password")

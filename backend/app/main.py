@@ -1,4 +1,5 @@
 import fastapi
+from fastapi import responses
 
 from app.api.v1 import api
 from app.config import general
@@ -8,7 +9,9 @@ from app.utils import openapi
 settings = general.get_settings()
 
 app = fastapi.FastAPI(
-    title=settings.APP_NAME, openapi_url=f"{settings.API_URL}/openapi.json"
+    title=settings.APP_NAME,
+    openapi_url=f"{settings.API_URL}/openapi.json",
+    default_response_class=responses.ORJSONResponse,
 )
 
 handlers.init_handlers(app)
