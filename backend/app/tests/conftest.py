@@ -29,8 +29,8 @@ def redis_client_fixture() -> typing.Generator[RedisClient, None, None]:
     yield redis.Redis.from_url(settings.REDIS_URL, decode_responses=True)
 
 
-@pytest.fixture(name="clean_redis")
-def clean_redis_fixture(
+@pytest.fixture(name="flush_redis")
+def flush_redis_fixture(
     redis_client: RedisClient,
 ) -> typing.Generator[None, None, None]:
     yield
@@ -61,7 +61,7 @@ async def create_tables_fixture(
 async def session_fixture(
     engine: asyncio.AsyncEngine,
     create_tables: None,  # pylint: disable=unused-argument
-    clean_redis: None,  # pylint: disable=unused-argument
+    flush_redis: None,  # pylint: disable=unused-argument
 ) -> typing.AsyncGenerator[AsyncSession, None]:
     async_session = orm.sessionmaker(
         engine, class_=asyncio.AsyncSession, expire_on_commit=False
