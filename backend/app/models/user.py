@@ -10,8 +10,8 @@ from app.models import base, helpers
 UserID: typing.TypeAlias = uuid.UUID
 UserEmail: typing.TypeAlias = pydantic.EmailStr
 UserPassword: typing.TypeAlias = str
-ConfirmationEmailKey: typing.TypeAlias = uuid.UUID
-ResetPasswordKey: typing.TypeAlias = uuid.UUID
+UserConfirmationEmailKey: typing.TypeAlias = uuid.UUID
+UserResetPasswordKey: typing.TypeAlias = uuid.UUID
 
 
 class User(base.BaseModel, table=True):
@@ -21,10 +21,10 @@ class User(base.BaseModel, table=True):
     email: UserEmail = sqlmodel.Field(index=True, sa_column_kwargs={"unique": True})
     password: UserPassword
     confirmed_email: bool = False
-    confirmation_email_key: ConfirmationEmailKey = sqlmodel.Field(
+    confirmation_email_key: UserConfirmationEmailKey = sqlmodel.Field(
         default_factory=helpers.generate_fixed_uuid
     )
-    reset_password_key: ResetPasswordKey = sqlmodel.Field(
+    reset_password_key: UserResetPasswordKey = sqlmodel.Field(
         default_factory=helpers.generate_fixed_uuid
     )
     created_at: datetime = sqlmodel.Field(default_factory=helpers.get_utcnow)
@@ -60,7 +60,3 @@ class UserUpdate(pydantic.BaseModel):
 
     email: pydantic.EmailStr | None = None
     password: str | None = None
-
-
-class ConfirmationEmail(base.BaseModel):
-    key: ConfirmationEmailKey

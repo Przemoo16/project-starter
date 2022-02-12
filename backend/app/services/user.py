@@ -57,7 +57,7 @@ class UserService(base.AppService):
             raise resource.NotFoundError({"id": user_id}) from e
         return await user_crud_service.delete(user_db)
 
-    async def confirm_email(self, key: user_models.ConfirmationEmailKey) -> None:
+    async def confirm_email(self, key: user_models.UserConfirmationEmailKey) -> None:
         not_found_exception = resource.NotFoundError({"key": key})
         try:
             user_db = await UserCRUD(self.session).read(confirmation_email_key=key)
@@ -81,7 +81,7 @@ class UserService(base.AppService):
 
     async def reset_password(
         self,
-        key: user_models.ResetPasswordKey,
+        key: user_models.UserResetPasswordKey,
         password: user_models.UserPassword,
     ) -> None:
         try:

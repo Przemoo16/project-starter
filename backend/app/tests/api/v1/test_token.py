@@ -11,10 +11,6 @@ if typing.TYPE_CHECKING:
 
 API_URL = "/api/v1"
 
-TOKEN_URL = f"{API_URL}/token"
-REFRESH_TOKEN_URL = f"{API_URL}/token/refresh"
-REVOKE_TOKEN_URL = f"{API_URL}/token/revoke"
-
 
 @pytest.mark.asyncio
 async def test_obtain_tokens(
@@ -29,7 +25,7 @@ async def test_obtain_tokens(
     request_data = {"username": email, "password": "plain_password"}
 
     response = await async_client.post(
-        TOKEN_URL, data=request_data, follow_redirects=True
+        f"{API_URL}/token", data=request_data, follow_redirects=True
     )
     tokens = response.json()
 
@@ -49,7 +45,7 @@ async def test_refresh_token(
     token = jwt_auth.AuthJWT().create_refresh_token(str(user.id))
     request_data = {"token": token}
 
-    response = await async_client.post(REFRESH_TOKEN_URL, json=request_data)
+    response = await async_client.post(f"{API_URL}/token/refresh", json=request_data)
     token = response.json()
 
     assert response.status_code == status.HTTP_200_OK
@@ -63,6 +59,6 @@ async def test_revoke_token_token(async_client: "conftest.TestClient") -> None:
     token = jwt_auth.AuthJWT().create_refresh_token(user_id)
     request_data = {"token": token}
 
-    response = await async_client.post(REVOKE_TOKEN_URL, json=request_data)
+    response = await async_client.post(f"{API_URL}/token/revoke", json=request_data)
 
     assert response.status_code == status.HTTP_204_NO_CONTENT

@@ -1,3 +1,4 @@
+# pragma: no cover
 import celery
 
 from app.config import general
