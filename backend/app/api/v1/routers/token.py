@@ -4,6 +4,7 @@ import fastapi
 from fastapi import security, status
 
 from app.config import db, general
+from app.exceptions import resource
 from app.models import token as token_models
 from app.services import token as token_services
 
@@ -12,7 +13,11 @@ settings = general.get_settings()
 router = fastapi.APIRouter()
 
 
-@router.post("/", response_model=token_models.Tokens)
+@router.post(
+    "/",
+    response_model=token_models.Tokens,
+    responses={**resource.UnauthorizedError().doc},
+)
 async def obtain_tokens(
     form_data: security.OAuth2PasswordRequestForm = fastapi.Depends(),
     session: db.AsyncSession = fastapi.Depends(db.get_session),
@@ -22,7 +27,15 @@ async def obtain_tokens(
     )
 
 
-@router.post("/refresh", response_model=token_models.AccessToken)
+@router.post(
+    "/refresh",
+    response_model=token_models.AccessToken,
+    responses={
+        **resource.UnauthorizedError().doc,
+        **resource.NotFoundError().doc,
+        **resource.UnprocessableEntityError().doc,
+    },
+)
 async def refresh_token(
     token: token_models.Token = fastapi.Body(..., embed=True),
     session: db.AsyncSession = fastapi.Depends(db.get_session),
@@ -30,7 +43,11 @@ async def refresh_token(
     return await token_services.TokenService(session).refresh_token(token)
 
 
-@router.post("/revoke", status_code=status.HTTP_204_NO_CONTENT)
+@router.post(
+    "/revoke",
+    status_code=status.HTTP_204_NO_CONTENT,
+    responses={**resource.UnprocessableEntityError().doc},
+)
 async def revoke_token(
     token: token_models.Token = fastapi.Body(..., embed=True),
     session: db.AsyncSession = fastapi.Depends(db.get_session),

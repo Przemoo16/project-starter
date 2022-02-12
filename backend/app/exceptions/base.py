@@ -2,6 +2,8 @@ import typing
 
 import fastapi
 
+from app.models import exception
+
 Context = dict[str, typing.Any]
 
 
@@ -19,3 +21,13 @@ class ResourceException(fastapi.HTTPException):
     ) -> None:
         super().__init__(status_code, detail, headers)
         self.context = context
+
+    @property
+    def doc(self) -> dict[int, dict[str, typing.Any]]:
+        return {
+            self.status_code: {
+                "model": exception.ExceptionContent,
+                "description": self.detail,
+                "headers": self.headers,
+            }
+        }

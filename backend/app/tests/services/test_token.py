@@ -116,7 +116,7 @@ async def test_token_service_refresh_revoked_token(
     user_id = "0dd53909-fcda-4c72-afcd-1bf4886389f8"
     token = jwt_auth.AuthJWT().create_refresh_token(user_id)
 
-    with pytest.raises(resource.UnprocessableEntityError) as exc_info:
+    with pytest.raises(resource.UnauthorizedError) as exc_info:
         await token_services.TokenService(session).refresh_token(token=token)
     assert exc_info.value.context == {"token": token}
 
