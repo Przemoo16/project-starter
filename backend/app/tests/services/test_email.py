@@ -79,21 +79,16 @@ def test_build_message(_: mock.MagicMock) -> None:
     assert message.strip() == BUILT_MESSAGE.strip()
 
 
-@mock.patch("smtplib.SMTP.login")
 @mock.patch("smtplib.SMTP.sendmail")
 @mock.patch("app.services.email.settings.EMAIL_SENDER_EMAIL", new="test@email.com")
-def test_send_email(
-    mocked_sendmail: mock.MagicMock, mocked_login: mock.MagicMock
-) -> None:
+def test_send_email(mocked_sendmail: mock.MagicMock) -> None:
     receiver = "receiver@email.com"
 
     email_services.send_email(BUILT_MESSAGE, receiver)
 
-    mocked_login.assert_called_once()
     mocked_sendmail.assert_called_once_with("test@email.com", receiver, BUILT_MESSAGE)
 
 
-@mock.patch("smtplib.SMTP.login")
 @mock.patch("smtplib.SMTP.sendmail", side_effect=smtplib.SMTPException)
 def test_send_email_error(*_: mock.MagicMock) -> None:
     with pytest.raises(email_exceptions.SendingEmailError):

@@ -13,7 +13,9 @@ from app import (  # noqa: F401 # pylint: disable=unused-import # Detect all mod
     main,
     models,
 )
+from app.celery import worker
 from app.config import db, general
+from app.tests.mocks import email
 
 TEST_DB_ENGINE = "sqlite+aiosqlite://"
 
@@ -22,6 +24,9 @@ TestClient: typing.TypeAlias = httpx.AsyncClient
 RedisClient: typing.TypeAlias = redis.Redis
 
 settings = general.get_settings()
+
+# Mocking SMTP works only in the app container, Celery still uses the original code
+email.mock_smtp()
 
 
 @pytest.fixture(name="redis_client", scope="session")
@@ -35,6 +40,12 @@ def flush_redis_fixture(
 ) -> typing.Generator[None, None, None]:
     yield
     redis_client.flushall()
+
+
+@pytest.fixture(name="purge_celery")
+def purge_celery_fixture() -> typing.Generator[None, None, None]:
+    yield
+    worker.app.control.purge()
 
 
 @pytest.fixture(name="engine", scope="session")
@@ -61,6 +72,7 @@ async def create_tables_fixture(
 async def session_fixture(
     engine: asyncio.AsyncEngine,
     create_tables: None,  # pylint: disable=unused-argument
+    purge_celery: None,  # pylint: disable=unused-argument
     flush_redis: None,  # pylint: disable=unused-argument
 ) -> typing.AsyncGenerator[AsyncSession, None]:
     async_session = orm.sessionmaker(
