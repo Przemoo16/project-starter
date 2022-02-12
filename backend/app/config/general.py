@@ -34,6 +34,7 @@ class Settings(pydantic.BaseSettings):
 
     # Database
     DATABASE_URL: str
+    REDIS_URL: str
 
     # Celery
     CELERY_BROKER_URL: pydantic.RedisDsn

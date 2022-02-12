@@ -3,6 +3,7 @@ import typing
 import httpx
 import pytest
 import pytest_asyncio
+import redis
 from sqlalchemy import orm
 from sqlalchemy.ext import asyncio
 import sqlmodel
@@ -12,12 +13,28 @@ from app import (  # noqa: F401 # pylint: disable=unused-import # Detect all mod
     main,
     models,
 )
-from app.config import db
+from app.config import db, general
 
 TEST_DB_ENGINE = "sqlite+aiosqlite://"
 
 AsyncSession: typing.TypeAlias = asyncio.AsyncSession
 TestClient: typing.TypeAlias = httpx.AsyncClient
+RedisClient: typing.TypeAlias = redis.Redis
+
+settings = general.get_settings()
+
+
+@pytest.fixture(name="redis_client", scope="session")
+def redis_client_fixture() -> typing.Generator[RedisClient, None, None]:
+    yield redis.Redis.from_url(settings.REDIS_URL, decode_responses=True)
+
+
+@pytest.fixture(name="clean_redis")
+def clean_redis_fixture(
+    redis_client: RedisClient,
+) -> typing.Generator[None, None, None]:
+    yield
+    redis_client.flushall()
 
 
 @pytest.fixture(name="engine", scope="session")
@@ -42,7 +59,9 @@ async def create_tables_fixture(
 
 @pytest_asyncio.fixture(name="session")
 async def session_fixture(
-    engine: asyncio.AsyncEngine, create_tables: None  # pylint: disable=unused-argument
+    engine: asyncio.AsyncEngine,
+    create_tables: None,  # pylint: disable=unused-argument
+    clean_redis: None,  # pylint: disable=unused-argument
 ) -> typing.AsyncGenerator[AsyncSession, None]:
     async_session = orm.sessionmaker(
         engine, class_=asyncio.AsyncSession, expire_on_commit=False
