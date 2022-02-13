@@ -177,6 +177,8 @@ pydantic[email]==1.9.0
     #   sqlmodel
 pyflakes==2.4.0
     # via flake8
+pyhumps==3.5.3
+    # via -r requirements.in
 pyjwt==1.7.1
     # via fastapi-jwt-auth
 pylint==2.12.2

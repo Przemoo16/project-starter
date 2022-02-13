@@ -3,6 +3,7 @@ from unittest import mock
 import uuid
 
 import freezegun
+import pytest
 
 from app.models import helpers
 from app.utils import converters
@@ -27,3 +28,18 @@ def test_generate_fixed_uuid() -> None:
 
     assert generated_uuid == good_uuid4_1
     assert mocked_uuid4.call_count == 3
+
+
+@pytest.mark.parametrize(
+    "test_input,expected",
+    [
+        ("confirmed_email", "confirmedEmail"),
+        ("confirmation_email_key", "confirmationEmailKey"),
+        ("reset_password_key", "resetPasswordKey"),
+        ("password", "password"),
+    ],
+)
+def test_to_camel(test_input: str, expected: str) -> None:
+    camelized = helpers.to_camel(test_input)
+
+    assert camelized == expected

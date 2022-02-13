@@ -1,6 +1,8 @@
 import datetime
 import uuid
 
+import humps
+
 
 def get_utcnow() -> datetime.datetime:
     """
@@ -22,3 +24,7 @@ def generate_fixed_uuid() -> uuid.UUID:
     while val.hex[0] == "0":
         val = uuid.uuid4()
     return val
+
+
+def to_camel(text: str) -> str:
+    return humps.camelize(text)

@@ -11,6 +11,7 @@ orjson
 passlib[bcrypt]
 psycopg2-binary
 pydantic[email]
+pyhumps
 python-jose[cryptography]
 python-multipart
 redis
