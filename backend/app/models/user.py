@@ -40,13 +40,13 @@ class User(base.BaseModel, table=True):
 
 
 class UserCreate(base.BaseModel):
-    email: pydantic.EmailStr
-    password: str
+    email: UserEmail
+    password: UserPassword
 
 
 class UserRead(base.BaseModel):
     id: UserID
-    email: pydantic.EmailStr
+    email: UserEmail
 
 
 class UserUpdate(pydantic.BaseModel):
@@ -58,5 +58,5 @@ class UserUpdate(pydantic.BaseModel):
     https://github.com/tiangolo/sqlmodel/issues/87 is resolved.
     """
 
-    email: pydantic.EmailStr | None = None
-    password: str | None = None
+    email: UserEmail | None = None
+    password: UserPassword | None = None

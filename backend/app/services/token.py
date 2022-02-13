@@ -44,23 +44,24 @@ class TokenService(base.AppService):
     async def refresh_token(
         self, token: token_models.Token
     ) -> token_models.AccessToken:
+        token_context = {"token": token}
         try:
             decoded_token = decode_token(token)
         except jwt.JWTError as e:
             log.info("Invalid token: %r", token)
-            raise resource.UnprocessableEntityError({"token": token}) from e
+            raise resource.UnprocessableEntityError(token_context) from e
         if decoded_token["type"] != "refresh":
             log.info("Token %r is not a refresh token", token)
-            raise resource.UnprocessableEntityError({"token": token})
+            raise resource.UnprocessableEntityError(token_context)
         if check_if_token_in_denylist(decoded_token):
             log.info("Token %r is revoked", token)
-            raise resource.UnprocessableEntityError({"token": token})
+            raise resource.UnauthorizedError(token_context)
         user_id = decoded_token["sub"]
         try:
             user = await user_services.UserCRUD(self.session).read(id=user_id)
         except exc.NoResultFound as e:
             log.info("User with the ID %r not found", user_id)
-            raise resource.NotFoundError({"token": token}) from e
+            raise resource.NotFoundError(token_context) from e
         return token_models.AccessToken(  # nosec
             access_token=jwt_auth.AuthJWT().create_access_token(
                 str(user.id), fresh=False

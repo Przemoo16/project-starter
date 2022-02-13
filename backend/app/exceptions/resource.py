@@ -6,7 +6,7 @@ from app.exceptions import base
 class UnauthorizedError(base.ResourceException):
     def __init__(self, context: base.Context | None = None) -> None:
         status_code = status.HTTP_401_UNAUTHORIZED
-        detail = "Invalid credentials"
+        detail = "Not authenticated"
         headers = {"WWW-Authenticate": "Bearer"}
         super().__init__(status_code, detail, context, headers)
 

@@ -7,6 +7,7 @@ from fastapi_jwt_auth import exceptions as jwt_exceptions
 from starlette import exceptions as starlette_exceptions
 
 from app.exceptions import base
+from app.models import exception
 
 
 def init_handlers(app: fastapi.FastAPI) -> None:  # pragma: no cover
@@ -70,6 +71,6 @@ def resource_exception_handler(
 
 
 def _build_content(
-    detail: str, context: typing.Any | None = None
-) -> dict["str", typing.Any]:
-    return {"detail": detail, "context": context}
+    detail: str, context: exception.ExceptionContext = None
+) -> dict[str, typing.Any]:
+    return exception.ExceptionContent(detail=detail, context=context).dict()
