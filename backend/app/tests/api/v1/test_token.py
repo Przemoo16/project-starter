@@ -30,9 +30,9 @@ async def test_obtain_tokens(
     tokens = response.json()
 
     assert response.status_code == status.HTTP_200_OK
-    assert "access_token" in tokens
-    assert "refresh_token" in tokens
-    assert tokens["token_type"] == "bearer"
+    assert "accessToken" in tokens
+    assert "refreshToken" in tokens
+    assert tokens["tokenType"] == "bearer"
 
 
 @pytest.mark.asyncio
@@ -49,8 +49,8 @@ async def test_refresh_token(
     token = response.json()
 
     assert response.status_code == status.HTTP_200_OK
-    assert "access_token" in token
-    assert token["token_type"] == "bearer"
+    assert "accessToken" in token
+    assert token["tokenType"] == "bearer"
 
 
 @pytest.mark.asyncio
