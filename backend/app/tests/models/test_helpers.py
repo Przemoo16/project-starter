@@ -36,6 +36,7 @@ def test_generate_fixed_uuid() -> None:
         ("confirmed_email", "confirmedEmail"),
         ("confirmation_email_key", "confirmationEmailKey"),
         ("reset_password_key", "resetPasswordKey"),
+        ("LastUserLogin", "lastUserLogin"),
         ("password", "password"),
     ],
 )
@@ -43,3 +44,15 @@ def test_to_camel(test_input: str, expected: str) -> None:
     camelized = helpers.to_camel(test_input)
 
     assert camelized == expected
+
+
+def test_orjson_dumps() -> None:
+    data = {
+        "id": 123,
+        "name": "Przemo",
+        "date": datetime.datetime(2023, 2, 1, 16, 0, 0),
+    }
+
+    serialized = helpers.orjson_dumps(data, default=None)
+
+    assert serialized == '{"id":123,"name":"Przemo","date":"2023-02-01T16:00:00Z"}'

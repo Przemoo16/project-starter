@@ -1,7 +1,9 @@
 import datetime
+import typing
 import uuid
 
 import humps
+import orjson
 
 
 def get_utcnow() -> datetime.datetime:
@@ -28,3 +30,11 @@ def generate_fixed_uuid() -> uuid.UUID:
 
 def to_camel(text: str) -> str:
     return humps.camelize(text)
+
+
+def orjson_dumps(
+    data: typing.Any, *, default: typing.Callable[[typing.Any], typing.Any] | None
+) -> str:
+    return orjson.dumps(
+        data, default=default, option=orjson.OPT_NAIVE_UTC | orjson.OPT_UTC_Z
+    ).decode()

@@ -60,3 +60,7 @@ class UserUpdate(pydantic.BaseModel):
 
     email: UserEmail | None = None
     password: UserPassword | None = None
+
+    class Config:
+        alias_generator = helpers.to_camel
+        allow_population_by_field_name = True
