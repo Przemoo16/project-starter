@@ -32,7 +32,7 @@ class HTTPException(fastapi.HTTPException):
                         "example": {
                             "case": self.case,
                             "detail": self.detail,
-                            "context": {},
+                            "context": self.context or {},
                         },
                     }
                 },
