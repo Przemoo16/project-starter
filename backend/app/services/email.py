@@ -5,7 +5,7 @@ import ssl
 import typing
 
 from app.config import general
-from app.exceptions import email as email_exceptions
+from app.exceptions.app import email as email_exceptions
 from app.utils import jinja, translation
 
 log = logging.getLogger(__name__)

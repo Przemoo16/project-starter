@@ -6,7 +6,7 @@ from fastapi_jwt_auth import exceptions
 import pytest
 
 from app.api.deps import user as user_deps
-from app.exceptions import resource
+from app.exceptions.http import user as user_exceptions
 from app.tests.helpers import auth as auth_helpers
 from app.tests.helpers import user as user_helpers
 from app.utils import converters
@@ -42,7 +42,7 @@ async def test_get_current_user_empty_jwt_subject(
 ) -> None:
     auth_handler = jwt_auth.AuthJWT()
 
-    with pytest.raises(resource.UnauthorizedError):
+    with pytest.raises(user_exceptions.UnauthorizedUserError):
         await user_deps.get_current_user(session, auth_handler)
 
 
@@ -51,8 +51,9 @@ async def test_get_current_user_not_found(session: "conftest.AsyncSession") -> N
     user_id = converters.change_to_uuid("0dd53909-fcda-4c72-afcd-1bf4886389f8")
     auth_handler = auth_helpers.create_auth_handler(user_id)
 
-    with pytest.raises(resource.UnauthorizedError):
+    with pytest.raises(user_exceptions.UnauthorizedUserError) as exc_info:
         await user_deps.get_current_user(session, auth_handler)
+    assert exc_info.value.context == {"id": str(user_id)}
 
 
 @pytest.mark.asyncio
@@ -77,9 +78,9 @@ async def test_get_current_active_user_inactive(
         session=session, email="test@email.com", password="hashed_password"
     )
 
-    with pytest.raises(resource.ForbiddenError) as exc_info:
+    with pytest.raises(user_exceptions.InactiveUserError) as exc_info:
         await user_deps.get_current_active_user(user)
-    assert exc_info.value.context == {"user": user.email}
+    assert exc_info.value.context == {"id": user.id}
 
 
 @pytest.mark.asyncio
@@ -106,6 +107,6 @@ async def test_check_user_requests_own_data_foreign_data(
         confirmed_email=True,
     )
 
-    with pytest.raises(resource.ForbiddenError) as exc_info:
+    with pytest.raises(user_exceptions.UserForbiddenError) as exc_info:
         await user_deps.check_user_requests_own_data(user_id, user)
     assert exc_info.value.context == {"id": user_id}

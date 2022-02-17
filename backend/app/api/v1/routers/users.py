@@ -5,7 +5,7 @@ from fastapi import status
 
 from app.api.deps import user as user_deps
 from app.config import db, general
-from app.exceptions import resource
+from app.exceptions.http import user as user_exceptions
 from app.models import message
 from app.models import user as user_models
 from app.services import user as user_services
@@ -19,7 +19,7 @@ router = fastapi.APIRouter()
     "/",
     response_model=user_models.UserRead,
     status_code=status.HTTP_201_CREATED,
-    responses={**resource.ConflictError().doc},
+    responses={**user_exceptions.UserAlreadyExistsError().doc},
 )
 async def create_user(
     user: user_models.UserCreate,
@@ -33,9 +33,10 @@ async def create_user(
     response_model=user_models.UserRead,
     dependencies=[fastapi.Depends(user_deps.check_user_requests_own_data)],
     responses={
-        **resource.UnauthorizedError().doc,
-        **resource.ForbiddenError().doc,
-        **resource.NotFoundError().doc,
+        **user_exceptions.UnauthorizedUserError().doc,
+        **user_exceptions.InactiveUserError().doc,
+        **user_exceptions.UserForbiddenError().doc,
+        **user_exceptions.UserNotFoundError().doc,
     },
 )
 async def get_user(
@@ -50,9 +51,10 @@ async def get_user(
     response_model=user_models.UserRead,
     dependencies=[fastapi.Depends(user_deps.check_user_requests_own_data)],
     responses={
-        **resource.UnauthorizedError().doc,
-        **resource.ForbiddenError().doc,
-        **resource.NotFoundError().doc,
+        **user_exceptions.UnauthorizedUserError().doc,
+        **user_exceptions.InactiveUserError().doc,
+        **user_exceptions.UserForbiddenError().doc,
+        **user_exceptions.UserNotFoundError().doc,
     },
 )
 async def update_user(
@@ -68,9 +70,10 @@ async def update_user(
     status_code=status.HTTP_204_NO_CONTENT,
     dependencies=[fastapi.Depends(user_deps.check_user_requests_own_data)],
     responses={
-        **resource.UnauthorizedError().doc,
-        **resource.ForbiddenError().doc,
-        **resource.NotFoundError().doc,
+        **user_exceptions.UnauthorizedUserError().doc,
+        **user_exceptions.InactiveUserError().doc,
+        **user_exceptions.UserForbiddenError().doc,
+        **user_exceptions.UserNotFoundError().doc,
     },
 )
 async def delete_user(
@@ -83,7 +86,7 @@ async def delete_user(
 @router.post(
     "/email-confirmation",
     status_code=status.HTTP_204_NO_CONTENT,
-    responses={**resource.NotFoundError().doc},
+    responses={**user_exceptions.UserNotFoundError().doc},
 )
 async def confirm_email(
     key: user_models.UserConfirmationEmailKey = fastapi.Body(..., embed=True),
@@ -112,7 +115,7 @@ async def request_reset_password(
 @router.post(
     "/password/reset",
     status_code=status.HTTP_204_NO_CONTENT,
-    responses={**resource.NotFoundError().doc},
+    responses={**user_exceptions.UserNotFoundError().doc},
 )
 async def reset_password(
     key: user_models.UserResetPasswordKey = fastapi.Body(..., embed=True),

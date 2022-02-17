@@ -8,7 +8,8 @@ from jose import jwt
 import pytest
 
 from app.config import general
-from app.exceptions import resource
+from app.exceptions.http import token as token_exceptions
+from app.exceptions.http import user as user_exceptions
 from app.services import token as token_services
 from app.tests.helpers import token as token_helpers
 from app.tests.helpers import user as user_helpers
@@ -47,11 +48,10 @@ async def test_token_service_obtain_tokens_no_user(
 ) -> None:
     email = "test@email.com"
 
-    with pytest.raises(resource.UnauthorizedError) as exc_info:
+    with pytest.raises(user_exceptions.UnauthorizedUserError):
         await token_services.TokenService(session).obtain_tokens(
             email=email, password="plain_password"
         )
-    assert exc_info.value.context == {"email": email}
 
 
 @pytest.mark.asyncio
@@ -64,11 +64,10 @@ async def test_token_service_obtain_tokens_invalid_password(
         password="$2b$12$q8JcpltDZkSLOdMuPyt/jORzExLKp9HsKgCoFJQ1IzzITc2/Pg42q",
     )
 
-    with pytest.raises(resource.UnauthorizedError) as exc_info:
+    with pytest.raises(user_exceptions.UnauthorizedUserError):
         await token_services.TokenService(session).obtain_tokens(
             email=user.email, password="invalid_password"
         )
-    assert exc_info.value.context == {"email": user.email}
 
 
 @pytest.mark.asyncio
@@ -91,7 +90,7 @@ async def test_token_service_refresh_token_invalid(
 ) -> None:
     token = "invalid_token"
 
-    with pytest.raises(resource.UnprocessableEntityError) as exc_info:
+    with pytest.raises(token_exceptions.InvalidTokenError) as exc_info:
         await token_services.TokenService(session).refresh_token(token=token)
     assert exc_info.value.context == {"token": token}
 
@@ -103,7 +102,7 @@ async def test_token_service_refresh_no_refresh_type(
     user_id = "0dd53909-fcda-4c72-afcd-1bf4886389f8"
     token = jwt_auth.AuthJWT().create_access_token(user_id)
 
-    with pytest.raises(resource.UnprocessableEntityError) as exc_info:
+    with pytest.raises(token_exceptions.RefreshTokenRequiredError) as exc_info:
         await token_services.TokenService(session).refresh_token(token=token)
     assert exc_info.value.context == {"token": token}
 
@@ -116,7 +115,7 @@ async def test_token_service_refresh_revoked_token(
     user_id = "0dd53909-fcda-4c72-afcd-1bf4886389f8"
     token = jwt_auth.AuthJWT().create_refresh_token(user_id)
 
-    with pytest.raises(resource.UnauthorizedError) as exc_info:
+    with pytest.raises(token_exceptions.RevokedTokenError) as exc_info:
         await token_services.TokenService(session).refresh_token(token=token)
     assert exc_info.value.context == {"token": token}
 
@@ -128,9 +127,9 @@ async def test_token_service_refresh_token_no_user(
     user_id = "0dd53909-fcda-4c72-afcd-1bf4886389f8"
     token = jwt_auth.AuthJWT().create_refresh_token(user_id)
 
-    with pytest.raises(resource.NotFoundError) as exc_info:
+    with pytest.raises(user_exceptions.UserNotFoundError) as exc_info:
         await token_services.TokenService(session).refresh_token(token=token)
-    assert exc_info.value.context == {"token": token}
+    assert exc_info.value.context == {"id": user_id}
 
 
 @mock.patch("app.services.token.jwt_db.setex")
@@ -151,7 +150,7 @@ def test_token_service_revoke_token_already_expired(
     with freezegun.freeze_time("2021-02-05 13:30:00"):
         token = jwt_auth.AuthJWT().create_access_token("dummy_id")
 
-    with pytest.raises(resource.UnprocessableEntityError) as exc_info:
+    with pytest.raises(token_exceptions.InvalidTokenError) as exc_info:
         token_services.TokenService(session).revoke_token(token=token)
     assert exc_info.value.context == {"token": token}
 
@@ -159,7 +158,7 @@ def test_token_service_revoke_token_already_expired(
 def test_token_service_revoke_token_invalid(session: "conftest.AsyncSession") -> None:
     token = "invalid_token"
 
-    with pytest.raises(resource.UnprocessableEntityError) as exc_info:
+    with pytest.raises(token_exceptions.InvalidTokenError) as exc_info:
         token_services.TokenService(session).revoke_token(token=token)
     assert exc_info.value.context == {"token": token}
 
