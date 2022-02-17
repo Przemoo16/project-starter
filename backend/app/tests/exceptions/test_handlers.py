@@ -6,20 +6,25 @@ import orjson
 from pydantic import error_wrappers, errors
 from starlette import exceptions as starlette_exceptions
 
-from app.exceptions import base, handlers
+from app.exceptions import handlers
+from app.exceptions.http import base
 
 
-def test_http_exception_handler() -> None:
+def test_starlette_http_exception_handler() -> None:
     status_code = status.HTTP_400_BAD_REQUEST
     detail = "Bad Request"
     exception = starlette_exceptions.HTTPException(status_code, detail)
 
-    response = handlers.http_exception_handler(
+    response = handlers.starlette_http_exception_handler(
         fastapi.Request(scope={"type": "http"}), exception
     )
 
     assert response.status_code == status_code
-    assert orjson.loads(response.body) == {"detail": detail, "context": None}
+    assert orjson.loads(response.body) == {
+        "case": "HTTPException",
+        "detail": detail,
+        "context": None,
+    }
 
 
 def test_request_validation_exception_handler() -> None:
@@ -36,6 +41,7 @@ def test_request_validation_exception_handler() -> None:
 
     assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
     assert orjson.loads(response.body) == {
+        "case": "RequestValidationError",
         "detail": "Invalid data",
         "context": deserialized_errors,
     }
@@ -51,18 +57,28 @@ def test_authjwt_exception_handler() -> None:
     )
 
     assert response.status_code == status_code
-    assert orjson.loads(response.body) == {"detail": detail, "context": None}
+    assert orjson.loads(response.body) == {
+        "case": "AccessTokenRequired",
+        "detail": detail,
+        "context": None,
+    }
 
 
-def test_resource_exception_handler() -> None:
+def test_app_http_exception_handler() -> None:
     status_code = status.HTTP_404_NOT_FOUND
-    detail = "Resource not found"
+    detail = "User not found"
     context = {"email": "test@email.com"}
-    exception = base.ResourceException(status_code, detail, context)
+    exception = base.HTTPException(
+        status_code=status_code, detail=detail, context=context
+    )
 
-    response = handlers.resource_exception_handler(
+    response = handlers.app_http_exception_handler(
         fastapi.Request(scope={"type": "http"}), exception
     )
 
     assert response.status_code == status_code
-    assert orjson.loads(response.body) == {"detail": detail, "context": context}
+    assert orjson.loads(response.body) == {
+        "case": "HTTPException",
+        "detail": detail,
+        "context": context,
+    }

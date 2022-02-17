@@ -1,4 +1,4 @@
-from app.exceptions import base
+from app.exceptions.app import base
 
 
 class SendingEmailError(base.AppException):

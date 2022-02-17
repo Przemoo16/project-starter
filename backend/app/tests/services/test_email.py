@@ -4,7 +4,7 @@ from unittest import mock
 import jinja2
 import pytest
 
-from app.exceptions import email as email_exceptions
+from app.exceptions.app import email as email_exceptions
 from app.services import email as email_services
 
 TEMPLATE_HTML = """

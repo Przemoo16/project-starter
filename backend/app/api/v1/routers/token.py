@@ -4,7 +4,8 @@ import fastapi
 from fastapi import security, status
 
 from app.config import db, general
-from app.exceptions import resource
+from app.exceptions.http import token as token_exceptions
+from app.exceptions.http import user as user_exceptions
 from app.models import token as token_models
 from app.services import token as token_services
 
@@ -16,7 +17,7 @@ router = fastapi.APIRouter()
 @router.post(
     "/",
     response_model=token_models.Tokens,
-    responses={**resource.UnauthorizedError().doc},
+    responses={**user_exceptions.UnauthorizedUserError().doc},
 )
 async def obtain_tokens(
     form_data: security.OAuth2PasswordRequestForm = fastapi.Depends(),
@@ -31,9 +32,11 @@ async def obtain_tokens(
     "/refresh",
     response_model=token_models.AccessToken,
     responses={
-        **resource.UnauthorizedError().doc,
-        **resource.NotFoundError().doc,
-        **resource.UnprocessableEntityError().doc,
+        **user_exceptions.UnauthorizedUserError().doc,
+        **user_exceptions.UserNotFoundError().doc,
+        **token_exceptions.InvalidTokenError().doc,
+        **token_exceptions.RefreshTokenRequiredError().doc,
+        **token_exceptions.RevokedTokenError().doc,
     },
 )
 async def refresh_token(
@@ -46,7 +49,7 @@ async def refresh_token(
 @router.post(
     "/revoke",
     status_code=status.HTTP_204_NO_CONTENT,
-    responses={**resource.UnprocessableEntityError().doc},
+    responses={**token_exceptions.InvalidTokenError().doc},
 )
 async def revoke_token(
     token: token_models.Token = fastapi.Body(..., embed=True),

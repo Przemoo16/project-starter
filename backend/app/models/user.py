@@ -6,6 +6,7 @@ import pydantic
 import sqlmodel
 
 from app.models import base, helpers
+from app.utils import converters
 
 UserID: typing.TypeAlias = uuid.UUID
 UserEmail: typing.TypeAlias = pydantic.EmailStr
@@ -62,5 +63,5 @@ class UserUpdate(pydantic.BaseModel):
     password: UserPassword | None = None
 
     class Config:
-        alias_generator = helpers.to_camel
+        alias_generator = converters.to_camel
         allow_population_by_field_name = True

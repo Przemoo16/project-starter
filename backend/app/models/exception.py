@@ -6,5 +6,6 @@ ExceptionContext: typing.TypeAlias = dict[str, typing.Any] | list[typing.Any] | 
 
 
 class ExceptionContent(base.BaseModel):
+    case: str
     detail: str
     context: ExceptionContext

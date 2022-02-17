@@ -2,7 +2,6 @@ import datetime
 import typing
 import uuid
 
-import humps
 import orjson
 
 
@@ -26,10 +25,6 @@ def generate_fixed_uuid() -> uuid.UUID:
     while val.hex[0] == "0":
         val = uuid.uuid4()
     return val
-
-
-def to_camel(text: str) -> str:
-    return humps.camelize(text)
 
 
 def orjson_dumps(

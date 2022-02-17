@@ -8,6 +8,8 @@ if typing.TYPE_CHECKING:
 
 Schema: typing.TypeAlias = dict[str, typing.Any]
 
+ValidationErrorDetail = "Invalid data"
+
 
 def generate_openapi_schema(app: "fastapi.FastAPI") -> typing.Callable[[], Schema]:
     def generate_schema() -> Schema:  # pragma: no cover
@@ -17,12 +19,17 @@ def generate_openapi_schema(app: "fastapi.FastAPI") -> typing.Callable[[], Schem
             "title": "HTTPValidationError",
             "type": "object",
             "properties": {
-                "detail": {
-                    "title": "Context",
+                "case": {
+                    "title": "Case",
                     "type": "string",
                 },
-                "context": {
+                "detail": {
                     "title": "Detail",
+                    "type": "string",
+                    "enum": [ValidationErrorDetail],
+                },
+                "context": {
+                    "title": "Context",
                     "type": "array",
                     "items": {"$ref": "#/components/schemas/ValidationError"},
                 },

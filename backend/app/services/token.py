@@ -7,7 +7,8 @@ from jose import jwt
 from sqlalchemy import exc
 
 from app.config import db, general
-from app.exceptions import resource
+from app.exceptions.http import token as token_exceptions
+from app.exceptions.http import user as user_exceptions
 from app.models import token as token_models
 from app.services import auth, base
 from app.services import user as user_services
@@ -21,7 +22,7 @@ jwt_db = db.get_jwt_db()
 class TokenService(base.AppService):
     async def obtain_tokens(self, email: str, password: str) -> token_models.Tokens:
         user_crud_service = user_services.UserCRUD(self.session)
-        unauthorized_exception = resource.UnauthorizedError({"email": email})
+        unauthorized_exception = user_exceptions.UnauthorizedUserError()
         try:
             user_db = await user_crud_service.read(email=email)
         except exc.NoResultFound as e:
@@ -48,20 +49,16 @@ class TokenService(base.AppService):
         try:
             decoded_token = decode_token(token)
         except jwt.JWTError as e:
-            log.info("Invalid token: %r", token)
-            raise resource.UnprocessableEntityError(token_context) from e
+            raise token_exceptions.InvalidTokenError(context=token_context) from e
         if decoded_token["type"] != "refresh":
-            log.info("Token %r is not a refresh token", token)
-            raise resource.UnprocessableEntityError(token_context)
+            raise token_exceptions.RefreshTokenRequiredError(context=token_context)
         if check_if_token_in_denylist(decoded_token):
-            log.info("Token %r is revoked", token)
-            raise resource.UnauthorizedError(token_context)
+            raise token_exceptions.RevokedTokenError(context=token_context)
         user_id = decoded_token["sub"]
         try:
             user = await user_services.UserCRUD(self.session).read(id=user_id)
         except exc.NoResultFound as e:
-            log.info("User with the ID %r not found", user_id)
-            raise resource.NotFoundError(token_context) from e
+            raise user_exceptions.UserNotFoundError(context={"id": user_id}) from e
         return token_models.AccessToken(  # nosec
             access_token=jwt_auth.AuthJWT().create_access_token(
                 str(user.id), fresh=False
@@ -74,8 +71,7 @@ class TokenService(base.AppService):
         try:
             decoded_token = decode_token(token)
         except jwt.JWTError as e:
-            log.info("Invalid token: %r", token)
-            raise resource.UnprocessableEntityError({"token": token}) from e
+            raise token_exceptions.InvalidTokenError(context={"token": token}) from e
         jti = decoded_token["jti"]
         if not (expiration := decoded_token.get("exp")):
             jwt_db.set(jti, "true")
