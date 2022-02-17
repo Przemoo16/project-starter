@@ -2,13 +2,13 @@ import typing
 
 from fastapi.openapi import utils
 
+from app.exceptions import handlers
+
 if typing.TYPE_CHECKING:
     import fastapi
 
 
 Schema: typing.TypeAlias = dict[str, typing.Any]
-
-ValidationErrorDetail = "Invalid data"
 
 
 def generate_openapi_schema(app: "fastapi.FastAPI") -> typing.Callable[[], Schema]:
@@ -26,7 +26,7 @@ def generate_openapi_schema(app: "fastapi.FastAPI") -> typing.Callable[[], Schem
                 "detail": {
                     "title": "Detail",
                     "type": "string",
-                    "enum": [ValidationErrorDetail],
+                    "enum": [handlers.ValidationErrorDetail],
                 },
                 "context": {
                     "title": "Context",

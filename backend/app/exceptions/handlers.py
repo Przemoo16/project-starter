@@ -8,7 +8,8 @@ from starlette import exceptions as starlette_exceptions
 
 from app.exceptions.http import base
 from app.models import exception
-from app.utils import openapi
+
+ValidationErrorDetail = "Invalid data"
 
 
 def init_handlers(app: fastapi.FastAPI) -> None:  # pragma: no cover
@@ -53,7 +54,7 @@ def request_validation_exception_handler(
         status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
         content=_build_content(
             case=exc.__class__.__name__,
-            detail=openapi.ValidationErrorDetail,
+            detail=ValidationErrorDetail,
             context=exc.errors(),
         ),
     )
