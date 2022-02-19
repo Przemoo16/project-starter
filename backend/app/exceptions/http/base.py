@@ -8,7 +8,8 @@ Detail: typing.TypeAlias = str | None
 Context: typing.TypeAlias = dict[str, typing.Any] | None
 
 
-class HTTPException(fastapi.HTTPException):
+# Multiple inheritance to surpass the pylint bad-exception-context error
+class HTTPException(fastapi.HTTPException, Exception):
     def __init__(
         self,
         status_code: int,

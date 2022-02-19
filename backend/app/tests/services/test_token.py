@@ -13,6 +13,7 @@ from app.exceptions.http import user as user_exceptions
 from app.services import token as token_services
 from app.tests.helpers import token as token_helpers
 from app.tests.helpers import user as user_helpers
+from app.utils import converters
 
 if typing.TYPE_CHECKING:
     from app.tests import conftest
@@ -129,7 +130,7 @@ async def test_token_service_refresh_token_no_user(
 
     with pytest.raises(user_exceptions.UserNotFoundError) as exc_info:
         await token_services.TokenService(session).refresh_token(token=token)
-    assert exc_info.value.context == {"id": user_id}
+    assert exc_info.value.context == {"id": converters.change_to_uuid(user_id)}
 
 
 @mock.patch("app.services.token.jwt_db.setex")

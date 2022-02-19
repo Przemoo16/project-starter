@@ -17,7 +17,7 @@ router = fastapi.APIRouter()
 
 @router.post(
     "/",
-    response_model=user_models.UserRead,
+    response_model=user_models.UserOutput,
     status_code=status.HTTP_201_CREATED,
     responses={**user_exceptions.UserAlreadyExistsError().doc},
 )
@@ -30,7 +30,7 @@ async def create_user(
 
 @router.get(
     "/{user_id}",
-    response_model=user_models.UserRead,
+    response_model=user_models.UserOutput,
     dependencies=[fastapi.Depends(user_deps.check_user_requests_own_data)],
     responses={
         **user_exceptions.UnauthorizedUserError().doc,
@@ -43,12 +43,13 @@ async def get_user(
     user_id: user_models.UserID,
     session: db.AsyncSession = fastapi.Depends(db.get_session),
 ) -> typing.Any:
-    return await user_services.UserService(session).get_user(user_id)
+    user_read = user_models.UserRead(id=user_id)
+    return await user_services.UserService(session).get_user(user_read)
 
 
 @router.patch(
     "/{user_id}",
-    response_model=user_models.UserRead,
+    response_model=user_models.UserOutput,
     dependencies=[fastapi.Depends(user_deps.check_user_requests_own_data)],
     responses={
         **user_exceptions.UnauthorizedUserError().doc,
@@ -59,10 +60,11 @@ async def get_user(
 )
 async def update_user(
     user_id: user_models.UserID,
-    user: user_models.UserUpdate,
+    user: user_models.UserUpdateAPI,
     session: db.AsyncSession = fastapi.Depends(db.get_session),
 ) -> typing.Any:
-    return await user_services.UserService(session).update_user(user_id, user)
+    user_update = user_models.UserUpdate(**user.dict(exclude_unset=True))
+    return await user_services.UserService(session).update_user(user_id, user_update)
 
 
 @router.delete(
