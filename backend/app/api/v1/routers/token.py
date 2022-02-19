@@ -32,7 +32,6 @@ async def obtain_tokens(
     "/refresh",
     response_model=token_models.AccessToken,
     responses={
-        **user_exceptions.UnauthorizedUserError().doc,
         **user_exceptions.UserNotFoundError().doc,
         **token_exceptions.InvalidTokenError().doc,
         **token_exceptions.RefreshTokenRequiredError().doc,
