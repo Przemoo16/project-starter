@@ -82,7 +82,7 @@ async def delete_user(
     user_id: user_models.UserID,
     session: db.AsyncSession = fastapi.Depends(db.get_session),
 ) -> typing.Any:
-    return await user_services.UserService(session).delete_user(user_id)
+    await user_services.UserService(session).delete_user(user_id)
 
 
 @router.post(

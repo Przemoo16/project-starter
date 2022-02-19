@@ -58,7 +58,7 @@ class UserService(base.AppService):
             user_db = await user_crud_service.read(user_read)
         except exc.NoResultFound as e:
             raise user_exceptions.UserNotFoundError(context={"id": user_id}) from e
-        return await user_crud_service.delete(user_db)
+        await user_crud_service.delete(user_db)
 
     async def confirm_email(self, key: user_models.UserConfirmationEmailKey) -> None:
         not_found_exception = user_exceptions.UserNotFoundError(context={"key": key})
