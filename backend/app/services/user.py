@@ -1,6 +1,5 @@
 import datetime
 import logging
-import typing
 
 from sqlalchemy import exc
 import sqlmodel
@@ -32,11 +31,12 @@ class UserService(base.AppService):
         log.info("The task to send email to confirm email has been invoked")
         return user_db
 
-    async def get_user(self, user_id: user_models.UserID) -> user_models.User:
+    async def get_user(self, user: user_models.UserRead) -> user_models.User:
         try:
-            return await UserCRUD(self.session).read(id=user_id)
+            return await UserCRUD(self.session).read(user)
         except exc.NoResultFound as e:
-            raise user_exceptions.UserNotFoundError(context={"id": user_id}) from e
+            user_data = user.dict(exclude_unset=True)
+            raise user_exceptions.UserNotFoundError(context=user_data) from e
 
     async def update_user(
         self, user_id: user_models.UserID, user: user_models.UserUpdate
@@ -44,35 +44,39 @@ class UserService(base.AppService):
         user_crud_service = UserCRUD(self.session)
         if user.password:
             user.password = auth.hash_password(user.password)
+        user_read = user_models.UserRead(id=user_id)
         try:
-            user_db = await user_crud_service.read(id=user_id)
+            user_db = await user_crud_service.read(user_read)
         except exc.NoResultFound as e:
             raise user_exceptions.UserNotFoundError(context={"id": user_id}) from e
-        user_data = user.dict(exclude_unset=True)
-        return await user_crud_service.update(user_db, **user_data)
+        return await user_crud_service.update(user_db, user)
 
     async def delete_user(self, user_id: user_models.UserID) -> None:
         user_crud_service = UserCRUD(self.session)
+        user_read = user_models.UserRead(id=user_id)
         try:
-            user_db = await user_crud_service.read(id=user_id)
+            user_db = await user_crud_service.read(user_read)
         except exc.NoResultFound as e:
             raise user_exceptions.UserNotFoundError(context={"id": user_id}) from e
         return await user_crud_service.delete(user_db)
 
     async def confirm_email(self, key: user_models.UserConfirmationEmailKey) -> None:
         not_found_exception = user_exceptions.UserNotFoundError(context={"key": key})
+        user_read = user_models.UserRead(confirmation_email_key=key)
         try:
-            user_db = await UserCRUD(self.session).read(confirmation_email_key=key)
+            user_db = await UserCRUD(self.session).read(user_read)
         except exc.NoResultFound as e:
             raise not_found_exception from e
         if not can_confirm_email(user_db):
             raise not_found_exception
-        await UserCRUD(self.session).update(user_db, confirmed_email=True)
+        user_update = user_models.UserUpdate(confirmed_email=True)
+        await UserCRUD(self.session).update(user_db, user_update)
         log.info("Email has been confirmed")
 
-    async def request_reset_password(self, email: user_models.UserEmail) -> None:
+    async def request_reset_password(self, email: user_models.UserEmail | str) -> None:
+        user_read = user_models.UserRead(email=email)
         try:
-            user_db = await UserCRUD(self.session).read(email=email)
+            user_db = await UserCRUD(self.session).read(user_read)
         except exc.NoResultFound:
             log.info("Message has not been sent because user not found")
             return
@@ -86,15 +90,16 @@ class UserService(base.AppService):
         key: user_models.UserResetPasswordKey,
         password: user_models.UserPassword,
     ) -> None:
+        user_read = user_models.UserRead(reset_password_key=key)
         try:
-            user_db = await UserCRUD(self.session).read(reset_password_key=key)
+            user_db = await UserCRUD(self.session).read(user_read)
         except exc.NoResultFound as e:
             raise user_exceptions.UserNotFoundError(context={"key": key}) from e
-        await UserCRUD(self.session).update(
-            user_db,
+        user_update = user_models.UserUpdate(
             password=auth.hash_password(password),
             reset_password_key=helpers.generate_fixed_uuid(),
         )
+        await UserCRUD(self.session).update(user_db, user_update)
 
 
 def can_confirm_email(user: user_models.User) -> bool:
@@ -115,9 +120,10 @@ class UserCRUD(base.AppCRUD):
         db_user = user_models.User.from_orm(user)
         return await self.save(db_user)
 
-    async def read(self, **kwargs: typing.Any) -> user_models.User:
+    async def read(self, user: user_models.UserRead) -> user_models.User:
+        user_data = user.dict(exclude_unset=True)
         read_statement = sqlmodel.select(user_models.User)
-        for attr, value in kwargs.items():
+        for attr, value in user_data.items():
             read_statement = read_statement.where(
                 getattr(user_models.User, attr) == value
             )
@@ -125,9 +131,10 @@ class UserCRUD(base.AppCRUD):
         return result.scalar_one()
 
     async def update(
-        self, user: user_models.User, **kwargs: typing.Any
+        self, user: user_models.User, user_update: user_models.UserUpdate
     ) -> user_models.User:
-        for key, value in kwargs.items():
+        user_data = user_update.dict(exclude_unset=True)
+        for key, value in user_data.items():
             setattr(user, key, value)
         return await self.save(user)
 

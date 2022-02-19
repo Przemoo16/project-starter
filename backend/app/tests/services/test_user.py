@@ -58,8 +58,9 @@ async def test_user_service_get_user(session: "conftest.AsyncSession") -> None:
     user = await user_helpers.create_user(
         session=session, email="test@email.com", password="hashed_password"
     )
+    user_read = user_models.UserRead(id=user.id, email=user.email)
 
-    retrieved_user = await user_services.UserService(session).get_user(user.id)
+    retrieved_user = await user_services.UserService(session).get_user(user_read)
 
     assert retrieved_user == user
 
@@ -68,25 +69,33 @@ async def test_user_service_get_user(session: "conftest.AsyncSession") -> None:
 async def test_user_service_get_user_not_found(
     session: "conftest.AsyncSession",
 ) -> None:
-    user_id = converters.change_to_uuid("0dd53909-fcda-4c72-afcd-1bf4886389f8")
+    wrong_email = "invalid@email.com"
+    user = await user_helpers.create_user(
+        session=session, email="test@email.com", password="hashed_password"
+    )
+    user_read = user_models.UserRead(id=user.id, email=wrong_email)
 
     with pytest.raises(user_exceptions.UserNotFoundError) as exc_info:
-        await user_services.UserService(session).get_user(user_id)
-    assert exc_info.value.context == {"id": user_id}
+        await user_services.UserService(session).get_user(user_read)
+    assert exc_info.value.context == {"id": user.id, "email": wrong_email}
 
 
 @pytest.mark.asyncio
 async def test_user_service_update_user(session: "conftest.AsyncSession") -> None:
     user = await user_helpers.create_user(
-        session=session, email="test@email.com", password="hashed_password"
+        session=session,
+        email="test@email.com",
+        password="hashed_password",
+        confirmed_email=False,
     )
-    user_update = user_models.UserUpdate(email="new@email.com")
+    user_update = user_models.UserUpdate(email="new@email.com", confirmed_email=True)
 
     updated_user = await user_services.UserService(session).update_user(
         user.id, user_update
     )
 
     assert updated_user.email == user_update.email
+    assert updated_user.confirmed_email is True
     assert updated_user.password == user.password
 
 
@@ -292,10 +301,11 @@ async def test_user_crud_read(session: "conftest.AsyncSession") -> None:
         password="hashed_password",
         confirmed_email=False,
     )
-
-    retrieved_user = await user_services.UserCRUD(session).read(
+    user_read = user_models.UserRead(
         id=user_2.id, email=user_2.email, confirmed_email=False
     )
+
+    retrieved_user = await user_services.UserCRUD(session).read(user_read)
 
     assert retrieved_user == user_2
 
@@ -303,19 +313,25 @@ async def test_user_crud_read(session: "conftest.AsyncSession") -> None:
 @pytest.mark.asyncio
 async def test_user_crud_update(session: "conftest.AsyncSession") -> None:
     user = await user_helpers.create_user(
-        session=session, email="test@email.com", password="hashed_password"
+        session=session,
+        email="test@email.com",
+        password="hashed_password",
+        confirmed=False,
     )
     new_email = "new@email.com"
     read_statement = sqlmodel.select(user_models.User).where(
         user_models.User.email == new_email
     )
+    user_update = user_models.UserUpdate(email=new_email, confirmed_email=True)
 
-    updated_user = await user_services.UserCRUD(session).update(user, email=new_email)
+    updated_user = await user_services.UserCRUD(session).update(user, user_update)
 
     assert updated_user.email == new_email
+    assert updated_user.confirmed_email is True
     assert updated_user.password == user.password
     db_user = (await session.execute(read_statement)).scalar_one()
     assert db_user.email == new_email
+    assert db_user.confirmed_email is True
 
 
 @pytest.mark.asyncio

@@ -6,13 +6,14 @@ import pydantic
 import sqlmodel
 
 from app.models import base, helpers
-from app.utils import converters
 
 UserID: typing.TypeAlias = uuid.UUID
 UserEmail: typing.TypeAlias = pydantic.EmailStr
 UserPassword: typing.TypeAlias = str
+UserConfirmedEmail: typing.TypeAlias = bool
 UserConfirmationEmailKey: typing.TypeAlias = uuid.UUID
 UserResetPasswordKey: typing.TypeAlias = uuid.UUID
+UserLastLogin: typing.TypeAlias = datetime
 
 
 class User(base.BaseModel, table=True):
@@ -21,7 +22,7 @@ class User(base.BaseModel, table=True):
     )
     email: UserEmail = sqlmodel.Field(index=True, sa_column_kwargs={"unique": True})
     password: UserPassword
-    confirmed_email: bool = False
+    confirmed_email: UserConfirmedEmail = False
     confirmation_email_key: UserConfirmationEmailKey = sqlmodel.Field(
         default_factory=helpers.generate_fixed_uuid
     )
@@ -33,7 +34,7 @@ class User(base.BaseModel, table=True):
         default_factory=helpers.get_utcnow,
         sa_column_kwargs={"onupdate": helpers.get_utcnow},
     )
-    last_login: datetime | None = None
+    last_login: UserLastLogin | None = None
 
     @property
     def is_active(self) -> bool:
@@ -45,23 +46,24 @@ class UserCreate(base.BaseModel):
     password: UserPassword
 
 
-class UserRead(base.BaseModel):
-    id: UserID
-    email: UserEmail
+class UserRead(base.PydanticBaseModel):
+    id: UserID | None = None
+    email: UserEmail | None = None
+    confirmation_email_key: UserConfirmationEmailKey | None = None
+    reset_password_key: UserResetPasswordKey | None = None
 
 
-class UserUpdate(pydantic.BaseModel):
-    """
-    Pydantic model to update user.
-
-    Currently exclude_unset is not working with sqlmodel.SQLModel
-    #TODO: Change to base.BaseModel when
-    https://github.com/tiangolo/sqlmodel/issues/87 is resolved.
-    """
-
+class UserUpdateAPI(base.PydanticBaseModel):
     email: UserEmail | None = None
     password: UserPassword | None = None
 
-    class Config:
-        alias_generator = converters.to_camel
-        allow_population_by_field_name = True
+
+class UserUpdate(UserUpdateAPI):
+    confirmed_email: UserConfirmedEmail | None = None
+    last_login: UserLastLogin | None = None
+    reset_password_key: UserResetPasswordKey | None = None
+
+
+class UserOutput(base.BaseModel):
+    id: UserID
+    email: UserEmail
