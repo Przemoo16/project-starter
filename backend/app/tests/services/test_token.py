@@ -28,7 +28,6 @@ async def test_token_service_obtain_tokens(session: "conftest.AsyncSession") -> 
         session,
         email="test@email.com",
         password="$2b$12$q8JcpltDZkSLOdMuPyt/jORzExLKp9HsKgCoFJQ1IzzITc2/Pg42q",
-        confirmed_email=True,
     )
 
     with freezegun.freeze_time("2022-02-05 18:00:00"):
@@ -73,9 +72,7 @@ async def test_token_service_obtain_tokens_invalid_password(
 
 @pytest.mark.asyncio
 async def test_token_service_refresh_token(session: "conftest.AsyncSession") -> None:
-    user = await user_helpers.create_user(
-        session, email="test@email.com", password="hashed_password"
-    )
+    user = await user_helpers.create_user(session)
     token = jwt_auth.AuthJWT().create_refresh_token(str(user.id))
 
     token = await token_services.TokenService(session).refresh_token(token=token)

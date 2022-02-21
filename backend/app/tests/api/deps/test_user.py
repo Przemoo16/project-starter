@@ -17,9 +17,7 @@ if typing.TYPE_CHECKING:
 
 @pytest.mark.asyncio
 async def test_get_current_user(session: "conftest.AsyncSession") -> None:
-    user = await user_helpers.create_user(
-        session=session, email="test@email.com", password="hashed_password"
-    )
+    user = await user_helpers.create_user(session=session)
     auth_handler = auth_helpers.create_auth_handler(user.id)
 
     current_user = await user_deps.get_current_user(session, auth_handler)
@@ -58,12 +56,7 @@ async def test_get_current_user_not_found(session: "conftest.AsyncSession") -> N
 
 @pytest.mark.asyncio
 async def test_get_current_active_user(session: "conftest.AsyncSession") -> None:
-    user = await user_helpers.create_user(
-        session=session,
-        email="test@email.com",
-        password="hashed_password",
-        confirmed_email=True,
-    )
+    user = await user_helpers.create_active_user(session=session)
 
     current_user = await user_deps.get_current_active_user(user)
 
@@ -74,9 +67,7 @@ async def test_get_current_active_user(session: "conftest.AsyncSession") -> None
 async def test_get_current_active_user_inactive(
     session: "conftest.AsyncSession",
 ) -> None:
-    user = await user_helpers.create_user(
-        session=session, email="test@email.com", password="hashed_password"
-    )
+    user = await user_helpers.create_user(session=session)
 
     with pytest.raises(user_exceptions.InactiveUserError) as exc_info:
         await user_deps.get_current_active_user(user)
@@ -85,12 +76,7 @@ async def test_get_current_active_user_inactive(
 
 @pytest.mark.asyncio
 async def test_check_user_requests_own_data(session: "conftest.AsyncSession") -> None:
-    user = await user_helpers.create_user(
-        session=session,
-        email="test@email.com",
-        password="hashed_password",
-        confirmed_email=True,
-    )
+    user = await user_helpers.create_active_user(session=session)
 
     await user_deps.check_user_requests_own_data(user.id, user)
 
@@ -100,12 +86,7 @@ async def test_check_user_requests_own_data_foreign_data(
     session: "conftest.AsyncSession",
 ) -> None:
     user_id = converters.change_to_uuid("0dd53909-fcda-4c72-afcd-1bf4886389f8")
-    user = await user_helpers.create_user(
-        session=session,
-        email="test@email.com",
-        password="hashed_password",
-        confirmed_email=True,
-    )
+    user = await user_helpers.create_active_user(session=session)
 
     with pytest.raises(user_exceptions.UserForbiddenError) as exc_info:
         await user_deps.check_user_requests_own_data(user_id, user)

@@ -14,14 +14,18 @@ UserConfirmedEmail: typing.TypeAlias = bool
 UserConfirmationEmailKey: typing.TypeAlias = uuid.UUID
 UserResetPasswordKey: typing.TypeAlias = uuid.UUID
 UserLastLogin: typing.TypeAlias = datetime
+UserIsActive: typing.TypeAlias = bool
 
 
-class User(base.BaseModel, table=True):
+class UserBase(base.BaseModel):
+    email: UserEmail = sqlmodel.Field(index=True, sa_column_kwargs={"unique": True})
+    password: UserPassword
+
+
+class User(UserBase, table=True):
     id: UserID = sqlmodel.Field(
         primary_key=True, index=True, default_factory=helpers.generate_fixed_uuid
     )
-    email: UserEmail = sqlmodel.Field(index=True, sa_column_kwargs={"unique": True})
-    password: UserPassword
     confirmed_email: UserConfirmedEmail = False
     confirmation_email_key: UserConfirmationEmailKey = sqlmodel.Field(
         default_factory=helpers.generate_fixed_uuid
@@ -37,13 +41,12 @@ class User(base.BaseModel, table=True):
     last_login: UserLastLogin | None = None
 
     @property
-    def is_active(self) -> bool:
+    def is_active(self) -> UserIsActive:
         return self.confirmed_email
 
 
-class UserCreate(base.BaseModel):
-    email: UserEmail
-    password: UserPassword
+class UserCreate(UserBase):
+    pass
 
 
 class UserRead(base.PydanticBaseModel):
@@ -67,3 +70,4 @@ class UserUpdate(UserUpdateAPI):
 class UserOutput(base.BaseModel):
     id: UserID
     email: UserEmail
+    is_active: UserIsActive

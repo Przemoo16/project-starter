@@ -23,19 +23,14 @@ async def test_create_user(async_client: "conftest.TestClient") -> None:
     user = response.json()
 
     assert response.status_code == status.HTTP_201_CREATED
-    assert user == {"id": user["id"], "email": email}
+    assert user == {"id": user["id"], "email": email, "isActive": False}
 
 
 @pytest.mark.asyncio
 async def test_get_user(
     async_client: "conftest.TestClient", session: "conftest.AsyncSession"
 ) -> None:
-    user = await user_helpers.create_user(
-        session=session,
-        email="test@example.com",
-        password="hashed_password",
-        confirmed_email=True,
-    )
+    user = await user_helpers.create_active_user(session=session)
     user_id = str(user.id)
     token = jwt_auth.AuthJWT().create_access_token(user_id)
     headers = {"Authorization": f"Bearer {token}"}
@@ -44,24 +39,18 @@ async def test_get_user(
     retrieved_user = response.json()
 
     assert response.status_code == status.HTTP_200_OK
-    assert retrieved_user == {"id": user_id, "email": user.email}
+    assert retrieved_user == {"id": user_id, "email": user.email, "isActive": True}
 
 
 @pytest.mark.asyncio
 async def test_get_user_stranger_request(
     async_client: "conftest.TestClient", session: "conftest.AsyncSession"
 ) -> None:
-    owner = await user_helpers.create_user(
-        session=session,
-        email="test@example.com",
-        password="hashed_password",
-        confirmed_email=True,
+    owner = await user_helpers.create_active_user(
+        session=session, email="test@example.com"
     )
-    stranger = await user_helpers.create_user(
-        session=session,
-        email="test2@email.com",
-        password="hashed_password",
-        confirmed_email=True,
+    stranger = await user_helpers.create_active_user(
+        session=session, email="test2@email.com"
     )
     token = jwt_auth.AuthJWT().create_access_token(str(stranger.id))
     headers = {"Authorization": f"Bearer {token}"}
@@ -75,11 +64,8 @@ async def test_get_user_stranger_request(
 async def test_update_user(
     async_client: "conftest.TestClient", session: "conftest.AsyncSession"
 ) -> None:
-    user = await user_helpers.create_user(
-        session=session,
-        email="test@example.com",
-        password="hashed_password",
-        confirmed_email=True,
+    user = await user_helpers.create_active_user(
+        session=session, email="test@example.com"
     )
     updated_email = "updated@email.com"
     request_data = {"email": updated_email}
@@ -93,24 +79,18 @@ async def test_update_user(
     retrieved_user = response.json()
 
     assert response.status_code == status.HTTP_200_OK
-    assert retrieved_user == {"id": user_id, "email": updated_email}
+    assert retrieved_user == {"id": user_id, "email": updated_email, "isActive": True}
 
 
 @pytest.mark.asyncio
 async def test_update_user_stranger_request(
     async_client: "conftest.TestClient", session: "conftest.AsyncSession"
 ) -> None:
-    owner = await user_helpers.create_user(
-        session=session,
-        email="test@example.com",
-        password="hashed_password",
-        confirmed_email=True,
+    owner = await user_helpers.create_active_user(
+        session=session, email="test@example.com"
     )
-    stranger = await user_helpers.create_user(
-        session=session,
-        email="test2@email.com",
-        password="hashed_password",
-        confirmed_email=True,
+    stranger = await user_helpers.create_active_user(
+        session=session, email="test2@email.com"
     )
     request_data = {"email": "updated@email.com"}
     token = jwt_auth.AuthJWT().create_access_token(str(stranger.id))
@@ -127,12 +107,7 @@ async def test_update_user_stranger_request(
 async def test_delete_user(
     async_client: "conftest.TestClient", session: "conftest.AsyncSession"
 ) -> None:
-    user = await user_helpers.create_user(
-        session=session,
-        email="test@example.com",
-        password="hashed_password",
-        confirmed_email=True,
-    )
+    user = await user_helpers.create_active_user(session=session)
     token = jwt_auth.AuthJWT().create_access_token(str(user.id))
     headers = {"Authorization": f"Bearer {token}"}
 
@@ -145,17 +120,11 @@ async def test_delete_user(
 async def test_delete_user_stranger_request(
     async_client: "conftest.TestClient", session: "conftest.AsyncSession"
 ) -> None:
-    owner = await user_helpers.create_user(
-        session=session,
-        email="test@example.com",
-        password="hashed_password",
-        confirmed_email=True,
+    owner = await user_helpers.create_active_user(
+        session=session, email="test@example.com"
     )
-    stranger = await user_helpers.create_user(
-        session=session,
-        email="test2@email.com",
-        password="hashed_password",
-        confirmed_email=True,
+    stranger = await user_helpers.create_active_user(
+        session=session, email="test2@email.com"
     )
     token = jwt_auth.AuthJWT().create_access_token(str(stranger.id))
     headers = {"Authorization": f"Bearer {token}"}
@@ -169,9 +138,7 @@ async def test_delete_user_stranger_request(
 async def test_confirm_email(
     async_client: "conftest.TestClient", session: "conftest.AsyncSession"
 ) -> None:
-    user = await user_helpers.create_user(
-        session=session, email="test@example.com", password="hashed_password"
-    )
+    user = await user_helpers.create_user(session=session)
     request_data = {"key": str(user.confirmation_email_key)}
 
     response = await async_client.post(
@@ -185,9 +152,7 @@ async def test_confirm_email(
 async def test_request_reset_password(
     async_client: "conftest.TestClient", session: "conftest.AsyncSession"
 ) -> None:
-    user = await user_helpers.create_user(
-        session=session, email="test@example.com", password="hashed_password"
-    )
+    user = await user_helpers.create_active_user(session=session)
     request_data = {"email": user.email}
 
     response = await async_client.post(
@@ -205,9 +170,7 @@ async def test_request_reset_password(
 async def test_reset_password(
     async_client: "conftest.TestClient", session: "conftest.AsyncSession"
 ) -> None:
-    user = await user_helpers.create_user(
-        session=session, email="test@example.com", password="hashed_password"
-    )
+    user = await user_helpers.create_active_user(session=session)
     request_data = {"key": str(user.reset_password_key), "password": "plain_password"}
 
     response = await async_client.post(
