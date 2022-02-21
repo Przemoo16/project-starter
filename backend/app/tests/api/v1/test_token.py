@@ -39,9 +39,7 @@ async def test_obtain_tokens(
 async def test_refresh_token(
     async_client: "conftest.TestClient", session: "conftest.AsyncSession"
 ) -> None:
-    user = await user_helpers.create_user(
-        session=session, email="test@example.com", password="hashed_password"
-    )
+    user = await user_helpers.create_user(session=session)
     token = jwt_auth.AuthJWT().create_refresh_token(str(user.id))
     request_data = {"token": token}
 
