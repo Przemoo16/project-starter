@@ -2,7 +2,6 @@ import datetime
 import logging
 
 from sqlalchemy import exc
-import sqlmodel
 
 from app.config import general
 from app.exceptions.http import user as user_exceptions
@@ -117,27 +116,15 @@ def can_confirm_email(user: user_models.User) -> bool:
 
 class UserCRUD(base.AppCRUD):
     async def create(self, user: user_models.UserCreate) -> user_models.User:
-        db_user = user_models.User.from_orm(user)
-        return await self.save(db_user)
+        return await self._create(user_models.User, user)
 
     async def read(self, user: user_models.UserRead) -> user_models.User:
-        user_data = user.dict(exclude_unset=True)
-        read_statement = sqlmodel.select(user_models.User)
-        for attr, value in user_data.items():
-            read_statement = read_statement.where(
-                getattr(user_models.User, attr) == value
-            )
-        result = await self.session.execute(read_statement)
-        return result.scalar_one()
+        return await self._read(user_models.User, user)
 
     async def update(
         self, user: user_models.User, user_update: user_models.UserUpdate
     ) -> user_models.User:
-        user_data = user_update.dict(exclude_unset=True)
-        for key, value in user_data.items():
-            setattr(user, key, value)
-        return await self.save(user)
+        return await self._update(user, user_update)
 
     async def delete(self, user: user_models.User) -> None:
-        await self.session.delete(user)
-        await self.session.commit()
+        await self._delete(user)
