@@ -5,6 +5,7 @@ import uuid
 import pydantic
 import sqlmodel
 
+from app.config import general
 from app.models import base, helpers
 
 UserID: typing.TypeAlias = uuid.UUID
@@ -16,10 +17,12 @@ UserResetPasswordKey: typing.TypeAlias = uuid.UUID
 UserLastLogin: typing.TypeAlias = datetime
 UserIsActive: typing.TypeAlias = bool
 
+settings = general.get_settings()
+
 
 class UserBase(base.BaseModel):
     email: UserEmail = sqlmodel.Field(index=True, sa_column_kwargs={"unique": True})
-    password: UserPassword = sqlmodel.Field(min_length=8, max_length=32)
+    password: UserPassword
 
 
 class User(UserBase, table=True):
@@ -48,7 +51,9 @@ class User(UserBase, table=True):
 
 
 class UserCreate(UserBase):
-    pass
+    password: UserPassword = sqlmodel.Field(
+        min_length=settings.PASSWORD_MIN_LENGTH, max_length=settings.PASSWORD_MAX_LENGTH
+    )
 
 
 class UserRead(base.PydanticBaseModel):
@@ -60,10 +65,15 @@ class UserRead(base.PydanticBaseModel):
 
 class UserUpdateAPI(base.PydanticBaseModel):
     email: UserEmail | None = None
-    password: UserPassword | None = None
+    password: UserPassword | None = sqlmodel.Field(
+        default=None,
+        min_length=settings.PASSWORD_MIN_LENGTH,
+        max_length=settings.PASSWORD_MAX_LENGTH,
+    )
 
 
 class UserUpdate(UserUpdateAPI):
+    password: UserPassword | None = None
     confirmed_email: UserConfirmedEmail | None = None
     last_login: UserLastLogin | None = None
     reset_password_key: UserResetPasswordKey | None = None
