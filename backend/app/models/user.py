@@ -19,7 +19,7 @@ UserIsActive: typing.TypeAlias = bool
 
 class UserBase(base.BaseModel):
     email: UserEmail = sqlmodel.Field(index=True, sa_column_kwargs={"unique": True})
-    password: UserPassword
+    password: UserPassword = sqlmodel.Field(min_length=8, max_length=32)
 
 
 class User(UserBase, table=True):
