@@ -23,8 +23,10 @@ class UserBase(base.BaseModel):
 
 
 class User(UserBase, table=True):
+    # For the primary key, nullable has to be explicitly set up to False, otherwise it
+    # is set to True and alembic produces unnecessary entries in migrations.
     id: UserID = sqlmodel.Field(
-        primary_key=True, default_factory=helpers.generate_fixed_uuid
+        primary_key=True, default_factory=helpers.generate_fixed_uuid, nullable=False
     )
     confirmed_email: UserConfirmedEmail = False
     confirmation_email_key: UserConfirmationEmailKey = sqlmodel.Field(
