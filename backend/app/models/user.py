@@ -24,14 +24,14 @@ class UserBase(base.BaseModel):
 
 class User(UserBase, table=True):
     id: UserID = sqlmodel.Field(
-        primary_key=True, index=True, default_factory=helpers.generate_fixed_uuid
+        primary_key=True, default_factory=helpers.generate_fixed_uuid
     )
     confirmed_email: UserConfirmedEmail = False
     confirmation_email_key: UserConfirmationEmailKey = sqlmodel.Field(
-        default_factory=helpers.generate_fixed_uuid
+        index=True, default_factory=helpers.generate_fixed_uuid
     )
     reset_password_key: UserResetPasswordKey = sqlmodel.Field(
-        default_factory=helpers.generate_fixed_uuid
+        index=True, default_factory=helpers.generate_fixed_uuid
     )
     created_at: datetime = sqlmodel.Field(default_factory=helpers.get_utcnow)
     updated_at: datetime = sqlmodel.Field(
