@@ -2,7 +2,6 @@ import typing
 from unittest import mock
 
 import freezegun
-import pydantic
 import pytest
 from sqlalchemy import exc
 import sqlmodel
@@ -204,7 +203,7 @@ async def test_user_service_request_reset_password_no_user(
     mocked_send_email: mock.MagicMock,
     session: "conftest.AsyncSession",
 ) -> None:
-    email = pydantic.EmailStr("test@email.com")
+    email = "test@email.com"
 
     await user_services.UserService(session).request_reset_password(email)
 
