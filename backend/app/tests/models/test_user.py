@@ -2,7 +2,6 @@ import datetime
 import typing
 
 import freezegun
-import pydantic
 import pytest
 
 from app.models import user as user_models
@@ -45,7 +44,7 @@ async def test_user_updated_at_field(session: "conftest.AsyncSession") -> None:
         await session.refresh(user)
 
     with freezegun.freeze_time("2022-01-16 23:00:00"):
-        user.email = pydantic.EmailStr("updated@email.com")
+        user.email = "updated@email.com"
         session.add(user)
         await session.commit()
         await session.refresh(user)
