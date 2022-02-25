@@ -31,8 +31,8 @@ class Settings(pydantic.BaseSettings):
     AUTHJWT_DECODE_ALGORITHMS: set[str] = {"HS256"}
     AUTHJWT_DATABASE_URL: pydantic.RedisDsn
     ACCOUNT_ACTIVATION_DAYS: int = 7
-    PASSWORD_MIN_LENGTH = 8
-    PASSWORD_MAX_LENGTH = 32
+    PASSWORD_MIN_LENGTH: int = 8
+    PASSWORD_MAX_LENGTH: int = 32
 
     # Database
     DATABASE_URL: str
