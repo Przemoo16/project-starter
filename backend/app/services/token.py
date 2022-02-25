@@ -6,6 +6,7 @@ import fastapi_jwt_auth as jwt_auth
 from jose import jwt
 
 from app.config import db, general
+from app.config import jwt as jwt_config
 from app.exceptions.http import token as token_exceptions
 from app.exceptions.http import user as user_exceptions
 from app.models import token as token_models
@@ -52,7 +53,7 @@ class TokenService(base.AppService):
             raise token_exceptions.InvalidTokenError(context=token_context) from e
         if decoded_token["type"] != "refresh":
             raise token_exceptions.RefreshTokenRequiredError(context=token_context)
-        if check_if_token_in_denylist(decoded_token):
+        if jwt_config.check_if_token_in_denylist(decoded_token):
             raise token_exceptions.RevokedTokenError(context=token_context)
         user_id = decoded_token["sub"]
         user_read = user_models.UserRead(id=user_id)
@@ -92,18 +93,6 @@ def decode_token(
             options=options,
         )
     )
-
-
-def check_if_token_in_denylist(decrypted_token: dict[str, typing.Any]) -> bool:
-    """
-    Check if the token has been revoked.
-
-    The method is also used internally by the fastapi_jwt_auth library and registered
-    as a callback using the AuthJWT.token_in_denylist_loader method.
-    """
-    jti = decrypted_token["jti"]
-    is_revoked = db.get_jwt_db().get(jti)
-    return is_revoked == "true"
 
 
 def _get_remaining_expiration(exp: int) -> int:
