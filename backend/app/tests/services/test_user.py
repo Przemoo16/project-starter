@@ -248,14 +248,14 @@ async def test_user_crud_create(session: "conftest.AsyncSession") -> None:
     user_create = user_models.UserCreate(
         email="test@email.com", password="hashed_password"
     )
-    read_statement = sqlmodel.select(user_models.User).where(
-        user_models.User.email == user_create.email
-    )
 
     created_user = await user_services.UserCRUD(session).create(user_create)
 
     assert created_user.email == user_create.email
     assert created_user.password == user_create.password
+    read_statement = sqlmodel.select(user_models.User).where(
+        user_models.User.id == created_user.id
+    )
     assert (await session.execute(read_statement)).scalar_one()
 
 
@@ -274,9 +274,6 @@ async def test_user_crud_read(session: "conftest.AsyncSession") -> None:
 async def test_user_crud_update(session: "conftest.AsyncSession") -> None:
     user = await user_helpers.create_user(session=session, email="test@email.com")
     new_email = "new@email.com"
-    read_statement = sqlmodel.select(user_models.User).where(
-        user_models.User.email == new_email
-    )
     user_update = user_models.UserUpdate(email=new_email, confirmed_email=True)
 
     updated_user = await user_services.UserCRUD(session).update(user, user_update)
@@ -284,19 +281,23 @@ async def test_user_crud_update(session: "conftest.AsyncSession") -> None:
     assert updated_user.email == new_email
     assert updated_user.confirmed_email is True
     assert updated_user.password == user.password
-    db_user = (await session.execute(read_statement)).scalar_one()
-    assert db_user.email == new_email
-    assert db_user.confirmed_email is True
+    read_statement = sqlmodel.select(
+        user_models.User
+    ).where(  # pylint: disable=singleton-comparison,
+        user_models.User.email == new_email,
+        user_models.User.confirmed_email == True,  # noqa: E712
+    )
+    assert (await session.execute(read_statement)).scalar_one()
 
 
 @pytest.mark.asyncio
 async def test_user_crud_delete(session: "conftest.AsyncSession") -> None:
     user = await user_helpers.create_user(session=session)
-    read_statement = sqlmodel.select(user_models.User).where(
-        user_models.User.email == user.email
-    )
 
     await user_services.UserCRUD(session).delete(user)
 
     with pytest.raises(exc.NoResultFound):
+        read_statement = sqlmodel.select(user_models.User).where(
+            user_models.User.id == user.id
+        )
         (await session.execute(read_statement)).scalar_one()
