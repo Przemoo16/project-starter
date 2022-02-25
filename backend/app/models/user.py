@@ -1,4 +1,4 @@
-from datetime import datetime
+import datetime
 import typing
 import uuid
 
@@ -14,7 +14,9 @@ UserPassword: typing.TypeAlias = str
 UserConfirmedEmail: typing.TypeAlias = bool
 UserConfirmationEmailKey: typing.TypeAlias = uuid.UUID
 UserResetPasswordKey: typing.TypeAlias = uuid.UUID
-UserLastLogin: typing.TypeAlias = datetime
+UserCreatedAt: typing.TypeAlias = datetime.datetime
+UserUpdatedAt: typing.TypeAlias = datetime.datetime
+UserLastLogin: typing.TypeAlias = datetime.datetime
 UserIsActive: typing.TypeAlias = bool
 
 settings = general.get_settings()
@@ -38,8 +40,8 @@ class User(UserBase, table=True):
     reset_password_key: UserResetPasswordKey = sqlmodel.Field(
         index=True, default_factory=helpers.generate_fixed_uuid
     )
-    created_at: datetime = sqlmodel.Field(default_factory=helpers.get_utcnow)
-    updated_at: datetime = sqlmodel.Field(
+    created_at: UserCreatedAt = sqlmodel.Field(default_factory=helpers.get_utcnow)
+    updated_at: UserUpdatedAt = sqlmodel.Field(
         default_factory=helpers.get_utcnow,
         sa_column_kwargs={"onupdate": helpers.get_utcnow},
     )
