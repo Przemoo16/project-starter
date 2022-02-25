@@ -22,7 +22,7 @@ settings = general.get_settings()
 
 class UserBase(base.BaseModel):
     email: UserEmail = sqlmodel.Field(index=True, sa_column_kwargs={"unique": True})
-    password: UserPassword
+    password: UserPassword  # In database it's a hash so it doesn't have a strict length
 
 
 class User(UserBase, table=True):
