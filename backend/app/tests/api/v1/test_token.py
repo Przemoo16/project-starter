@@ -53,7 +53,7 @@ async def test_refresh_token(
 
 @pytest.mark.asyncio
 async def test_revoke_token_token(async_client: "conftest.TestClient") -> None:
-    user_id = "0dd53909-fcda-4c72-afcd-1bf4886389f8"
+    user_id = "1dd53909-fcda-4c72-afcd-1bf4886389f8"
     token = jwt_auth.AuthJWT().create_refresh_token(user_id)
     request_data = {"token": token}
 

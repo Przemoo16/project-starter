@@ -108,7 +108,7 @@ async def test_user_service_update_user_new_password(
 async def test_user_service_update_user_not_found(
     session: "conftest.AsyncSession",
 ) -> None:
-    user_id = converters.change_to_uuid("0dd53909-fcda-4c72-afcd-1bf4886389f8")
+    user_id = converters.change_to_uuid("1dd53909-fcda-4c72-afcd-1bf4886389f8")
     user_update = user_models.UserUpdate(email="new@email.com")
 
     with pytest.raises(user_exceptions.UserNotFoundError) as exc_info:
@@ -127,7 +127,7 @@ async def test_user_service_delete_user(session: "conftest.AsyncSession") -> Non
 async def test_user_service_delete_user_not_found(
     session: "conftest.AsyncSession",
 ) -> None:
-    user_id = converters.change_to_uuid("0dd53909-fcda-4c72-afcd-1bf4886389f8")
+    user_id = converters.change_to_uuid("1dd53909-fcda-4c72-afcd-1bf4886389f8")
 
     with pytest.raises(user_exceptions.UserNotFoundError) as exc_info:
         await user_services.UserService(session).delete_user(user_id)
@@ -147,7 +147,7 @@ async def test_user_service_confirm_email(session: "conftest.AsyncSession") -> N
 async def test_user_service_confirm_email_not_found(
     session: "conftest.AsyncSession",
 ) -> None:
-    key = converters.change_to_uuid("0dd53909-fcda-4c72-afcd-1bf4886389f8")
+    key = converters.change_to_uuid("1dd53909-fcda-4c72-afcd-1bf4886389f8")
 
     with pytest.raises(user_exceptions.UserNotFoundError) as exc_info:
         await user_services.UserService(session).confirm_email(key)
@@ -233,7 +233,7 @@ async def test_user_service_reset_password_no_user(
     session: "conftest.AsyncSession",
 ) -> None:
     user_reset_password_key = converters.change_to_uuid(
-        "0dd53909-fcda-4c72-afcd-1bf4886389f8"
+        "1dd53909-fcda-4c72-afcd-1bf4886389f8"
     )
 
     with pytest.raises(user_exceptions.UserNotFoundError) as exc_info:

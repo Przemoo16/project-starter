@@ -97,7 +97,7 @@ async def test_token_service_refresh_token_invalid(
 async def test_token_service_refresh_no_refresh_type(
     session: "conftest.AsyncSession",
 ) -> None:
-    user_id = "0dd53909-fcda-4c72-afcd-1bf4886389f8"
+    user_id = "1dd53909-fcda-4c72-afcd-1bf4886389f8"
     token = jwt_auth.AuthJWT().create_access_token(user_id)
 
     with pytest.raises(token_exceptions.RefreshTokenRequiredError) as exc_info:
@@ -110,7 +110,7 @@ async def test_token_service_refresh_no_refresh_type(
 async def test_token_service_refresh_revoked_token(
     _: mock.MagicMock, session: "conftest.AsyncSession"
 ) -> None:
-    user_id = "0dd53909-fcda-4c72-afcd-1bf4886389f8"
+    user_id = "1dd53909-fcda-4c72-afcd-1bf4886389f8"
     token = jwt_auth.AuthJWT().create_refresh_token(user_id)
 
     with pytest.raises(token_exceptions.RevokedTokenError) as exc_info:
@@ -122,7 +122,7 @@ async def test_token_service_refresh_revoked_token(
 async def test_token_service_refresh_token_no_user(
     session: "conftest.AsyncSession",
 ) -> None:
-    user_id = "0dd53909-fcda-4c72-afcd-1bf4886389f8"
+    user_id = "1dd53909-fcda-4c72-afcd-1bf4886389f8"
     token = jwt_auth.AuthJWT().create_refresh_token(user_id)
 
     with pytest.raises(user_exceptions.UserNotFoundError) as exc_info:
