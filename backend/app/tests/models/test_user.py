@@ -16,6 +16,7 @@ async def test_user_model(session: "conftest.AsyncSession") -> None:
     email = "test@email.com"
     password = "hashed_password"
     user = user_models.User(email=email, password=password)
+
     session.add(user)
     await session.commit()
     await session.refresh(user)
