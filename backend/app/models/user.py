@@ -52,7 +52,8 @@ class User(UserBase, table=True):
 
 class UserCreate(UserBase):
     password: UserPassword = sqlmodel.Field(
-        min_length=settings.PASSWORD_MIN_LENGTH, max_length=settings.PASSWORD_MAX_LENGTH
+        min_length=settings.USER_PASSWORD_MIN_LENGTH,
+        max_length=settings.USER_PASSWORD_MAX_LENGTH,
     )
 
 
@@ -67,8 +68,8 @@ class UserUpdateAPI(base.PydanticBaseModel):
     email: UserEmail | None = None
     password: UserPassword | None = sqlmodel.Field(
         default=None,
-        min_length=settings.PASSWORD_MIN_LENGTH,
-        max_length=settings.PASSWORD_MAX_LENGTH,
+        min_length=settings.USER_PASSWORD_MIN_LENGTH,
+        max_length=settings.USER_PASSWORD_MAX_LENGTH,
     )
 
 
