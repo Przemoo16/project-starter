@@ -16,7 +16,7 @@ def get_jwt_settings() -> general.Settings:
 
 def check_if_token_in_denylist(decrypted_token: dict[str, typing.Any]) -> bool:
     jti = decrypted_token["jti"]
-    is_revoked = db.get_jwt_db().get(jti)
+    is_revoked = jwt_db.get(jti)
     return is_revoked == "true"
 
 
