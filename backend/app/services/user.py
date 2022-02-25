@@ -122,9 +122,9 @@ class UserCRUD(base.AppCRUD):
         return await self._read(user_models.User, user)
 
     async def update(
-        self, user: user_models.User, user_update: user_models.UserUpdate
+        self, user_db: user_models.User, user_update: user_models.UserUpdate
     ) -> user_models.User:
-        return await self._update(user, user_update)
+        return await self._update(user_db, user_update)
 
     async def delete(self, user: user_models.User) -> None:
         await self._delete(user)
