@@ -22,7 +22,9 @@ async def test_user_service_create_user(
     mocked_send_email: mock.MagicMock, session: "conftest.AsyncSession"
 ) -> None:
     password = "plain_password"
-    user_create = user_models.UserCreate(email="test@email.com", password=password)
+    user_create = user_models.UserCreate(
+        email=converters.to_pydantic_email("test@email.com"), password=password
+    )
 
     created_user = await user_services.UserService(session).create_user(user_create)
 
@@ -40,7 +42,7 @@ async def test_user_service_create_user_already_exists(
     session: "conftest.AsyncSession",
 ) -> None:
     user_create = user_models.UserCreate(
-        email="test@email.com", password="plain_password"
+        email=converters.to_pydantic_email("test@email.com"), password="plain_password"
     )
     await user_helpers.create_user(session=session, email=user_create.email)
 
@@ -64,7 +66,7 @@ async def test_user_service_get_user(session: "conftest.AsyncSession") -> None:
 async def test_user_service_get_user_not_found(
     session: "conftest.AsyncSession",
 ) -> None:
-    wrong_email = "invalid@email.com"
+    wrong_email = converters.to_pydantic_email("invalid@email.com")
     user = await user_helpers.create_user(session=session, email="test@email.com")
     user_read = user_models.UserRead(id=user.id, email=wrong_email)
 
@@ -76,7 +78,9 @@ async def test_user_service_get_user_not_found(
 @pytest.mark.asyncio
 async def test_user_service_update_user(session: "conftest.AsyncSession") -> None:
     user = await user_helpers.create_user(session=session, email="test@email.com")
-    user_update = user_models.UserUpdate(email="new@email.com", confirmed_email=True)
+    user_update = user_models.UserUpdate(
+        email=converters.to_pydantic_email("new@email.com"), confirmed_email=True
+    )
 
     updated_user = await user_services.UserService(session).update_user(
         user.id, user_update
@@ -109,7 +113,9 @@ async def test_user_service_update_user_not_found(
     session: "conftest.AsyncSession",
 ) -> None:
     user_id = converters.to_uuid("1dd53909-fcda-4c72-afcd-1bf4886389f8")
-    user_update = user_models.UserUpdate(email="new@email.com")
+    user_update = user_models.UserUpdate(
+        email=converters.to_pydantic_email("new@email.com")
+    )
 
     with pytest.raises(user_exceptions.UserNotFoundError) as exc_info:
         await user_services.UserService(session).update_user(user_id, user_update)
@@ -199,7 +205,7 @@ async def test_user_service_request_reset_password(
 
 @pytest.mark.asyncio
 @mock.patch("app.services.user.user_tasks.send_email_to_reset_password.delay")
-async def test_user_service_request_reset_password_no_user(
+async def test_user_service_request_reset_password_user_not_found(
     mocked_send_email: mock.MagicMock,
     session: "conftest.AsyncSession",
 ) -> None:
@@ -229,7 +235,7 @@ async def test_user_service_reset_password(
 
 
 @pytest.mark.asyncio
-async def test_user_service_reset_password_no_user(
+async def test_user_service_reset_password_user_not_found(
     session: "conftest.AsyncSession",
 ) -> None:
     user_reset_password_key = converters.to_uuid("1dd53909-fcda-4c72-afcd-1bf4886389f8")
@@ -244,7 +250,7 @@ async def test_user_service_reset_password_no_user(
 @pytest.mark.asyncio
 async def test_user_crud_create(session: "conftest.AsyncSession") -> None:
     user_create = user_models.UserCreate(
-        email="test@email.com", password="hashed_password"
+        email=converters.to_pydantic_email("test@email.com"), password="hashed_password"
     )
 
     created_user = await user_services.UserCRUD(session).create(user_create)
@@ -271,7 +277,7 @@ async def test_user_crud_read(session: "conftest.AsyncSession") -> None:
 @pytest.mark.asyncio
 async def test_user_crud_update(session: "conftest.AsyncSession") -> None:
     user = await user_helpers.create_user(session=session, email="test@email.com")
-    new_email = "new@email.com"
+    new_email = converters.to_pydantic_email("new@email.com")
     user_update = user_models.UserUpdate(email=new_email, confirmed_email=True)
 
     updated_user = await user_services.UserCRUD(session).update(user, user_update)

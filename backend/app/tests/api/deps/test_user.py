@@ -46,7 +46,7 @@ async def test_get_current_user_empty_jwt_subject(
 
 @pytest.mark.asyncio
 async def test_get_current_user_not_found(session: "conftest.AsyncSession") -> None:
-    user_id = converters.to_uuid("1dd53909-fcda-4c72-afcd-1bf4886389f8")
+    user_id = "1dd53909-fcda-4c72-afcd-1bf4886389f8"
     auth_handler = auth_helpers.create_auth_handler(user_id)
 
     with pytest.raises(user_exceptions.UnauthorizedUserError) as exc_info:

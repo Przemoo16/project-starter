@@ -43,10 +43,10 @@ async def test_token_service_obtain_tokens(session: "conftest.AsyncSession") -> 
 
 
 @pytest.mark.asyncio
-async def test_token_service_obtain_tokens_no_user(
+async def test_token_service_obtain_tokens_user_not_found(
     session: "conftest.AsyncSession",
 ) -> None:
-    email = "test@email.com"
+    email = converters.to_pydantic_email("test@email.com")
 
     with pytest.raises(user_exceptions.UnauthorizedUserError):
         await token_services.TokenService(session).obtain_tokens(
@@ -119,7 +119,7 @@ async def test_token_service_refresh_revoked_token(
 
 
 @pytest.mark.asyncio
-async def test_token_service_refresh_token_no_user(
+async def test_token_service_refresh_token_user_not_found(
     session: "conftest.AsyncSession",
 ) -> None:
     user_id = "1dd53909-fcda-4c72-afcd-1bf4886389f8"

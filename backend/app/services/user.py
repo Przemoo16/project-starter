@@ -72,7 +72,7 @@ class UserService(base.AppService):
         await UserCRUD(self.session).update(user_db, user_update)
         log.info("Email has been confirmed")
 
-    async def request_reset_password(self, email: user_models.UserEmail | str) -> None:
+    async def request_reset_password(self, email: user_models.UserEmail) -> None:
         user_read = user_models.UserRead(email=email)
         try:
             user_db = await UserCRUD(self.session).read(user_read)
