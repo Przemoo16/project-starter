@@ -2,12 +2,13 @@ import typing
 
 import fastapi
 from fastapi import exceptions as fastapi_exceptions
-from fastapi import responses, status
+from fastapi import status
 from fastapi_jwt_auth import exceptions as jwt_exceptions
 from starlette import exceptions as starlette_exceptions
 
 from app.exceptions.http import base
 from app.models import exception
+from app.utils import responses
 
 ValidationErrorDetail = "Invalid data"
 
@@ -81,4 +82,6 @@ def app_http_exception_handler(
 def _build_content(
     case: str, detail: str, context: exception.ExceptionContext = None
 ) -> dict[str, typing.Any]:
-    return exception.ExceptionContent(case=case, detail=detail, context=context).dict()
+    return exception.ExceptionContent(case=case, detail=detail, context=context).dict(
+        by_alias=True
+    )

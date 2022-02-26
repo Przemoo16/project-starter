@@ -2,7 +2,7 @@ import datetime
 import typing
 import uuid
 
-import orjson
+from app.utils import converters
 
 
 def get_utcnow() -> datetime.datetime:
@@ -30,6 +30,4 @@ def generate_fixed_uuid() -> uuid.UUID:
 def orjson_dumps(
     data: typing.Any, *, default: typing.Callable[[typing.Any], typing.Any] | None
 ) -> str:
-    return orjson.dumps(
-        data, default=default, option=orjson.OPT_NAIVE_UTC | orjson.OPT_UTC_Z
-    ).decode()
+    return converters.orjson_dumps(data, default=default).decode()

@@ -1,10 +1,9 @@
 import fastapi
-from fastapi import responses
 
 from app.api.v1 import api
 from app.config import general
 from app.exceptions import handlers
-from app.utils import openapi
+from app.utils import openapi, responses
 
 settings = general.get_settings()
 

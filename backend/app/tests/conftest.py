@@ -86,6 +86,7 @@ async def session_fixture(
 async def _setup_session(session: AsyncSession) -> None:
     if "sqlite" not in TEST_DB_ENGINE:
         return
+    # SQLite ignores foreign key constraint by default
     await session.execute(sql.text("pragma foreign_keys=ON;"))
 
 

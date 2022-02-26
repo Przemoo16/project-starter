@@ -1,3 +1,4 @@
+import datetime
 import uuid
 
 import pytest
@@ -27,3 +28,15 @@ def test_to_camel(test_input: str, expected: str) -> None:
     camelized = converters.to_camel(test_input)
 
     assert camelized == expected
+
+
+def test_orjson_dumps() -> None:
+    data = {
+        "id": 123,
+        "name": "Przemo",
+        "date": datetime.datetime(2023, 2, 1, 16, 0, 0),
+    }
+
+    serialized = converters.orjson_dumps(data)
+
+    assert serialized == b'{"id":123,"name":"Przemo","date":"2023-02-01T16:00:00Z"}'
