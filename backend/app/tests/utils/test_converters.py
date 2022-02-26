@@ -1,17 +1,26 @@
 import datetime
 import uuid
 
+import pydantic
 import pytest
 
 from app.utils import converters
 
 
-def test_change_to_uuid() -> None:
+def test_to_uuid() -> None:
     uuid_str = "1dd53909-fcda-4c72-afcd-1bf4886389f8"
 
-    converted = converters.change_to_uuid(uuid_str, version=4)
+    converted = converters.to_uuid(uuid_str, version=4)
 
     assert converted == uuid.UUID(uuid_str, version=4)
+
+
+def test_to_pydantic_email() -> None:
+    email = "test@email.com"
+
+    converted = converters.to_pydantic_email(email)
+
+    assert converted == pydantic.EmailStr(email)
 
 
 @pytest.mark.parametrize(

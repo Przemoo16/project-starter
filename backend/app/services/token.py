@@ -21,7 +21,9 @@ jwt_db = db.get_jwt_db()
 
 
 class TokenService(base.AppService):
-    async def obtain_tokens(self, email: str, password: str) -> token_models.Tokens:
+    async def obtain_tokens(
+        self, email: user_models.UserEmail, password: user_models.UserPassword
+    ) -> token_models.Tokens:
         user_service = user_services.UserService(self.session)
         unauthorized_exception = user_exceptions.UnauthorizedUserError()
         user_read = user_models.UserRead(email=email)
