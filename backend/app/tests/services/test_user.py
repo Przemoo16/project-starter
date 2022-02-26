@@ -209,7 +209,7 @@ async def test_user_service_request_reset_password_user_not_found(
     mocked_send_email: mock.MagicMock,
     session: "conftest.AsyncSession",
 ) -> None:
-    email = "test@email.com"
+    email = converters.to_pydantic_email("test@email.com")
 
     await user_services.UserService(session).request_reset_password(email)
 
