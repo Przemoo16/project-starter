@@ -264,12 +264,12 @@ async def test_user_crud_create(session: "conftest.AsyncSession") -> None:
 
 
 @pytest.mark.asyncio
-async def test_user_crud_read(session: "conftest.AsyncSession") -> None:
+async def test_user_crud_read_one(session: "conftest.AsyncSession") -> None:
     await user_helpers.create_user(session=session, email="test@email.com")
     user_2 = await user_helpers.create_user(session=session, email="test2@email.com")
     user_read = user_models.UserRead(id=user_2.id, email=user_2.email)
 
-    retrieved_user = await user_services.UserCRUD(session).read(user_read)
+    retrieved_user = await user_services.UserCRUD(session).read_one(user_read)
 
     assert retrieved_user == user_2
 

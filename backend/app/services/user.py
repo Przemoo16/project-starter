@@ -32,7 +32,7 @@ class UserService(base.AppService):
 
     async def get_user(self, user: user_models.UserRead) -> user_models.User:
         try:
-            return await UserCRUD(self.session).read(user)
+            return await UserCRUD(self.session).read_one(user)
         except exc.NoResultFound as e:
             user_data = user.dict(exclude_unset=True)
             raise user_exceptions.UserNotFoundError(context=user_data) from e
@@ -45,7 +45,7 @@ class UserService(base.AppService):
             user.password = auth.hash_password(user.password)
         user_read = user_models.UserRead(id=user_id)
         try:
-            user_db = await user_crud_service.read(user_read)
+            user_db = await user_crud_service.read_one(user_read)
         except exc.NoResultFound as e:
             raise user_exceptions.UserNotFoundError(context={"id": user_id}) from e
         return await user_crud_service.update(user_db, user)
@@ -54,7 +54,7 @@ class UserService(base.AppService):
         user_crud_service = UserCRUD(self.session)
         user_read = user_models.UserRead(id=user_id)
         try:
-            user_db = await user_crud_service.read(user_read)
+            user_db = await user_crud_service.read_one(user_read)
         except exc.NoResultFound as e:
             raise user_exceptions.UserNotFoundError(context={"id": user_id}) from e
         await user_crud_service.delete(user_db)
@@ -63,7 +63,7 @@ class UserService(base.AppService):
         not_found_exception = user_exceptions.UserNotFoundError(context={"key": key})
         user_read = user_models.UserRead(confirmation_email_key=key)
         try:
-            user_db = await UserCRUD(self.session).read(user_read)
+            user_db = await UserCRUD(self.session).read_one(user_read)
         except exc.NoResultFound as e:
             raise not_found_exception from e
         if not can_confirm_email(user_db):
@@ -75,7 +75,7 @@ class UserService(base.AppService):
     async def request_reset_password(self, email: user_models.UserEmail) -> None:
         user_read = user_models.UserRead(email=email)
         try:
-            user_db = await UserCRUD(self.session).read(user_read)
+            user_db = await UserCRUD(self.session).read_one(user_read)
         except exc.NoResultFound:
             log.info("Message has not been sent because user not found")
             return
@@ -91,7 +91,7 @@ class UserService(base.AppService):
     ) -> None:
         user_read = user_models.UserRead(reset_password_key=key)
         try:
-            user_db = await UserCRUD(self.session).read(user_read)
+            user_db = await UserCRUD(self.session).read_one(user_read)
         except exc.NoResultFound as e:
             raise user_exceptions.UserNotFoundError(context={"key": key}) from e
         user_update = user_models.UserUpdate(
@@ -118,8 +118,8 @@ class UserCRUD(base.AppCRUD):
     async def create(self, user: user_models.UserCreate) -> user_models.User:
         return await self._create(user_models.User, user)
 
-    async def read(self, user: user_models.UserRead) -> user_models.User:
-        return await self._read(user_models.User, user)
+    async def read_one(self, user: user_models.UserRead) -> user_models.User:
+        return await self._read_one(user_models.User, user)
 
     async def update(
         self, user_db: user_models.User, user_update: user_models.UserUpdate
