@@ -7,7 +7,7 @@ import orjson
 DEFAULT_ORJSON_OPTION = orjson.OPT_NAIVE_UTC | orjson.OPT_UTC_Z
 
 
-def change_to_uuid(text: str, version: int = 4) -> uuid.UUID:
+def to_uuid(text: str, version: int = 4) -> uuid.UUID:
     return uuid.UUID(text, version=version)
 
 

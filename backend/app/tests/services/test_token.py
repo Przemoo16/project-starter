@@ -127,7 +127,7 @@ async def test_token_service_refresh_token_no_user(
 
     with pytest.raises(user_exceptions.UserNotFoundError) as exc_info:
         await token_services.TokenService(session).refresh_token(token=token)
-    assert exc_info.value.context == {"id": converters.change_to_uuid(user_id)}
+    assert exc_info.value.context == {"id": converters.to_uuid(user_id)}
 
 
 @mock.patch("app.services.token.jwt_db.setex")
