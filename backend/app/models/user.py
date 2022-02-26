@@ -63,7 +63,7 @@ class UserCreate(UserBase):
     )
 
 
-class UserRead(base.PydanticBaseModel):
+class UserFilters(base.PydanticBaseModel):
     id: UserID | None = None
     email: UserEmail | None = None
     confirmation_email_key: UserConfirmationEmailKey | None = None
@@ -86,7 +86,7 @@ class UserUpdate(UserUpdateAPI):
     reset_password_key: UserResetPasswordKey | None = None
 
 
-class UserOutput(base.BaseModel):
+class UserRead(base.BaseModel):
     id: UserID
     email: UserEmail
     is_active: UserIsActive

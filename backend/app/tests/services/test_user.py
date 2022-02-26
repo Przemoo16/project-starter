@@ -55,9 +55,9 @@ async def test_user_service_create_user_already_exists(
 @pytest.mark.asyncio
 async def test_user_service_get_user(session: "conftest.AsyncSession") -> None:
     user = await user_helpers.create_user(session=session, email="test@email.com")
-    user_read = user_models.UserRead(id=user.id, email=user.email)
+    user_filters = user_models.UserFilters(id=user.id, email=user.email)
 
-    retrieved_user = await user_services.UserService(session).get_user(user_read)
+    retrieved_user = await user_services.UserService(session).get_user(user_filters)
 
     assert retrieved_user == user
 
@@ -68,10 +68,10 @@ async def test_user_service_get_user_not_found(
 ) -> None:
     wrong_email = converters.to_pydantic_email("invalid@email.com")
     user = await user_helpers.create_user(session=session, email="test@email.com")
-    user_read = user_models.UserRead(id=user.id, email=wrong_email)
+    user_filters = user_models.UserFilters(id=user.id, email=wrong_email)
 
     with pytest.raises(user_exceptions.UserNotFoundError) as exc_info:
-        await user_services.UserService(session).get_user(user_read)
+        await user_services.UserService(session).get_user(user_filters)
     assert exc_info.value.context == {"id": user.id, "email": wrong_email}
 
 
@@ -267,9 +267,9 @@ async def test_user_crud_create(session: "conftest.AsyncSession") -> None:
 async def test_user_crud_read_one(session: "conftest.AsyncSession") -> None:
     await user_helpers.create_user(session=session, email="test@email.com")
     user_2 = await user_helpers.create_user(session=session, email="test2@email.com")
-    user_read = user_models.UserRead(id=user_2.id, email=user_2.email)
+    user_filters = user_models.UserFilters(id=user_2.id, email=user_2.email)
 
-    retrieved_user = await user_services.UserCRUD(session).read_one(user_read)
+    retrieved_user = await user_services.UserCRUD(session).read_one(user_filters)
 
     assert retrieved_user == user_2
 

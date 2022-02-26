@@ -29,9 +29,9 @@ async def get_current_user(
     if not user_id:
         log.info("User ID not found in the JWT subject")
         raise user_exceptions.UnauthorizedUserError()
-    user_read = user_models.UserRead(id=converters.to_uuid(str(user_id)))
+    user_filters = user_models.UserFilters(id=converters.to_uuid(str(user_id)))
     try:
-        return await user_services.UserService(session).get_user(user_read)
+        return await user_services.UserService(session).get_user(user_filters)
     except user_exceptions.UserNotFoundError as e:
         log.info("User with ID %r not found in the database", user_id)
         raise user_exceptions.UnauthorizedUserError(context={"id": user_id}) from e
