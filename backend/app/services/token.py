@@ -26,9 +26,9 @@ class TokenService(base.AppService):
     ) -> token_models.Tokens:
         user_service = user_services.UserService(self.session)
         unauthorized_exception = user_exceptions.UnauthorizedUserError()
-        user_read = user_models.UserRead(email=email)
+        user_filters = user_models.UserFilters(email=email)
         try:
-            user_db = await user_service.get_user(user_read)
+            user_db = await user_service.get_user(user_filters)
         except user_exceptions.UserNotFoundError as e:
             log.info("User with the email %r not found", email)
             raise unauthorized_exception from e
@@ -58,8 +58,8 @@ class TokenService(base.AppService):
         if jwt_config.check_if_token_in_denylist(decoded_token):
             raise token_exceptions.RevokedTokenError(context=token_context)
         user_id = decoded_token["sub"]
-        user_read = user_models.UserRead(id=user_id)
-        user = await user_services.UserService(self.session).get_user(user_read)
+        user_filters = user_models.UserFilters(id=user_id)
+        user = await user_services.UserService(self.session).get_user(user_filters)
         return token_models.AccessToken(  # nosec
             access_token=jwt_auth.AuthJWT().create_access_token(
                 str(user.id), fresh=False
