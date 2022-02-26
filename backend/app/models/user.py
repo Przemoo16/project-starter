@@ -35,10 +35,14 @@ class User(UserBase, table=True):
     )
     confirmed_email: UserConfirmedEmail = False
     confirmation_email_key: UserConfirmationEmailKey = sqlmodel.Field(
-        index=True, default_factory=helpers.generate_fixed_uuid
+        index=True,
+        default_factory=helpers.generate_fixed_uuid,
+        sa_column_kwargs={"unique": True},
     )
     reset_password_key: UserResetPasswordKey = sqlmodel.Field(
-        index=True, default_factory=helpers.generate_fixed_uuid
+        index=True,
+        default_factory=helpers.generate_fixed_uuid,
+        sa_column_kwargs={"unique": True},
     )
     created_at: UserCreatedAt = sqlmodel.Field(default_factory=helpers.get_utcnow)
     updated_at: UserUpdatedAt = sqlmodel.Field(
