@@ -2,6 +2,7 @@ import typing
 
 import fastapi
 from fastapi import status
+import fastapi_jwt_auth as jwt_auth
 
 from app.api.deps import user as user_deps
 from app.config import db, general
@@ -81,7 +82,9 @@ async def update_user(
 async def delete_user(
     user_id: user_models.UserID,
     session: db.AsyncSession = fastapi.Depends(db.get_session),
+    Authorize: jwt_auth.AuthJWT = fastapi.Depends(),
 ) -> typing.Any:
+    Authorize.fresh_jwt_required()
     await user_services.UserService(session).delete_user(user_id)
 
 

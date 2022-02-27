@@ -108,7 +108,7 @@ async def test_delete_user(
     async_client: "conftest.TestClient", session: "conftest.AsyncSession"
 ) -> None:
     user = await user_helpers.create_active_user(session=session)
-    token = jwt_auth.AuthJWT().create_access_token(str(user.id))
+    token = jwt_auth.AuthJWT().create_access_token(str(user.id), fresh=True)
     headers = {"Authorization": f"Bearer {token}"}
 
     response = await async_client.delete(f"{API_URL}/users/{user.id}", headers=headers)
@@ -126,12 +126,25 @@ async def test_delete_user_stranger_request(
     stranger = await user_helpers.create_active_user(
         session=session, email="test2@email.com"
     )
-    token = jwt_auth.AuthJWT().create_access_token(str(stranger.id))
+    token = jwt_auth.AuthJWT().create_access_token(str(stranger.id), fresh=True)
     headers = {"Authorization": f"Bearer {token}"}
 
     response = await async_client.delete(f"{API_URL}/users/{owner.id}", headers=headers)
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
+
+
+@pytest.mark.asyncio
+async def test_delete_user_no_fresh_token(
+    async_client: "conftest.TestClient", session: "conftest.AsyncSession"
+) -> None:
+    user = await user_helpers.create_active_user(session=session)
+    token = jwt_auth.AuthJWT().create_access_token(str(user.id), fresh=False)
+    headers = {"Authorization": f"Bearer {token}"}
+
+    response = await async_client.delete(f"{API_URL}/users/{user.id}", headers=headers)
+
+    assert response.status_code == status.HTTP_401_UNAUTHORIZED
 
 
 @pytest.mark.asyncio
