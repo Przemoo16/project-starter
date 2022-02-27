@@ -4,7 +4,7 @@ import httpx
 import pytest
 import pytest_asyncio
 import redis
-from sqlalchemy import orm, sql
+from sqlalchemy import orm
 from sqlalchemy.ext import asyncio
 import sqlmodel
 from sqlmodel import pool
@@ -87,7 +87,7 @@ async def _setup_session(session: AsyncSession) -> None:
     if "sqlite" not in TEST_DB_ENGINE:
         return
     # SQLite ignores foreign key constraint by default
-    await session.execute(sql.text("pragma foreign_keys=ON;"))
+    await session.execute(sqlmodel.text("pragma foreign_keys=ON;"))
 
 
 @pytest_asyncio.fixture(name="async_client")

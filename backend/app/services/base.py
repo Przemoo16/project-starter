@@ -1,6 +1,5 @@
 import typing
 
-import sqlalchemy
 import sqlmodel
 
 from app.models import pagination as pagination_models
@@ -61,7 +60,7 @@ class AppCRUD(DBSessionContext):
     async def _count_all(
         self, model: typing.Type["base.BaseModel"]
     ) -> pagination_models.TotalResults:
-        statement = sqlmodel.select([sqlalchemy.func.count()]).select_from(model)
+        statement = sqlmodel.select([sqlmodel.func.count()]).select_from(model)
         return (await self.session.execute(statement)).scalar_one()
 
     async def _save(self, entry: Entry) -> Entry:
