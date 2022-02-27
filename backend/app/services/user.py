@@ -67,8 +67,10 @@ class UserService(base.AppService):
             raise user_exceptions.UserNotFoundError(context={"id": user_id}) from e
         await user_crud_service.delete(user_db)
 
-    async def count_all_users(self) -> pagination_models.TotalResults:
-        return await UserCRUD(self.session).count_all()
+    async def count_users(
+        self, filters: user_models.UserFilters
+    ) -> pagination_models.TotalResults:
+        return await UserCRUD(self.session).count(filters)
 
     async def confirm_email(self, key: user_models.UserConfirmationEmailKey) -> None:
         not_found_exception = user_exceptions.UserNotFoundError(context={"key": key})
@@ -147,5 +149,7 @@ class UserCRUD(base.AppCRUD):
     async def delete(self, user: user_models.User) -> None:
         await self._delete(user)
 
-    async def count_all(self) -> pagination_models.TotalResults:
-        return await self._count_all(user_models.User)
+    async def count(
+        self, filters: user_models.UserFilters
+    ) -> pagination_models.TotalResults:
+        return await self._count(user_models.User, filters)

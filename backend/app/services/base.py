@@ -1,17 +1,18 @@
 import typing
 
 import sqlmodel
+from sqlmodel.sql import expression
 
 from app.models import pagination as pagination_models
 
 if typing.TYPE_CHECKING:
-    from sqlmodel.sql import expression
 
     from app.config import db
     from app.models import base
 
 
 Entry = typing.TypeVar("Entry", bound="base.BaseModel")
+Statement: typing.TypeAlias = expression.SelectOfScalar
 
 
 class DBSessionContext:
@@ -36,7 +37,9 @@ class AppCRUD(DBSessionContext):
         entry: "base.PydanticBaseModel",
         pagination: pagination_models.Pagination = pagination_models.Pagination(),
     ) -> list[Entry]:
-        statement = _build_filters_statement(model, entry).offset(pagination.offset)
+        statement = _build_filters_statement(
+            model, sqlmodel.select(model), entry
+        ).offset(pagination.offset)
         if pagination.limit:
             statement = statement.limit(pagination.limit)
         return (await self.session.execute(statement)).scalars().all()
@@ -44,7 +47,7 @@ class AppCRUD(DBSessionContext):
     async def _read_one(
         self, model: typing.Type[Entry], entry: "base.PydanticBaseModel"
     ) -> Entry:
-        statement = _build_filters_statement(model, entry)
+        statement = _build_filters_statement(model, sqlmodel.select(model), entry)
         return (await self.session.execute(statement)).scalar_one()
 
     async def _update(self, db_entry: Entry, entry: "base.PydanticBaseModel") -> Entry:
@@ -57,11 +60,12 @@ class AppCRUD(DBSessionContext):
         await self.session.delete(entry)
         await self.session.commit()
 
-    async def _count_all(
-        self, model: typing.Type["base.BaseModel"]
+    async def _count(
+        self, model: typing.Type["base.BaseModel"], entry: "base.PydanticBaseModel"
     ) -> pagination_models.TotalResults:
-        statement = sqlmodel.select([sqlmodel.func.count()]).select_from(model)
-        return (await self.session.execute(statement)).scalar_one()
+        select_statament = sqlmodel.select([sqlmodel.func.count()]).select_from(model)
+        filters_statement = _build_filters_statement(model, select_statament, entry)
+        return (await self.session.execute(filters_statement)).scalar_one()
 
     async def _save(self, entry: Entry) -> Entry:
         self.session.add(entry)
@@ -71,10 +75,11 @@ class AppCRUD(DBSessionContext):
 
 
 def _build_filters_statement(
-    model: typing.Type[Entry], filters: "base.PydanticBaseModel"
-) -> "expression.SelectOfScalar[Entry]":
+    model: typing.Type["base.BaseModel"],
+    statement: Statement,
+    filters: "base.PydanticBaseModel",
+) -> Statement:
     filters_data = filters.dict(exclude_unset=True)
-    statement = sqlmodel.select(model)
     for attr, value in filters_data.items():
         statement = statement.where(getattr(model, attr) == value)
     return statement
