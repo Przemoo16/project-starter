@@ -7,6 +7,7 @@ from sqlalchemy import exc
 import sqlmodel
 
 from app.exceptions.http import user as user_exceptions
+from app.models import pagination
 from app.models import user as user_models
 from app.services import user as user_services
 from app.tests.helpers import user as user_helpers
@@ -50,6 +51,21 @@ async def test_user_service_create_user_already_exists(
         await user_services.UserService(session).create_user(user_create)
     assert exc_info.value.context == {"email": user_create.email}
     mocked_send_email.assert_not_called()
+
+
+@pytest.mark.asyncio
+async def test_user_service_get_users(session: "conftest.AsyncSession") -> None:
+    await user_helpers.create_user(session=session)
+    user_2 = await user_helpers.create_user(session=session)
+    user_3 = await user_helpers.create_user(session=session)
+    await user_helpers.create_user(session=session)
+    user_filters = user_models.UserFilters()
+
+    retrieved_users = await user_services.UserService(session).get_users(
+        user_filters, pagination.Pagination(offset=1, limit=2)
+    )
+
+    assert retrieved_users == [user_2, user_3]
 
 
 @pytest.mark.asyncio
@@ -138,6 +154,19 @@ async def test_user_service_delete_user_not_found(
     with pytest.raises(user_exceptions.UserNotFoundError) as exc_info:
         await user_services.UserService(session).delete_user(user_id)
     assert exc_info.value.context == {"id": user_id}
+
+
+@pytest.mark.asyncio
+async def test_user_service_count_all_users(
+    session: "conftest.AsyncSession",
+) -> None:
+    await user_helpers.create_user(session=session)
+    await user_helpers.create_user(session=session)
+    await user_helpers.create_user(session=session)
+
+    num_users = await user_services.UserService(session).count_all_users()
+
+    assert num_users == 3
 
 
 @pytest.mark.asyncio
@@ -264,6 +293,21 @@ async def test_user_crud_create(session: "conftest.AsyncSession") -> None:
 
 
 @pytest.mark.asyncio
+async def test_user_crud_read_many(session: "conftest.AsyncSession") -> None:
+    await user_helpers.create_user(session=session)
+    user_2 = await user_helpers.create_user(session=session)
+    user_3 = await user_helpers.create_user(session=session)
+    await user_helpers.create_user(session=session)
+    user_filters = user_models.UserFilters()
+
+    retrieved_users = await user_services.UserCRUD(session).read_many(
+        user_filters, pagination.Pagination(offset=1, limit=2)
+    )
+
+    assert retrieved_users == [user_2, user_3]
+
+
+@pytest.mark.asyncio
 async def test_user_crud_read_one(session: "conftest.AsyncSession") -> None:
     await user_helpers.create_user(session=session, email="test@email.com")
     user_2 = await user_helpers.create_user(session=session, email="test2@email.com")
@@ -305,3 +349,16 @@ async def test_user_crud_delete(session: "conftest.AsyncSession") -> None:
             user_models.User.id == user.id
         )
         (await session.execute(read_statement)).scalar_one()
+
+
+@pytest.mark.asyncio
+async def test_user_crud_count_all(
+    session: "conftest.AsyncSession",
+) -> None:
+    await user_helpers.create_user(session=session)
+    await user_helpers.create_user(session=session)
+    await user_helpers.create_user(session=session)
+
+    num_users = await user_services.UserCRUD(session).count_all()
+
+    assert num_users == 3

@@ -6,6 +6,7 @@ from sqlalchemy import exc
 from app.config import general
 from app.exceptions.http import user as user_exceptions
 from app.models import helpers
+from app.models import pagination as pagination_models
 from app.models import user as user_models
 from app.services import auth, base
 from app.tasks import user as user_tasks
@@ -29,6 +30,13 @@ class UserService(base.AppService):
         )
         log.info("The task to send email to confirm email has been invoked")
         return user_db
+
+    async def get_users(
+        self,
+        filters: user_models.UserFilters,
+        pagination: pagination_models.Pagination = pagination_models.Pagination(),
+    ) -> list[user_models.User]:
+        return await UserCRUD(self.session).read_many(filters, pagination)
 
     async def get_user(self, filters: user_models.UserFilters) -> user_models.User:
         try:
@@ -58,6 +66,9 @@ class UserService(base.AppService):
         except exc.NoResultFound as e:
             raise user_exceptions.UserNotFoundError(context={"id": user_id}) from e
         await user_crud_service.delete(user_db)
+
+    async def count_all_users(self) -> pagination_models.TotalResults:
+        return await UserCRUD(self.session).count_all()
 
     async def confirm_email(self, key: user_models.UserConfirmationEmailKey) -> None:
         not_found_exception = user_exceptions.UserNotFoundError(context={"key": key})
@@ -118,6 +129,13 @@ class UserCRUD(base.AppCRUD):
     async def create(self, user: user_models.UserCreate) -> user_models.User:
         return await self._create(user_models.User, user)
 
+    async def read_many(
+        self,
+        filters: user_models.UserFilters,
+        pagination: pagination_models.Pagination = pagination_models.Pagination(),
+    ) -> list[user_models.User]:
+        return await self._read_many(user_models.User, filters, pagination)
+
     async def read_one(self, filters: user_models.UserFilters) -> user_models.User:
         return await self._read_one(user_models.User, filters)
 
@@ -128,3 +146,6 @@ class UserCRUD(base.AppCRUD):
 
     async def delete(self, user: user_models.User) -> None:
         await self._delete(user)
+
+    async def count_all(self) -> pagination_models.TotalResults:
+        return await self._count_all(user_models.User)
