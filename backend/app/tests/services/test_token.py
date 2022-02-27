@@ -24,7 +24,7 @@ settings = general.get_settings()
 @pytest.mark.asyncio
 @freezegun.freeze_time("2022-02-05 18:30:00")
 async def test_token_service_obtain_tokens(session: "conftest.AsyncSession") -> None:
-    user = await user_helpers.create_user(
+    user = await user_helpers.create_active_user(
         session,
         email="test@email.com",
         password="$2b$12$q8JcpltDZkSLOdMuPyt/jORzExLKp9HsKgCoFJQ1IzzITc2/Pg42q",
@@ -58,7 +58,7 @@ async def test_token_service_obtain_tokens_user_not_found(
 async def test_token_service_obtain_tokens_invalid_password(
     session: "conftest.AsyncSession",
 ) -> None:
-    user = await user_helpers.create_user(
+    user = await user_helpers.create_active_user(
         session,
         email="test@email.com",
         password="$2b$12$q8JcpltDZkSLOdMuPyt/jORzExLKp9HsKgCoFJQ1IzzITc2/Pg42q",
@@ -71,8 +71,25 @@ async def test_token_service_obtain_tokens_invalid_password(
 
 
 @pytest.mark.asyncio
+async def test_token_service_obtain_tokens_inactive_user(
+    session: "conftest.AsyncSession",
+) -> None:
+    user = await user_helpers.create_user(
+        session,
+        email="test@email.com",
+        password="$2b$12$q8JcpltDZkSLOdMuPyt/jORzExLKp9HsKgCoFJQ1IzzITc2/Pg42q",
+    )
+
+    with pytest.raises(token_exceptions.InactiveUserError) as exc_info:
+        await token_services.TokenService(session).obtain_tokens(
+            email=user.email, password="plain_password"
+        )
+    assert exc_info.value.context == {"id": user.id}
+
+
+@pytest.mark.asyncio
 async def test_token_service_refresh_token(session: "conftest.AsyncSession") -> None:
-    user = await user_helpers.create_user(session)
+    user = await user_helpers.create_active_user(session)
     token = jwt_auth.AuthJWT().create_refresh_token(str(user.id))
 
     token = await token_services.TokenService(session).refresh_token(token=token)
@@ -103,6 +120,18 @@ async def test_token_service_refresh_no_refresh_type(
     with pytest.raises(token_exceptions.RefreshTokenRequiredError) as exc_info:
         await token_services.TokenService(session).refresh_token(token=token)
     assert exc_info.value.context == {"token": token}
+
+
+@pytest.mark.asyncio
+async def test_token_service_refresh_token_inactive_user(
+    session: "conftest.AsyncSession",
+) -> None:
+    user = await user_helpers.create_user(session)
+    token = jwt_auth.AuthJWT().create_refresh_token(str(user.id))
+
+    with pytest.raises(token_exceptions.InactiveUserError) as exc_info:
+        await token_services.TokenService(session).refresh_token(token=token)
+    assert exc_info.value.context == {"id": user.id}
 
 
 @mock.patch("app.services.token.jwt_db.get", return_value="true")
