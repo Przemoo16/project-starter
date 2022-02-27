@@ -157,14 +157,15 @@ async def test_user_service_delete_user_not_found(
 
 
 @pytest.mark.asyncio
-async def test_user_service_count_all_users(
+async def test_user_service_count_users(
     session: "conftest.AsyncSession",
 ) -> None:
     await user_helpers.create_user(session=session)
     await user_helpers.create_user(session=session)
     await user_helpers.create_user(session=session)
+    user_filters = user_models.UserFilters()
 
-    num_users = await user_services.UserService(session).count_all_users()
+    num_users = await user_services.UserService(session).count_users(user_filters)
 
     assert num_users == 3
 
@@ -286,10 +287,10 @@ async def test_user_crud_create(session: "conftest.AsyncSession") -> None:
 
     assert created_user.email == user_create.email
     assert created_user.password == user_create.password
-    read_statement = sqlmodel.select(user_models.User).where(
+    statement = sqlmodel.select(user_models.User).where(
         user_models.User.id == created_user.id
     )
-    assert (await session.execute(read_statement)).scalar_one()
+    assert (await session.execute(statement)).scalar_one()
 
 
 @pytest.mark.asyncio
@@ -329,13 +330,13 @@ async def test_user_crud_update(session: "conftest.AsyncSession") -> None:
     assert updated_user.email == new_email
     assert updated_user.confirmed_email is True
     assert updated_user.password == user.password
-    read_statement = sqlmodel.select(
+    statement = sqlmodel.select(
         user_models.User
     ).where(  # pylint: disable=singleton-comparison,
         user_models.User.email == new_email,
         user_models.User.confirmed_email == True,  # noqa: E712
     )
-    assert (await session.execute(read_statement)).scalar_one()
+    assert (await session.execute(statement)).scalar_one()
 
 
 @pytest.mark.asyncio
@@ -345,20 +346,21 @@ async def test_user_crud_delete(session: "conftest.AsyncSession") -> None:
     await user_services.UserCRUD(session).delete(user)
 
     with pytest.raises(exc.NoResultFound):
-        read_statement = sqlmodel.select(user_models.User).where(
+        statement = sqlmodel.select(user_models.User).where(
             user_models.User.id == user.id
         )
-        (await session.execute(read_statement)).scalar_one()
+        (await session.execute(statement)).scalar_one()
 
 
 @pytest.mark.asyncio
-async def test_user_crud_count_all(
+async def test_user_crud_count(
     session: "conftest.AsyncSession",
 ) -> None:
     await user_helpers.create_user(session=session)
     await user_helpers.create_user(session=session)
     await user_helpers.create_user(session=session)
+    user_filters = user_models.UserFilters()
 
-    num_users = await user_services.UserCRUD(session).count_all()
+    num_users = await user_services.UserCRUD(session).count(user_filters)
 
     assert num_users == 3
