@@ -110,11 +110,9 @@ async def request_reset_password(
     session: db.AsyncSession = fastapi.Depends(db.get_session),
 ) -> typing.Any:
     await user_services.UserService(session).request_reset_password(email)
-    return {
-        "message": (
-            "If provided valid email, the email to reset password has been sent"
-        )
-    }
+    return message.Message(
+        message="If provided valid email, the email to reset password has been sent"
+    )
 
 
 @router.post(
