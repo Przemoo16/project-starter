@@ -7,7 +7,6 @@ import redis
 from sqlalchemy import orm
 from sqlalchemy.ext import asyncio
 import sqlmodel
-from sqlmodel import pool
 
 from app import (  # noqa: F401 # pylint: disable=unused-import # Detect all models
     main,
@@ -16,8 +15,6 @@ from app import (  # noqa: F401 # pylint: disable=unused-import # Detect all mod
 from app.celery import worker
 from app.config import db, general
 from app.tests.mocks import email
-
-TEST_DB_ENGINE = "sqlite+aiosqlite://"
 
 AsyncSession: typing.TypeAlias = asyncio.AsyncSession
 TestClient: typing.TypeAlias = httpx.AsyncClient
@@ -48,13 +45,9 @@ def purge_celery_fixture() -> typing.Generator[None, None, None]:
     worker.app.control.purge()
 
 
-@pytest.fixture(name="engine", scope="session")
+@pytest.fixture(name="engine")  # TODO: Use one connection in the whole session
 def engine_fixture() -> typing.Generator[asyncio.AsyncEngine, None, None]:
-    yield asyncio.create_async_engine(
-        TEST_DB_ENGINE,
-        connect_args={"check_same_thread": False},
-        poolclass=pool.StaticPool,
-    )
+    yield asyncio.create_async_engine(settings.DATABASE_URL)
 
 
 @pytest_asyncio.fixture(name="create_tables")
@@ -79,15 +72,7 @@ async def session_fixture(
         engine, class_=asyncio.AsyncSession, expire_on_commit=False
     )
     async with async_session() as session:
-        await _setup_session(session)
         yield session
-
-
-async def _setup_session(session: AsyncSession) -> None:
-    if "sqlite" not in TEST_DB_ENGINE:
-        return
-    # SQLite ignores foreign key constraint by default
-    await session.execute(sqlmodel.text("pragma foreign_keys=ON;"))
 
 
 @pytest_asyncio.fixture(name="async_client")

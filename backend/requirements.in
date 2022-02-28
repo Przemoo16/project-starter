@@ -20,7 +20,6 @@ sqlmodel
 starlette
 uvicorn[standard]
 # dev
-aiosqlite
 bandit
 black
 flake8
