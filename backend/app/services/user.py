@@ -83,7 +83,6 @@ class UserService(base.AppService):
             raise not_found_exception
         user_update = user_models.UserUpdate(confirmed_email=True)
         await UserCRUD(self.session).update(user_db, user_update)
-        log.info("Email has been confirmed")
 
     async def request_reset_password(self, email: user_models.UserEmail) -> None:
         user_filters = user_models.UserFilters(email=email)

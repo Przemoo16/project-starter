@@ -79,7 +79,7 @@ class TokenService(base.AppService):
         jti = decoded_token["jti"]
         if not (expiration := decoded_token.get("exp")):
             jwt_db.set(jti, "true")
-            log.info("Token without expiration has been revoked")
+            log.warning("Revoked token without expiration")
             return
         remaining_expiration = _get_remaining_expiration(expiration)
         # Redis can only accept expiration values greater than 0
