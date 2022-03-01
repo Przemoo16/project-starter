@@ -14,7 +14,7 @@ API_URL = "/api/v1"
 
 @pytest.mark.asyncio
 async def test_create_user(async_client: "conftest.TestClient") -> None:
-    email = "test@example.com"
+    email = "test@email.com"
     request_data = {"email": email, "password": "plain_password"}
 
     response = await async_client.post(
@@ -47,7 +47,7 @@ async def test_get_user_stranger_request(
     async_client: "conftest.TestClient", session: "conftest.AsyncSession"
 ) -> None:
     owner = await user_helpers.create_active_user(
-        session=session, email="test@example.com"
+        session=session, email="test@email.com"
     )
     stranger = await user_helpers.create_active_user(
         session=session, email="test2@email.com"
@@ -65,7 +65,7 @@ async def test_update_user(
     async_client: "conftest.TestClient", session: "conftest.AsyncSession"
 ) -> None:
     user = await user_helpers.create_active_user(
-        session=session, email="test@example.com"
+        session=session, email="test@email.com"
     )
     updated_email = "updated@email.com"
     request_data = {"email": updated_email}
@@ -87,7 +87,7 @@ async def test_update_user_stranger_request(
     async_client: "conftest.TestClient", session: "conftest.AsyncSession"
 ) -> None:
     owner = await user_helpers.create_active_user(
-        session=session, email="test@example.com"
+        session=session, email="test@email.com"
     )
     stranger = await user_helpers.create_active_user(
         session=session, email="test2@email.com"
@@ -121,7 +121,7 @@ async def test_delete_user_stranger_request(
     async_client: "conftest.TestClient", session: "conftest.AsyncSession"
 ) -> None:
     owner = await user_helpers.create_active_user(
-        session=session, email="test@example.com"
+        session=session, email="test@email.com"
     )
     stranger = await user_helpers.create_active_user(
         session=session, email="test2@email.com"

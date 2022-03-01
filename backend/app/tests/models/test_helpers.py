@@ -1,6 +1,5 @@
 import datetime
 from unittest import mock
-import uuid
 
 import freezegun
 
@@ -22,7 +21,7 @@ def test_generate_fixed_uuid() -> None:
     good_uuid4_2 = converters.to_uuid("ce6498fe-ef21-4284-9139-98518a34bfa7")
     uuid_calls = [bad_uuid4_1, bad_uuid4_2, good_uuid4_1, good_uuid4_2]
 
-    with mock.patch.object(uuid, "uuid4", side_effect=uuid_calls) as mocked_uuid4:
+    with mock.patch("uuid.uuid4", side_effect=uuid_calls) as mocked_uuid4:
         generated_uuid = helpers.generate_fixed_uuid()
 
     assert generated_uuid == good_uuid4_1
