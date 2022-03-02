@@ -25,20 +25,20 @@ class TokenService(base.AppService):
         self, email: user_models.UserEmail, password: user_models.UserPassword
     ) -> token_models.Tokens:
         user_service = user_services.UserService(self.session)
-        unauthorized_exception = user_exceptions.UnauthorizedUserError()
+        invalid_credentials_exception = token_exceptions.InvalidCredentials()
         user_filters = user_models.UserFilters(email=email)
         try:
             user = await user_service.get_user(user_filters)
         except user_exceptions.UserNotFoundError as e:
             log.info("User with the email %r not found", email)
-            raise unauthorized_exception from e
+            raise invalid_credentials_exception from e
         if not auth.verify_password(password, user.password):
             log.info("Invalid password for user with the email %r", email)
-            raise unauthorized_exception
+            raise invalid_credentials_exception
         if not user.is_active:
             raise token_exceptions.InactiveUserError(context={"id": user.id})
         user_update = user_models.UserUpdate(last_login=datetime.datetime.utcnow())
-        updated_user = await user_service.update_user(user.id, user_update)
+        updated_user = await user_service.update_user(user, user_update)
         user_id = str(updated_user.id)
         auth_handler = jwt_auth.AuthJWT()
         return token_models.Tokens(  # nosec
