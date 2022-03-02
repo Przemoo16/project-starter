@@ -1,11 +1,15 @@
 import logging
+import typing
 
 import celery
 
 from app.config import general
-from app.models import user as user_models
 from app.services import email as email_services
 from app.utils.translation import gettext_lazy as _
+
+if typing.TYPE_CHECKING:
+    from app.models import user
+
 
 log = logging.getLogger(__name__)
 
@@ -14,7 +18,7 @@ settings = general.get_settings()
 
 @celery.shared_task
 def send_email_to_confirm_email(
-    email: user_models.UserEmail, key: user_models.UserConfirmationEmailKey
+    email: "user.UserEmail", key: "user.UserConfirmationEmailKey"
 ) -> None:
     link = settings.FRONTEND_CONFIRM_EMAIL_URL.format(key=key)
     subject = _("Confirm email")
@@ -34,7 +38,7 @@ def send_email_to_confirm_email(
 
 @celery.shared_task
 def send_email_to_reset_password(
-    email: user_models.UserEmail, key: user_models.UserResetPasswordKey
+    email: "user.UserEmail", key: "user.UserResetPasswordKey"
 ) -> None:
     link = settings.FRONTEND_RESET_PASSWORD_URL.format(key=key)
     subject = _("Reset password")

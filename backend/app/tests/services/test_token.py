@@ -48,7 +48,7 @@ async def test_token_service_obtain_tokens_user_not_found(
 ) -> None:
     email = converters.to_pydantic_email("test@email.com")
 
-    with pytest.raises(user_exceptions.UnauthorizedUserError):
+    with pytest.raises(token_exceptions.InvalidCredentials):
         await token_services.TokenService(session).obtain_tokens(
             email=email, password="plain_password"
         )
@@ -64,7 +64,7 @@ async def test_token_service_obtain_tokens_invalid_password(
         password="$2b$12$q8JcpltDZkSLOdMuPyt/jORzExLKp9HsKgCoFJQ1IzzITc2/Pg42q",
     )
 
-    with pytest.raises(user_exceptions.UnauthorizedUserError):
+    with pytest.raises(token_exceptions.InvalidCredentials):
         await token_services.TokenService(session).obtain_tokens(
             email=user.email, password="invalid_password"
         )

@@ -40,18 +40,8 @@ async def test_get_current_user_empty_jwt_subject(
 ) -> None:
     auth_handler = jwt_auth.AuthJWT()
 
-    with pytest.raises(user_exceptions.UnauthorizedUserError):
+    with pytest.raises(user_exceptions.UserNotFoundError):
         await user_deps.get_current_user(session, auth_handler)
-
-
-@pytest.mark.asyncio
-async def test_get_current_user_not_found(session: "conftest.AsyncSession") -> None:
-    user_id = "1dd53909-fcda-4c72-afcd-1bf4886389f8"
-    auth_handler = auth_helpers.create_auth_handler(user_id)
-
-    with pytest.raises(user_exceptions.UnauthorizedUserError) as exc_info:
-        await user_deps.get_current_user(session, auth_handler)
-    assert exc_info.value.context == {"id": str(user_id)}
 
 
 @pytest.mark.asyncio

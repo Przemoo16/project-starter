@@ -17,7 +17,7 @@ router = fastapi.APIRouter()
 @router.post(
     "/",
     response_model=token_models.Tokens,
-    responses={**user_exceptions.UnauthorizedUserError().doc},
+    responses={**token_exceptions.InvalidCredentials().doc},
 )
 async def obtain_tokens(
     form_data: security.OAuth2PasswordRequestForm = fastapi.Depends(),

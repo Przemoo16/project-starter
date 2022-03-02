@@ -3,16 +3,6 @@ from fastapi import status
 from app.exceptions.http import base
 
 
-class UnauthorizedUserError(base.HTTPException):
-    def __init__(
-        self, detail: base.Detail = None, context: base.Context = None
-    ) -> None:
-        detail = "User is not authorized"
-        status_code = status.HTTP_401_UNAUTHORIZED
-        headers = {"WWW-Authenticate": "Bearer"}
-        super().__init__(status_code, detail, context, headers)
-
-
 class InactiveUserError(base.HTTPException):
     def __init__(
         self, detail: base.Detail = None, context: base.Context = None
@@ -46,4 +36,13 @@ class UserAlreadyExistsError(base.HTTPException):
     ) -> None:
         detail = "User already exists"
         status_code = status.HTTP_409_CONFLICT
+        super().__init__(status_code, detail, context)
+
+
+class ConfirmationEmailError(base.HTTPException):
+    def __init__(
+        self, detail: base.Detail = None, context: base.Context = None
+    ) -> None:
+        detail = "Cannot confirm user email"
+        status_code = status.HTTP_422_UNPROCESSABLE_ENTITY
         super().__init__(status_code, detail, context)
