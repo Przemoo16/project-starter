@@ -16,7 +16,7 @@ API_URL = "/api/v1"
 async def test_obtain_tokens(
     async_client: "conftest.TestClient", session: "conftest.AsyncSession"
 ) -> None:
-    email = "test@example.com"
+    email = "test@email.com"
     await user_helpers.create_active_user(
         session=session,
         email=email,

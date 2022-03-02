@@ -3,6 +3,15 @@ from fastapi import status
 from app.exceptions.http import base
 
 
+class RevokedTokenError(base.HTTPException):
+    def __init__(
+        self, detail: base.Detail = None, context: base.Context = None
+    ) -> None:
+        detail = "Token has been revoked"
+        status_code = status.HTTP_401_UNAUTHORIZED
+        super().__init__(status_code, detail, context)
+
+
 class InactiveUserError(base.HTTPException):
     def __init__(
         self, detail: base.Detail = None, context: base.Context = None
@@ -26,14 +35,5 @@ class RefreshTokenRequiredError(base.HTTPException):
         self, detail: base.Detail = None, context: base.Context = None
     ) -> None:
         detail = "Refresh token required"
-        status_code = status.HTTP_422_UNPROCESSABLE_ENTITY
-        super().__init__(status_code, detail, context)
-
-
-class RevokedTokenError(base.HTTPException):
-    def __init__(
-        self, detail: base.Detail = None, context: base.Context = None
-    ) -> None:
-        detail = "Token has been revoked"
         status_code = status.HTTP_422_UNPROCESSABLE_ENTITY
         super().__init__(status_code, detail, context)
