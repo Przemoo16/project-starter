@@ -22,7 +22,7 @@ class HTTPException(fastapi.HTTPException, Exception):
         self.context = context
 
     @property
-    def doc(self) -> dict[int, dict[str, typing.Any]]:
+    def doc(self) -> dict[int | str, dict[str, typing.Any]]:
         return {
             self.status_code: {
                 "model": exception.ExceptionContent,
