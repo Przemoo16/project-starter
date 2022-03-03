@@ -109,9 +109,9 @@ async def request_reset_password(
         log.info("Message has not been sent because user not found")
     else:
         user_services.UserService(session).request_reset_password(user_db)
-    return message.Message(
-        message="If provided valid email, the email to reset password has been sent"
-    )
+    return {
+        "message": "If provided valid email, the email to reset password has been sent"
+    }
 
 
 @router.post(

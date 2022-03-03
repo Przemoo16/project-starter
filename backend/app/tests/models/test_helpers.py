@@ -37,4 +37,4 @@ def test_orjson_dumps() -> None:
 
     serialized = helpers.orjson_dumps(data, default=None)
 
-    assert serialized == '{"id":123,"name":"Przemo","date":"2023-02-01T16:00:00Z"}'
+    assert serialized == '{"id":123,"name":"Przemo","date":"2023-02-01T16:00:00"}'
