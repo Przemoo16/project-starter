@@ -5,8 +5,6 @@ import humps
 import orjson
 import pydantic
 
-DEFAULT_ORJSON_OPTION = orjson.OPT_NAIVE_UTC | orjson.OPT_UTC_Z
-
 
 def to_uuid(text: str, version: int = 4) -> uuid.UUID:
     return uuid.UUID(text, version=version)
@@ -22,7 +20,10 @@ def to_camel(text: str) -> str:
 
 def orjson_dumps(
     data: typing.Any,
-    option: int | None = DEFAULT_ORJSON_OPTION,
+    option: int | None = None,
     default: typing.Callable[[typing.Any], typing.Any] | None = None,
 ) -> bytes:
-    return orjson.dumps(data, option=option, default=default)
+    # Cannot pass option=None directly to the dumps function
+    if option:
+        return orjson.dumps(data, option=option, default=default)
+    return orjson.dumps(data, default=default)
