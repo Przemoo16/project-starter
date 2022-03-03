@@ -12,6 +12,12 @@ from app.utils import converters
 
 log = logging.getLogger(__name__)
 
+RESPONSES = {
+    **user_exceptions.InactiveUserError().doc,
+    **user_exceptions.UserForbiddenError().doc,
+    **user_exceptions.UserNotFoundError().doc,
+}
+
 
 async def get_current_user(
     session: db.AsyncSession = fastapi.Depends(db.get_session),

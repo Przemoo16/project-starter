@@ -35,11 +35,7 @@ async def create_user(
 @router.get(
     "/{user_id}",
     response_model=user_models.UserRead,
-    responses={
-        **user_exceptions.InactiveUserError().doc,
-        **user_exceptions.UserForbiddenError().doc,
-        **user_exceptions.UserNotFoundError().doc,
-    },
+    responses=user_deps.RESPONSES,
 )
 async def get_user(
     user_id: user_models.UserID,
@@ -50,13 +46,7 @@ async def get_user(
 
 
 @router.patch(
-    "/{user_id}",
-    response_model=user_models.UserRead,
-    responses={
-        **user_exceptions.InactiveUserError().doc,
-        **user_exceptions.UserForbiddenError().doc,
-        **user_exceptions.UserNotFoundError().doc,
-    },
+    "/{user_id}", response_model=user_models.UserRead, responses=user_deps.RESPONSES
 )
 async def update_user(
     user_id: user_models.UserID,
@@ -71,13 +61,7 @@ async def update_user(
 
 
 @router.delete(
-    "/{user_id}",
-    status_code=status.HTTP_204_NO_CONTENT,
-    responses={
-        **user_exceptions.InactiveUserError().doc,
-        **user_exceptions.UserForbiddenError().doc,
-        **user_exceptions.UserNotFoundError().doc,
-    },
+    "/{user_id}", status_code=status.HTTP_204_NO_CONTENT, responses=user_deps.RESPONSES
 )
 async def delete_user(
     user_id: user_models.UserID,
@@ -93,7 +77,10 @@ async def delete_user(
 @router.post(
     "/email-confirmation",
     status_code=status.HTTP_204_NO_CONTENT,
-    responses={**user_exceptions.UserNotFoundError().doc},
+    responses={
+        **user_exceptions.UserNotFoundError().doc,
+        **user_exceptions.ConfirmationEmailError().doc,
+    },
 )
 async def confirm_email(
     key: user_models.UserConfirmationEmailKey = fastapi.Body(..., embed=True),
