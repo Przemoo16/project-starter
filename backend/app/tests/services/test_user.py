@@ -264,18 +264,17 @@ async def test_user_crud_read_one(session: "conftest.AsyncSession") -> None:
 @pytest.mark.asyncio
 async def test_user_crud_update(session: "conftest.AsyncSession") -> None:
     user = await user_helpers.create_user(session=session, name="Test User")
-    new_name = "Updated Name"
-    user_update = user_models.UserUpdate(name=new_name, confirmed_email=True)
+    user_update = user_models.UserUpdate(name="Updated Name", confirmed_email=True)
 
     updated_user = await user_services.UserCRUD(session).update(user, user_update)
 
-    assert updated_user.name == new_name
+    assert updated_user.name == user_update.name
     assert updated_user.confirmed_email is True
     assert updated_user.password == user.password
     statement = sqlmodel.select(
         user_models.User
     ).where(  # pylint: disable=singleton-comparison,
-        user_models.User.name == new_name,
+        user_models.User.name == user_update.name,
         user_models.User.confirmed_email == True,  # noqa: E712
     )
     assert (await session.execute(statement)).scalar_one()
