@@ -12,10 +12,14 @@ from app.utils import converters
 
 log = logging.getLogger(__name__)
 
-RESPONSES = {
+INACTIVE_USER_RESPONSES = {
     **user_exceptions.InactiveUserError().doc,
-    **user_exceptions.UserForbiddenError().doc,
     **user_exceptions.UserNotFoundError().doc,
+}
+
+ALL_RESPONSES = {
+    **INACTIVE_USER_RESPONSES,
+    **user_exceptions.UserForbiddenError().doc,
 }
 
 

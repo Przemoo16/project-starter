@@ -21,7 +21,7 @@ async def test_confirmation_email_flow(async_client: "conftest.TestClient") -> N
     with mock.patch("uuid.uuid4", return_value=confirmation_email_key):
         response = await async_client.post(
             f"{settings.API_URL}/users",
-            json={"email": email, "password": password},
+            json={"email": email, "password": password, "name": "Test User"},
             follow_redirects=True,
         )
 
@@ -64,7 +64,7 @@ async def test_reset_password_flow(async_client: "conftest.TestClient") -> None:
     with mock.patch("uuid.uuid4", return_value=reset_password_key):
         response = await async_client.post(
             f"{settings.API_URL}/users",
-            json={"email": email, "password": password},
+            json={"email": email, "password": password, "name": "Test User"},
             follow_redirects=True,
         )
 

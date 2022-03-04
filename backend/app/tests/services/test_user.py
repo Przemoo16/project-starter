@@ -24,13 +24,16 @@ async def test_user_service_create_user(
 ) -> None:
     password = "plain_password"
     user_create = user_models.UserCreate(
-        email=converters.to_pydantic_email("test@email.com"), password=password
+        email=converters.to_pydantic_email("test@email.com"),
+        password=password,
+        name="Test User",
     )
 
     created_user = await user_services.UserService(session).create_user(user_create)
 
     assert created_user.email == user_create.email
     assert created_user.password != password
+    assert created_user.name == user_create.name
     mocked_send_email.assert_called_once_with(
         created_user.email, created_user.confirmation_email_key
     )
@@ -43,7 +46,9 @@ async def test_user_service_create_user_already_exists(
     session: "conftest.AsyncSession",
 ) -> None:
     user_create = user_models.UserCreate(
-        email=converters.to_pydantic_email("test@email.com"), password="plain_password"
+        email=converters.to_pydantic_email("test@email.com"),
+        password="plain_password",
+        name="Test User",
     )
     await user_helpers.create_user(session=session, email=user_create.email)
 
@@ -93,16 +98,14 @@ async def test_user_service_get_user_not_found(
 
 @pytest.mark.asyncio
 async def test_user_service_update_user(session: "conftest.AsyncSession") -> None:
-    user = await user_helpers.create_user(session=session, email="test@email.com")
-    user_update = user_models.UserUpdate(
-        email=converters.to_pydantic_email("new@email.com"), confirmed_email=True
-    )
+    user = await user_helpers.create_user(session=session, name="Test User")
+    user_update = user_models.UserUpdate(name="Updated Name", confirmed_email=True)
 
     updated_user = await user_services.UserService(session).update_user(
         user, user_update
     )
 
-    assert updated_user.email == user_update.email
+    assert updated_user.name == user_update.name
     assert updated_user.confirmed_email is True
     assert updated_user.password == user.password
 
@@ -216,13 +219,16 @@ async def test_user_service_reset_password(
 @pytest.mark.asyncio
 async def test_user_crud_create(session: "conftest.AsyncSession") -> None:
     user_create = user_models.UserCreate(
-        email=converters.to_pydantic_email("test@email.com"), password="hashed_password"
+        email=converters.to_pydantic_email("test@email.com"),
+        password="hashed_password",
+        name="Test User",
     )
 
     created_user = await user_services.UserCRUD(session).create(user_create)
 
     assert created_user.email == user_create.email
     assert created_user.password == user_create.password
+    assert created_user.name == user_create.name
     statement = sqlmodel.select(user_models.User).where(
         user_models.User.id == created_user.id
     )
@@ -257,19 +263,19 @@ async def test_user_crud_read_one(session: "conftest.AsyncSession") -> None:
 
 @pytest.mark.asyncio
 async def test_user_crud_update(session: "conftest.AsyncSession") -> None:
-    user = await user_helpers.create_user(session=session, email="test@email.com")
-    new_email = converters.to_pydantic_email("new@email.com")
-    user_update = user_models.UserUpdate(email=new_email, confirmed_email=True)
+    user = await user_helpers.create_user(session=session, name="Test User")
+    new_name = "Updated Name"
+    user_update = user_models.UserUpdate(name=new_name, confirmed_email=True)
 
     updated_user = await user_services.UserCRUD(session).update(user, user_update)
 
-    assert updated_user.email == new_email
+    assert updated_user.name == new_name
     assert updated_user.confirmed_email is True
     assert updated_user.password == user.password
     statement = sqlmodel.select(
         user_models.User
     ).where(  # pylint: disable=singleton-comparison,
-        user_models.User.email == new_email,
+        user_models.User.name == new_name,
         user_models.User.confirmed_email == True,  # noqa: E712
     )
     assert (await session.execute(statement)).scalar_one()

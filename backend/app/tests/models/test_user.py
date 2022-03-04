@@ -16,7 +16,8 @@ if typing.TYPE_CHECKING:
 async def test_user_model(session: "conftest.AsyncSession") -> None:
     email = converters.to_pydantic_email("test@email.com")
     password = "hashed_password"
-    user = user_models.User(email=email, password=password)
+    name = "Test User"
+    user = user_models.User(email=email, password=password, name=name)
 
     session.add(user)
     await session.commit()
@@ -25,6 +26,7 @@ async def test_user_model(session: "conftest.AsyncSession") -> None:
     assert user.id
     assert user.email == email
     assert user.password == password
+    assert user.name == name
     assert user.confirmed_email is False
     assert user.confirmation_email_key
     assert user.reset_password_key
@@ -40,13 +42,14 @@ async def test_user_updated_at_field(session: "conftest.AsyncSession") -> None:
         user = user_models.User(
             email=converters.to_pydantic_email("test@email.com"),
             password="hashed_password",
+            name="Test User",
         )
         session.add(user)
         await session.commit()
         await session.refresh(user)
 
     with freezegun.freeze_time("2022-01-16 23:00:00"):
-        user.email = converters.to_pydantic_email("updated@email.com")
+        user.name = "Updated Name"
         session.add(user)
         await session.commit()
         await session.refresh(user)
