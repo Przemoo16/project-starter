@@ -15,6 +15,8 @@ async def create_user(
         kwargs["email"] = f"{uuid.uuid4()}@email.com"
     if "password" not in kwargs:
         kwargs["password"] = "hashed_password"
+    if "name" not in kwargs:
+        kwargs["name"] = "Test User"
     user = user_models.User(**kwargs)
     return await db.save(session, user)
 

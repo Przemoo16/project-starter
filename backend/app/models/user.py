@@ -11,6 +11,7 @@ from app.models import base, helpers
 UserID: typing.TypeAlias = uuid.UUID
 UserEmail: typing.TypeAlias = pydantic.EmailStr
 UserPassword: typing.TypeAlias = str
+UserName: typing.TypeAlias = str
 UserConfirmedEmail: typing.TypeAlias = bool
 UserConfirmationEmailKey: typing.TypeAlias = uuid.UUID
 UserResetPasswordKey: typing.TypeAlias = uuid.UUID
@@ -21,10 +22,13 @@ UserIsActive: typing.TypeAlias = bool
 
 settings = general.get_settings()
 
+USER_NAME_MAX_LENGTH = 64
+
 
 class UserBase(base.BaseModel):
     email: UserEmail = sqlmodel.Field(index=True, sa_column_kwargs={"unique": True})
     password: UserPassword  # In database it's a hash so it doesn't have a strict length
+    name: UserName = sqlmodel.Field(max_length=USER_NAME_MAX_LENGTH)
 
 
 class User(UserBase, table=True):
@@ -71,11 +75,13 @@ class UserFilters(base.PydanticBaseModel):
 
 
 class UserUpdateAPI(base.PydanticBaseModel):
-    email: UserEmail | None = None
     password: UserPassword | None = sqlmodel.Field(
         default=None,
         min_length=settings.USER_PASSWORD_MIN_LENGTH,
         max_length=settings.USER_PASSWORD_MAX_LENGTH,
+    )
+    name: UserName | None = sqlmodel.Field(
+        default=None, max_length=USER_NAME_MAX_LENGTH
     )
 
 
@@ -88,5 +94,4 @@ class UserUpdate(UserUpdateAPI):
 
 class UserRead(base.BaseModel):
     id: UserID
-    email: UserEmail
-    is_active: UserIsActive
+    name: UserName

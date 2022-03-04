@@ -16,7 +16,8 @@ API_URL = "/api/v1"
 @pytest.mark.asyncio
 async def test_create_user(async_client: "conftest.TestClient") -> None:
     email = "test@email.com"
-    request_data = {"email": email, "password": "plain_password"}
+    name = "Test User"
+    request_data = {"email": email, "password": "plain_password", "name": name}
 
     response = await async_client.post(
         f"{API_URL}/users", json=request_data, follow_redirects=True
@@ -24,9 +25,7 @@ async def test_create_user(async_client: "conftest.TestClient") -> None:
     user = response.json()
 
     assert response.status_code == status.HTTP_201_CREATED
-    assert user == response_helpers.format_response(
-        {"id": user["id"], "email": email, "isActive": False}
-    )
+    assert user == response_helpers.format_response({"id": user["id"], "name": name})
 
 
 @pytest.mark.asyncio
@@ -42,24 +41,19 @@ async def test_get_user(
 
     assert response.status_code == status.HTTP_200_OK
     assert retrieved_user == response_helpers.format_response(
-        {"id": user.id, "email": user.email, "isActive": True}
+        {"id": user.id, "name": user.name}
     )
 
 
 @pytest.mark.asyncio
-async def test_get_user_stranger_request(
+async def test_get_user_inactive_user(
     async_client: "conftest.TestClient", session: "conftest.AsyncSession"
 ) -> None:
-    owner = await user_helpers.create_active_user(
-        session=session, email="test@email.com"
-    )
-    stranger = await user_helpers.create_active_user(
-        session=session, email="test2@email.com"
-    )
-    token = jwt_auth.AuthJWT().create_access_token(str(stranger.id))
+    user = await user_helpers.create_user(session=session)
+    token = jwt_auth.AuthJWT().create_access_token(str(user.id))
     headers = {"Authorization": f"Bearer {token}"}
 
-    response = await async_client.get(f"{API_URL}/users/{owner.id}", headers=headers)
+    response = await async_client.get(f"{API_URL}/users/{user.id}", headers=headers)
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
 
@@ -68,11 +62,9 @@ async def test_get_user_stranger_request(
 async def test_update_user(
     async_client: "conftest.TestClient", session: "conftest.AsyncSession"
 ) -> None:
-    user = await user_helpers.create_active_user(
-        session=session, email="test@email.com"
-    )
-    updated_email = "updated@email.com"
-    request_data = {"email": updated_email}
+    user = await user_helpers.create_active_user(session=session, name="Test User")
+    new_name = "Updated Name"
+    request_data = {"name": new_name}
     token = jwt_auth.AuthJWT().create_access_token(str(user.id))
     headers = {"Authorization": f"Bearer {token}"}
 
@@ -83,7 +75,7 @@ async def test_update_user(
 
     assert response.status_code == status.HTTP_200_OK
     assert retrieved_user == response_helpers.format_response(
-        {"id": user.id, "email": updated_email, "isActive": True}
+        {"id": user.id, "name": new_name}
     )
 
 

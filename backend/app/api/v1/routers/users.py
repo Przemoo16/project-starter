@@ -35,18 +35,20 @@ async def create_user(
 @router.get(
     "/{user_id}",
     response_model=user_models.UserRead,
-    responses=user_deps.RESPONSES,
+    dependencies=[fastapi.Depends(user_deps.get_current_active_user)],
+    responses=user_deps.INACTIVE_USER_RESPONSES,
 )
 async def get_user(
     user_id: user_models.UserID,
-    current_user: user_models.User = fastapi.Depends(user_deps.get_current_active_user),
+    session: db.AsyncSession = fastapi.Depends(db.get_session),
 ) -> typing.Any:
-    await user_deps.check_user_requests_own_data(user_id, current_user)
-    return current_user
+    return await user_services.UserService(session).get_user(
+        user_models.UserFilters(id=user_id)
+    )
 
 
 @router.patch(
-    "/{user_id}", response_model=user_models.UserRead, responses=user_deps.RESPONSES
+    "/{user_id}", response_model=user_models.UserRead, responses=user_deps.ALL_RESPONSES
 )
 async def update_user(
     user_id: user_models.UserID,
@@ -61,7 +63,9 @@ async def update_user(
 
 
 @router.delete(
-    "/{user_id}", status_code=status.HTTP_204_NO_CONTENT, responses=user_deps.RESPONSES
+    "/{user_id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+    responses=user_deps.ALL_RESPONSES,
 )
 async def delete_user(
     user_id: user_models.UserID,
