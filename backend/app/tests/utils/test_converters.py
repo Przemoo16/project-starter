@@ -1,4 +1,5 @@
 import datetime
+import decimal
 import uuid
 
 import orjson
@@ -45,17 +46,19 @@ def test_orjson_dumps() -> None:
         "id": 123,
         "name": "Przemo",
         "date": datetime.datetime(2023, 2, 1, 16, 0, 0),
+        "decimal": decimal.Decimal("30.99"),
     }
 
     serialized = converters.orjson_dumps(data)
 
-    assert serialized == b'{"id":123,"name":"Przemo","date":"2023-02-01T16:00:00"}'
+    assert (
+        serialized
+        == b'{"id":123,"name":"Przemo","date":"2023-02-01T16:00:00","decimal":30.99}'
+    )
 
 
 def test_orjson_dumps_pass_option() -> None:
     data = {
-        "id": 123,
-        "name": "Przemo",
         "date": datetime.datetime(2023, 2, 1, 16, 0, 0),
     }
 
@@ -63,4 +66,4 @@ def test_orjson_dumps_pass_option() -> None:
         data, option=orjson.OPT_NAIVE_UTC | orjson.OPT_UTC_Z
     )
 
-    assert serialized == b'{"id":123,"name":"Przemo","date":"2023-02-01T16:00:00Z"}'
+    assert serialized == b'{"date":"2023-02-01T16:00:00Z"}'

@@ -8,6 +8,7 @@ from app.exceptions.http import token as token_exceptions
 from app.exceptions.http import user as user_exceptions
 from app.models import token as token_models
 from app.services import token as token_services
+from app.utils import converters
 
 settings = general.get_settings()
 
@@ -24,7 +25,7 @@ async def obtain_tokens(
     session: db.AsyncSession = fastapi.Depends(db.get_session),
 ) -> typing.Any:
     return await token_services.TokenService(session).obtain_tokens(
-        form_data.username, form_data.password
+        converters.to_pydantic_email(form_data.username), form_data.password
     )
 
 

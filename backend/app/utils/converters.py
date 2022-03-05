@@ -1,3 +1,4 @@
+import decimal
 import typing
 import uuid
 
@@ -18,10 +19,16 @@ def to_camel(text: str) -> str:
     return humps.camelize(text)
 
 
+def _orjson_default(obj: typing.Any) -> typing.Any:
+    if isinstance(obj, decimal.Decimal):
+        return float(obj)
+    raise TypeError
+
+
 def orjson_dumps(
     data: typing.Any,
     option: int | None = None,
-    default: typing.Callable[[typing.Any], typing.Any] | None = None,
+    default: typing.Callable[[typing.Any], typing.Any] | None = _orjson_default,
 ) -> bytes:
     # Cannot pass option=None directly to the dumps function
     if option:
