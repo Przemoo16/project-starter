@@ -22,7 +22,7 @@ def to_camel(text: str) -> str:
 def _orjson_default(obj: typing.Any) -> typing.Any:
     if isinstance(obj, decimal.Decimal):
         return float(obj)
-    raise TypeError
+    raise TypeError  # pragma: no cover
 
 
 def orjson_dumps(
