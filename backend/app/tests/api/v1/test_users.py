@@ -22,10 +22,12 @@ async def test_create_user(async_client: "conftest.TestClient") -> None:
     response = await async_client.post(
         f"{API_URL}/users", json=request_data, follow_redirects=True
     )
-    user = response.json()
+    retrieved_user = response.json()
 
     assert response.status_code == status.HTTP_201_CREATED
-    assert user == response_helpers.format_response({"id": user["id"], "name": name})
+    assert retrieved_user == response_helpers.format_response(
+        {"id": retrieved_user["id"], "name": name}
+    )
 
 
 @pytest.mark.asyncio
@@ -83,12 +85,8 @@ async def test_update_user(
 async def test_update_user_stranger_request(
     async_client: "conftest.TestClient", session: "conftest.AsyncSession"
 ) -> None:
-    owner = await user_helpers.create_active_user(
-        session=session, email="test@email.com"
-    )
-    stranger = await user_helpers.create_active_user(
-        session=session, email="test2@email.com"
-    )
+    owner = await user_helpers.create_active_user(session=session)
+    stranger = await user_helpers.create_active_user(session=session)
     request_data = {"email": "updated@email.com"}
     token = jwt_auth.AuthJWT().create_access_token(str(stranger.id))
     headers = {"Authorization": f"Bearer {token}"}
@@ -117,12 +115,8 @@ async def test_delete_user(
 async def test_delete_user_stranger_request(
     async_client: "conftest.TestClient", session: "conftest.AsyncSession"
 ) -> None:
-    owner = await user_helpers.create_active_user(
-        session=session, email="test@email.com"
-    )
-    stranger = await user_helpers.create_active_user(
-        session=session, email="test2@email.com"
-    )
+    owner = await user_helpers.create_active_user(session=session)
+    stranger = await user_helpers.create_active_user(session=session)
     token = jwt_auth.AuthJWT().create_access_token(str(stranger.id), fresh=True)
     headers = {"Authorization": f"Bearer {token}"}
 
