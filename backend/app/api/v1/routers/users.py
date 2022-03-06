@@ -48,7 +48,9 @@ async def get_user(
 
 
 @router.patch(
-    "/{user_id}", response_model=user_models.UserRead, responses=user_deps.ALL_RESPONSES
+    "/{user_id}",
+    response_model=user_models.UserRead,
+    responses=user_deps.ALL_RESPONSES,
 )
 async def update_user(
     user_id: user_models.UserID,
@@ -90,10 +92,11 @@ async def confirm_email(
     key: user_models.UserConfirmationEmailKey = fastapi.Body(..., embed=True),
     session: db.AsyncSession = fastapi.Depends(db.get_session),
 ) -> typing.Any:
-    user_db = await user_services.UserService(session).get_user(
+    user_service = user_services.UserService(session)
+    user_db = await user_service.get_user(
         user_models.UserFilters(confirmation_email_key=key)
     )
-    await user_services.UserService(session).confirm_email(user_db)
+    await user_service.confirm_email(user_db)
 
 
 @router.post(
@@ -105,14 +108,13 @@ async def request_reset_password(
     email: user_models.UserEmail = fastapi.Body(..., embed=True),
     session: db.AsyncSession = fastapi.Depends(db.get_session),
 ) -> typing.Any:
+    user_service = user_services.UserService(session)
     try:
-        user_db = await user_services.UserService(session).get_user(
-            user_models.UserFilters(email=email)
-        )
+        user_db = await user_service.get_user(user_models.UserFilters(email=email))
     except user_exceptions.UserNotFoundError:
         log.info("Message has not been sent because user not found")
     else:
-        user_services.UserService(session).request_reset_password(user_db)
+        user_service.request_reset_password(user_db)
     return {
         "message": "If provided valid email, the email to reset password has been sent"
     }
@@ -128,7 +130,8 @@ async def reset_password(
     password: user_models.UserPassword = fastapi.Body(..., embed=True),
     session: db.AsyncSession = fastapi.Depends(db.get_session),
 ) -> typing.Any:
-    user_db = await user_services.UserService(session).get_user(
+    user_service = user_services.UserService(session)
+    user_db = await user_service.get_user(
         user_models.UserFilters(reset_password_key=key)
     )
-    await user_services.UserService(session).reset_password(user_db, password)
+    await user_service.reset_password(user_db, password)
