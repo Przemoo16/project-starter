@@ -1,6 +1,5 @@
 import typing
 
-import fastapi
 from fastapi import exceptions as fastapi_exceptions
 from fastapi import status
 from fastapi_jwt_auth import exceptions as jwt_exceptions
@@ -10,37 +9,41 @@ from app.exceptions.http import base
 from app.models import exception
 from app.utils import responses
 
+if typing.TYPE_CHECKING:
+    import fastapi
+
+
 ValidationErrorDetail = "Invalid data"
 
 
-def init_handlers(app: fastapi.FastAPI) -> None:  # pragma: no cover
+def init_handlers(app: "fastapi.FastAPI") -> None:  # pragma: no cover
     @app.exception_handler(starlette_exceptions.HTTPException)
     async def custom_starlette_http_exception_handler(
-        request: fastapi.Request, exc: starlette_exceptions.HTTPException
+        request: "fastapi.Request", exc: starlette_exceptions.HTTPException
     ) -> responses.ORJSONResponse:
         return starlette_http_exception_handler(request, exc)
 
     @app.exception_handler(fastapi_exceptions.RequestValidationError)
     async def custom_request_validation_exception_handler(
-        request: fastapi.Request, exc: fastapi_exceptions.RequestValidationError
+        request: "fastapi.Request", exc: fastapi_exceptions.RequestValidationError
     ) -> responses.ORJSONResponse:
         return request_validation_exception_handler(request, exc)
 
     @app.exception_handler(jwt_exceptions.AuthJWTException)
     async def custom_authjwt_exception_handler(
-        request: fastapi.Request, exc: jwt_exceptions.AuthJWTException
+        request: "fastapi.Request", exc: jwt_exceptions.AuthJWTException
     ) -> responses.ORJSONResponse:
         return authjwt_exception_handler(request, exc)
 
     @app.exception_handler(base.HTTPException)
     async def custom_app_http_exception_handler(
-        request: fastapi.Request, exc: base.HTTPException
+        request: "fastapi.Request", exc: base.HTTPException
     ) -> responses.ORJSONResponse:
         return app_http_exception_handler(request, exc)
 
 
 def starlette_http_exception_handler(
-    _: fastapi.Request, exc: starlette_exceptions.HTTPException
+    _: "fastapi.Request", exc: starlette_exceptions.HTTPException
 ) -> responses.ORJSONResponse:
     return responses.ORJSONResponse(
         status_code=exc.status_code,
@@ -49,7 +52,7 @@ def starlette_http_exception_handler(
 
 
 def request_validation_exception_handler(
-    _: fastapi.Request, exc: fastapi_exceptions.RequestValidationError
+    _: "fastapi.Request", exc: fastapi_exceptions.RequestValidationError
 ) -> responses.ORJSONResponse:
     return responses.ORJSONResponse(
         status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
@@ -62,7 +65,7 @@ def request_validation_exception_handler(
 
 
 def authjwt_exception_handler(
-    _: fastapi.Request, exc: jwt_exceptions.AuthJWTException
+    _: "fastapi.Request", exc: jwt_exceptions.AuthJWTException
 ) -> responses.ORJSONResponse:
     return responses.ORJSONResponse(
         status_code=exc.status_code,
@@ -71,7 +74,7 @@ def authjwt_exception_handler(
 
 
 def app_http_exception_handler(
-    _: fastapi.Request, exc: base.HTTPException
+    _: "fastapi.Request", exc: base.HTTPException
 ) -> responses.ORJSONResponse:
     return responses.ORJSONResponse(
         status_code=exc.status_code,

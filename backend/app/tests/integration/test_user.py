@@ -11,6 +11,8 @@ if typing.TYPE_CHECKING:
 
 settings = general.get_settings()
 
+API_URL = settings.API_URL
+
 
 @pytest.mark.asyncio
 async def test_confirmation_email_flow(async_client: "conftest.TestClient") -> None:
@@ -20,7 +22,7 @@ async def test_confirmation_email_flow(async_client: "conftest.TestClient") -> N
     confirmation_email_key = converters.to_uuid("1dd53909-fcda-4c72-afcd-1bf4886389f8")
     with mock.patch("uuid.uuid4", return_value=confirmation_email_key):
         response = await async_client.post(
-            f"{settings.API_URL}/users",
+            f"{API_URL}/users",
             json={"email": email, "password": password, "name": "Test User"},
             follow_redirects=True,
         )
@@ -29,7 +31,7 @@ async def test_confirmation_email_flow(async_client: "conftest.TestClient") -> N
 
     # Authorize the user
     response = await async_client.post(
-        f"{settings.API_URL}/token",
+        f"{API_URL}/token",
         data={"username": email, "password": password},
         follow_redirects=True,
     )
@@ -38,7 +40,7 @@ async def test_confirmation_email_flow(async_client: "conftest.TestClient") -> N
 
     # Confirm email
     response = await async_client.post(
-        f"{settings.API_URL}/users/email-confirmation",
+        f"{API_URL}/users/email-confirmation",
         json={"key": str(confirmation_email_key)},
     )
 
@@ -46,7 +48,7 @@ async def test_confirmation_email_flow(async_client: "conftest.TestClient") -> N
 
     # Authorize the user
     response = await async_client.post(
-        f"{settings.API_URL}/token",
+        f"{API_URL}/token",
         data={"username": email, "password": password},
         follow_redirects=True,
     )
@@ -63,7 +65,7 @@ async def test_reset_password_flow(async_client: "conftest.TestClient") -> None:
     confirmation_email_key = reset_password_key
     with mock.patch("uuid.uuid4", return_value=reset_password_key):
         response = await async_client.post(
-            f"{settings.API_URL}/users",
+            f"{API_URL}/users",
             json={"email": email, "password": password, "name": "Test User"},
             follow_redirects=True,
         )
@@ -72,7 +74,7 @@ async def test_reset_password_flow(async_client: "conftest.TestClient") -> None:
 
     # Confirm email
     response = await async_client.post(
-        f"{settings.API_URL}/users/email-confirmation",
+        f"{API_URL}/users/email-confirmation",
         json={"key": str(confirmation_email_key)},
     )
 
@@ -80,7 +82,7 @@ async def test_reset_password_flow(async_client: "conftest.TestClient") -> None:
 
     # Request reset password
     response = await async_client.post(
-        f"{settings.API_URL}/users/password/reset-request",
+        f"{API_URL}/users/password/reset-request",
         json={"email": email},
     )
 
@@ -89,7 +91,7 @@ async def test_reset_password_flow(async_client: "conftest.TestClient") -> None:
     # Reset password
     new_password = "new_password"
     response = await async_client.post(
-        f"{settings.API_URL}/users/password/reset",
+        f"{API_URL}/users/password/reset",
         json={"key": str(reset_password_key), "password": new_password},
     )
 
@@ -97,7 +99,7 @@ async def test_reset_password_flow(async_client: "conftest.TestClient") -> None:
 
     # Authorize the user
     response = await async_client.post(
-        f"{settings.API_URL}/token",
+        f"{API_URL}/token",
         data={"username": email, "password": new_password},
         follow_redirects=True,
     )
