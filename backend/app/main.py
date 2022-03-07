@@ -1,3 +1,5 @@
+from logging import config
+
 import fastapi
 
 from app.api.v1 import api
@@ -6,6 +8,7 @@ from app.exceptions import handlers
 from app.utils import openapi, responses
 
 settings = general.get_settings()
+config.fileConfig("logging.conf", disable_existing_loggers=False)
 
 app = fastapi.FastAPI(
     title=settings.APP_NAME,

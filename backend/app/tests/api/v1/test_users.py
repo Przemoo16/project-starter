@@ -26,7 +26,10 @@ async def test_create_user(async_client: "conftest.TestClient") -> None:
 
     assert response.status_code == status.HTTP_201_CREATED
     assert retrieved_user == response_helpers.format_response(
-        {"id": retrieved_user["id"], "name": name}
+        {
+            "id": retrieved_user["id"],
+            "name": name,
+        }
     )
 
 
@@ -43,7 +46,10 @@ async def test_get_user(
 
     assert response.status_code == status.HTTP_200_OK
     assert retrieved_user == response_helpers.format_response(
-        {"id": user.id, "name": user.name}
+        {
+            "id": user.id,
+            "name": user.name,
+        }
     )
 
 
@@ -77,7 +83,10 @@ async def test_update_user(
 
     assert response.status_code == status.HTTP_200_OK
     assert retrieved_user == response_helpers.format_response(
-        {"id": user.id, "name": new_name}
+        {
+            "id": user.id,
+            "name": new_name,
+        }
     )
 
 

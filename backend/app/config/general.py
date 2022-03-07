@@ -1,26 +1,25 @@
 import datetime
 import functools
-import logging
-import typing
 
 import pydantic
 
 
-class Settings(pydantic.BaseSettings):
-    # App
+class App(pydantic.BaseSettings):
     APP_NAME: str = "Project starter"
     API_VERSION: str = "v1"
     LOCALES: list[str] = ["en"]
-
-    # Urls
     API_URL: str = f"/api/{API_VERSION}"
-    TOKEN_URL: str = "/token"
-    REFRESH_TOKEN_URL: str = f"/{TOKEN_URL}/refresh"
+
+
+class Frontend(pydantic.BaseSettings):
     FRONTEND_CONFIRM_EMAIL_URL: pydantic.AnyHttpUrl
     FRONTEND_RESET_PASSWORD_URL: pydantic.AnyHttpUrl
 
-    # Security
+
+class Security(pydantic.BaseSettings):
     SECRET_KEY: str
+    TOKEN_URL: str = "/token"
+    REFRESH_TOKEN_URL: str = f"/{TOKEN_URL}/refresh"
     AUTHJWT_SECRET_KEY: str
     AUTHJWT_ACCESS_TOKEN_EXPIRES: datetime.timedelta = datetime.timedelta(minutes=30)
     AUTHJWT_REFRESH_TOKEN_EXPIRES: datetime.timedelta = datetime.timedelta(days=1)
@@ -34,44 +33,29 @@ class Settings(pydantic.BaseSettings):
     USER_PASSWORD_MIN_LENGTH: int = 8
     USER_PASSWORD_MAX_LENGTH: int = 32
 
-    # Database
-    DATABASE_URL: str
-    REDIS_URL: str
 
-    # Celery
+class Database(pydantic.BaseSettings):
+    DATABASE_URL: pydantic.PostgresDsn
+    REDIS_URL: pydantic.RedisDsn
+
+
+class Celery(pydantic.BaseSettings):
     CELERY_BROKER_URL: pydantic.RedisDsn
     CELERY_RESULT_BACKEND: pydantic.RedisDsn
     CELERY_ACCEPT_CONTENT: set[str] = {"application/json"}
     CELERY_TASK_SERIALIZER: str = "json"
     CELERY_RESULT_SERIALIZER: str = "json"
 
-    # Email
+
+class Email(pydantic.BaseSettings):
     SMTP_HOST: str
     SMTP_PORT: int
     SMTP_USER: str
     SMTP_PASSWORD: str
     EMAIL_SENDER_EMAIL: pydantic.EmailStr
 
-    # Logging
-    LOGGING: dict[str, typing.Any] = {
-        "version": 1,
-        "disable_existing_loggers": False,
-        "formatters": {
-            "simple": {"format": "%(levelname)s: %(message)s"},
-        },
-        "handlers": {
-            "console": {
-                "class": "logging.StreamHandler",
-                "formatter": "simple",
-                "level": logging.DEBUG,
-            },
-        },
-        "root": {
-            "handlers": ["console"],
-            "level": logging.DEBUG,
-        },
-    }
 
+class Settings(App, Frontend, Security, Database, Celery, Email):
     class Config:
         case_sensitive = True
 

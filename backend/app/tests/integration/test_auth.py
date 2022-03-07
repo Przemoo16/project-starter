@@ -11,6 +11,8 @@ if typing.TYPE_CHECKING:
 
 settings = general.get_settings()
 
+API_URL = settings.API_URL
+
 
 @pytest.mark.asyncio
 async def test_auth_flow(async_client: "conftest.TestClient") -> None:
@@ -20,7 +22,7 @@ async def test_auth_flow(async_client: "conftest.TestClient") -> None:
     confirmation_email_key = converters.to_uuid("1dd53909-fcda-4c72-afcd-1bf4886389f8")
     with mock.patch("uuid.uuid4", return_value=confirmation_email_key):
         response = await async_client.post(
-            f"{settings.API_URL}/users",
+            f"{API_URL}/users",
             json={"email": email, "password": password, "name": "Test User"},
             follow_redirects=True,
         )
@@ -29,13 +31,13 @@ async def test_auth_flow(async_client: "conftest.TestClient") -> None:
 
     # Confirm email
     response = await async_client.post(
-        f"{settings.API_URL}/users/email-confirmation",
+        f"{API_URL}/users/email-confirmation",
         json={"key": str(confirmation_email_key)},
     )
 
     # Auth with wrong email
     response = await async_client.post(
-        f"{settings.API_URL}/token",
+        f"{API_URL}/token",
         data={"username": "invalid@email.com", "password": password},
         follow_redirects=True,
     )
@@ -44,7 +46,7 @@ async def test_auth_flow(async_client: "conftest.TestClient") -> None:
 
     # Auth with wrong password
     response = await async_client.post(
-        f"{settings.API_URL}/token",
+        f"{API_URL}/token",
         data={"username": email, "password": "invalid_password"},
         follow_redirects=True,
     )
@@ -53,7 +55,7 @@ async def test_auth_flow(async_client: "conftest.TestClient") -> None:
 
     # Auth with valid credentials
     response = await async_client.post(
-        f"{settings.API_URL}/token",
+        f"{API_URL}/token",
         data={"username": email, "password": password},
         follow_redirects=True,
     )
@@ -69,7 +71,7 @@ async def test_tokens_flow(async_client: "conftest.TestClient") -> None:
     confirmation_email_key = converters.to_uuid("1dd53909-fcda-4c72-afcd-1bf4886389f8")
     with mock.patch("uuid.uuid4", return_value=confirmation_email_key):
         response = await async_client.post(
-            f"{settings.API_URL}/users",
+            f"{API_URL}/users",
             json={"email": email, "password": password, "name": "Test User"},
             follow_redirects=True,
         )
@@ -79,7 +81,7 @@ async def test_tokens_flow(async_client: "conftest.TestClient") -> None:
 
     # Confirm email
     response = await async_client.post(
-        f"{settings.API_URL}/users/email-confirmation",
+        f"{API_URL}/users/email-confirmation",
         json={"key": str(confirmation_email_key)},
     )
 
@@ -87,7 +89,7 @@ async def test_tokens_flow(async_client: "conftest.TestClient") -> None:
 
     # Authorize the user
     response = await async_client.post(
-        f"{settings.API_URL}/token",
+        f"{API_URL}/token",
         data={"username": email, "password": password},
         follow_redirects=True,
     )
@@ -102,7 +104,7 @@ async def test_tokens_flow(async_client: "conftest.TestClient") -> None:
     user_id = user["id"]
     access_token = tokens["accessToken"]
     response = await async_client.patch(
-        f"{settings.API_URL}/users/{user_id}",
+        f"{API_URL}/users/{user_id}",
         headers={"Authorization": f"Bearer {access_token}"},
         json={"password": "new_password"},
     )
@@ -111,14 +113,14 @@ async def test_tokens_flow(async_client: "conftest.TestClient") -> None:
 
     # Revoke access token
     response = await async_client.post(
-        f"{settings.API_URL}/token/revoke", json={"token": access_token}
+        f"{API_URL}/token/revoke", json={"token": access_token}
     )
 
     assert response.status_code == 204
 
     # Update the user password with revoked access token
     response = await async_client.patch(
-        f"{settings.API_URL}/users/{user_id}",
+        f"{API_URL}/users/{user_id}",
         headers={"Authorization": f"Bearer {access_token}"},
         json={"password": "another_new_password"},
     )
@@ -128,7 +130,7 @@ async def test_tokens_flow(async_client: "conftest.TestClient") -> None:
     # Refresh access token
     refresh_token = tokens["refreshToken"]
     response = await async_client.post(
-        f"{settings.API_URL}/token/refresh", json={"token": refresh_token}
+        f"{API_URL}/token/refresh", json={"token": refresh_token}
     )
     token = response.json()
 
@@ -139,7 +141,7 @@ async def test_tokens_flow(async_client: "conftest.TestClient") -> None:
     # Update the user password
     access_token = token["accessToken"]
     response = await async_client.patch(
-        f"{settings.API_URL}/users/{user_id}",
+        f"{API_URL}/users/{user_id}",
         headers={"Authorization": f"Bearer {access_token}"},
         json={"password": "another_new_password"},
     )
@@ -148,14 +150,14 @@ async def test_tokens_flow(async_client: "conftest.TestClient") -> None:
 
     # Revoke refresh token
     response = await async_client.post(
-        f"{settings.API_URL}/token/revoke", json={"token": refresh_token}
+        f"{API_URL}/token/revoke", json={"token": refresh_token}
     )
 
     assert response.status_code == 204
 
     # Refresh access token with revoked refresh token
     token_response = await async_client.post(
-        f"{settings.API_URL}/token/refresh", json={"token": refresh_token}
+        f"{API_URL}/token/refresh", json={"token": refresh_token}
     )
 
     assert token_response.status_code == 401
