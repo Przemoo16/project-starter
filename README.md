@@ -14,4 +14,5 @@
         However, special attention should be paid to this,
     -   ERROR: The top-priority issue that breaks the program and has to be investigated.
 -   Test coverage score must be kept on the 100% level (don't put `# pragma: no cover` without important reason).
--   Always add annotations and use the most specific types as possible.
+-   Always add annotations and use the most specific types as possible,
+-   Custom exceptions should be named with the `Error` at the end of the name like: `CustomNameError`.
