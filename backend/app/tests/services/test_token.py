@@ -161,13 +161,13 @@ async def test_token_service_refresh_token_user_not_found(
 
 @mock.patch("app.services.token.jwt_db.setex")
 def test_token_service_revoke_token(
-    mocked_redis_setex: mock.MagicMock, session: "conftest.AsyncSession"
+    mock_redis_setex: mock.MagicMock, session: "conftest.AsyncSession"
 ) -> None:
     token = jwt_auth.AuthJWT().create_access_token("dummy_id")
 
     token_services.TokenService(session).revoke_token(token=token)
 
-    mocked_redis_setex.assert_called_once()
+    mock_redis_setex.assert_called_once()
 
 
 @freezegun.freeze_time("2022-02-06 13:30:00")
@@ -192,7 +192,7 @@ def test_token_service_revoke_token_invalid(session: "conftest.AsyncSession") ->
 
 @mock.patch("app.services.token.jwt_db.set")
 def test_token_service_revoke_token_missing_expiration(
-    mocked_redis_set: mock.MagicMock, session: "conftest.AsyncSession"
+    mock_redis_set: mock.MagicMock, session: "conftest.AsyncSession"
 ) -> None:
     jti = "dummy_jti"
     token = jwt.encode(
@@ -203,7 +203,7 @@ def test_token_service_revoke_token_missing_expiration(
 
     token_services.TokenService(session).revoke_token(token=token)
 
-    mocked_redis_set.assert_called_with(jti, "true")
+    mock_redis_set.assert_called_with(jti, "true")
 
 
 @freezegun.freeze_time("2022-02-06 12:30:00")

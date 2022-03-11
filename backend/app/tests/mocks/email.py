@@ -4,7 +4,7 @@ import ssl
 import typing
 
 
-class MockedSMTP(smtplib.SMTP):
+class MockSMTP(smtplib.SMTP):
     @staticmethod
     def connect(
         host: str = "localhost",
@@ -30,7 +30,7 @@ class MockedSMTP(smtplib.SMTP):
         return {"dummy_sender": (235, b"dummy response")}
 
 
-class MockedSMTP_SSL(MockedSMTP):
+class MockSMTP_SSL(MockSMTP):
     def __init__(
         self,
         host: str = "",
@@ -45,9 +45,9 @@ class MockedSMTP_SSL(MockedSMTP):
         self.keyfile = keyfile
         self.certfile = certfile
         self.context = context
-        MockedSMTP.__init__(self, host, port, local_hostname, timeout, source_address)
+        MockSMTP.__init__(self, host, port, local_hostname, timeout, source_address)
 
 
 def mock_smtp() -> None:
-    smtplib.SMTP = MockedSMTP  # type: ignore
-    smtplib.SMTP_SSL = MockedSMTP_SSL  # type: ignore
+    smtplib.SMTP = MockSMTP  # type: ignore
+    smtplib.SMTP_SSL = MockSMTP_SSL  # type: ignore

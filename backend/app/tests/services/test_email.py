@@ -81,12 +81,12 @@ def test_build_message(_: mock.MagicMock) -> None:
 
 @mock.patch("smtplib.SMTP.sendmail")
 @mock.patch("app.services.email.settings.EMAIL_SENDER_EMAIL", new="test@email.com")
-def test_send_email(mocked_sendmail: mock.MagicMock) -> None:
+def test_send_email(mock_sendmail: mock.MagicMock) -> None:
     receiver = "receiver@email.com"
 
     email_services.send_email(BUILT_MESSAGE, receiver)
 
-    mocked_sendmail.assert_called_once_with("test@email.com", receiver, BUILT_MESSAGE)
+    mock_sendmail.assert_called_once_with("test@email.com", receiver, BUILT_MESSAGE)
 
 
 @mock.patch("smtplib.SMTP.sendmail", side_effect=smtplib.SMTPException)

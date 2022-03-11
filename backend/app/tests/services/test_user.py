@@ -20,7 +20,7 @@ if typing.TYPE_CHECKING:
 @pytest.mark.asyncio
 @mock.patch("app.services.user.user_tasks.send_email_to_confirm_email.delay")
 async def test_user_service_create_user(
-    mocked_send_email: mock.MagicMock, session: "conftest.AsyncSession"
+    mock_send_email: mock.MagicMock, session: "conftest.AsyncSession"
 ) -> None:
     password = "plain_password"
     user_create = user_models.UserCreate(
@@ -34,7 +34,7 @@ async def test_user_service_create_user(
     assert created_user.email == user_create.email
     assert created_user.password != password
     assert created_user.name == user_create.name
-    mocked_send_email.assert_called_once_with(
+    mock_send_email.assert_called_once_with(
         created_user.email, created_user.confirmation_email_key
     )
 
@@ -42,7 +42,7 @@ async def test_user_service_create_user(
 @pytest.mark.asyncio
 @mock.patch("app.services.user.user_tasks.send_email_to_confirm_email.delay")
 async def test_user_service_create_user_already_exists(
-    mocked_send_email: mock.MagicMock,
+    mock_send_email: mock.MagicMock,
     session: "conftest.AsyncSession",
 ) -> None:
     user_create = user_models.UserCreate(
@@ -55,7 +55,7 @@ async def test_user_service_create_user_already_exists(
     with pytest.raises(user_exceptions.UserAlreadyExistsError) as exc_info:
         await user_services.UserService(session).create_user(user_create)
     assert exc_info.value.context == {"email": user_create.email}
-    mocked_send_email.assert_not_called()
+    mock_send_email.assert_not_called()
 
 
 @pytest.mark.asyncio
@@ -190,14 +190,14 @@ async def test_user_service_confirm_email_time_expired(
 @pytest.mark.asyncio
 @mock.patch("app.services.user.user_tasks.send_email_to_reset_password.delay")
 async def test_user_service_request_reset_password(
-    mocked_send_email: mock.MagicMock,
+    mock_send_email: mock.MagicMock,
     session: "conftest.AsyncSession",
 ) -> None:
     user = await user_helpers.create_user(session=session)
 
     user_services.UserService(session).request_reset_password(user)
 
-    mocked_send_email.assert_called_once_with(user.email, user.reset_password_key)
+    mock_send_email.assert_called_once_with(user.email, user.reset_password_key)
 
 
 @pytest.mark.asyncio
