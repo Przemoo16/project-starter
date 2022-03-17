@@ -61,7 +61,7 @@ class UserService(base.AppService):
         return await UserCRUD(self.session).count(filters)
 
     async def confirm_email(self, user: user_models.User) -> None:
-        if not can_confirm_email(user):
+        if not _can_confirm_email(user):
             raise user_exceptions.ConfirmationEmailError(
                 context={"confirmation_email_key": user.confirmation_email_key}
             )
@@ -87,7 +87,7 @@ class UserService(base.AppService):
         await UserCRUD(self.session).update(user, user_update)
 
 
-def can_confirm_email(user: user_models.User) -> bool:
+def _can_confirm_email(user: user_models.User) -> bool:
     if user.confirmed_email:
         log.info("Email already confirmed")
         return False
