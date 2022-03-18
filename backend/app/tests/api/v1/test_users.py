@@ -77,7 +77,7 @@ async def test_update_user(
     headers = {"Authorization": f"Bearer {token}"}
 
     response = await async_client.patch(
-        f"{API_URL}/users/{user.id}", json=request_data, headers=headers
+        f"{API_URL}/users/me", json=request_data, headers=headers
     )
     retrieved_user = response.json()
 
@@ -91,17 +91,16 @@ async def test_update_user(
 
 
 @pytest.mark.asyncio
-async def test_update_user_stranger_request(
+async def test_update_user_inactive_user(
     async_client: "conftest.TestClient", session: "conftest.AsyncSession"
 ) -> None:
-    owner = await user_helpers.create_active_user(session=session)
-    stranger = await user_helpers.create_active_user(session=session)
-    request_data = {"email": "updated@email.com"}
-    token = jwt_auth.AuthJWT().create_access_token(str(stranger.id))
+    user = await user_helpers.create_user(session=session)
+    request_data = {"name": "Updated Name"}
+    token = jwt_auth.AuthJWT().create_access_token(str(user.id))
     headers = {"Authorization": f"Bearer {token}"}
 
     response = await async_client.patch(
-        f"{API_URL}/users/{owner.id}", json=request_data, headers=headers
+        f"{API_URL}/users/me", json=request_data, headers=headers
     )
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
@@ -115,21 +114,20 @@ async def test_delete_user(
     token = jwt_auth.AuthJWT().create_access_token(str(user.id), fresh=True)
     headers = {"Authorization": f"Bearer {token}"}
 
-    response = await async_client.delete(f"{API_URL}/users/{user.id}", headers=headers)
+    response = await async_client.delete(f"{API_URL}/users/me", headers=headers)
 
     assert response.status_code == status.HTTP_204_NO_CONTENT
 
 
 @pytest.mark.asyncio
-async def test_delete_user_stranger_request(
+async def test_delete_user_inactive_user(
     async_client: "conftest.TestClient", session: "conftest.AsyncSession"
 ) -> None:
-    owner = await user_helpers.create_active_user(session=session)
-    stranger = await user_helpers.create_active_user(session=session)
-    token = jwt_auth.AuthJWT().create_access_token(str(stranger.id), fresh=True)
+    user = await user_helpers.create_user(session=session)
+    token = jwt_auth.AuthJWT().create_access_token(str(user.id))
     headers = {"Authorization": f"Bearer {token}"}
 
-    response = await async_client.delete(f"{API_URL}/users/{owner.id}", headers=headers)
+    response = await async_client.delete(f"{API_URL}/users/me", headers=headers)
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
 
@@ -142,7 +140,7 @@ async def test_delete_user_no_fresh_token(
     token = jwt_auth.AuthJWT().create_access_token(str(user.id), fresh=False)
     headers = {"Authorization": f"Bearer {token}"}
 
-    response = await async_client.delete(f"{API_URL}/users/{user.id}", headers=headers)
+    response = await async_client.delete(f"{API_URL}/users/me", headers=headers)
 
     assert response.status_code == status.HTTP_401_UNAUTHORIZED
 

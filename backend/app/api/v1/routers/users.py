@@ -48,35 +48,31 @@ async def get_user(
 
 
 @router.patch(
-    "/{user_id}",
+    "/me",
     response_model=user_models.UserRead,
     responses=user_deps.ALL_RESPONSES,
 )
 async def update_user(
-    user_id: user_models.UserID,
     user: user_models.UserUpdateAPI,
     current_user: user_models.User = fastapi.Depends(user_deps.get_current_active_user),
     session: db.AsyncSession = fastapi.Depends(db.get_session),
 ) -> typing.Any:
-    await user_deps.check_user_requests_own_data(user_id, current_user)
     return await user_services.UserService(session).update_user(
         current_user, user_models.UserUpdate(**user.dict(exclude_unset=True))
     )
 
 
 @router.delete(
-    "/{user_id}",
+    "/me",
     status_code=status.HTTP_204_NO_CONTENT,
     responses=user_deps.ALL_RESPONSES,
 )
 async def delete_user(
-    user_id: user_models.UserID,
     Authorize: jwt_auth.AuthJWT = fastapi.Depends(),
     current_user: user_models.User = fastapi.Depends(user_deps.get_current_active_user),
     session: db.AsyncSession = fastapi.Depends(db.get_session),
 ) -> typing.Any:
     Authorize.fresh_jwt_required()
-    await user_deps.check_user_requests_own_data(user_id, current_user)
     await user_services.UserService(session).delete_user(current_user)
 
 
