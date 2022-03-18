@@ -34,6 +34,118 @@ async def test_create_user(async_client: "conftest.TestClient") -> None:
 
 
 @pytest.mark.asyncio
+async def test_get_me(
+    async_client: "conftest.TestClient", session: "conftest.AsyncSession"
+) -> None:
+    user = await user_helpers.create_active_user(session=session)
+    token = jwt_auth.AuthJWT().create_access_token(str(user.id))
+    headers = {"Authorization": f"Bearer {token}"}
+
+    response = await async_client.get(f"{API_URL}/users/me", headers=headers)
+    retrieved_user = response.json()
+
+    assert response.status_code == status.HTTP_200_OK
+    assert retrieved_user == response_helpers.format_response(
+        {
+            "id": user.id,
+            "name": user.name,
+        }
+    )
+
+
+@pytest.mark.asyncio
+async def test_get_me_inactive_user(
+    async_client: "conftest.TestClient", session: "conftest.AsyncSession"
+) -> None:
+    user = await user_helpers.create_user(session=session)
+    token = jwt_auth.AuthJWT().create_access_token(str(user.id))
+    headers = {"Authorization": f"Bearer {token}"}
+
+    response = await async_client.get(f"{API_URL}/users/me", headers=headers)
+
+    assert response.status_code == status.HTTP_403_FORBIDDEN
+
+
+@pytest.mark.asyncio
+async def test_update_me(
+    async_client: "conftest.TestClient", session: "conftest.AsyncSession"
+) -> None:
+    user = await user_helpers.create_active_user(session=session, name="Test User")
+    new_name = "Updated Name"
+    request_data = {"name": new_name}
+    token = jwt_auth.AuthJWT().create_access_token(str(user.id))
+    headers = {"Authorization": f"Bearer {token}"}
+
+    response = await async_client.patch(
+        f"{API_URL}/users/me", json=request_data, headers=headers
+    )
+    retrieved_user = response.json()
+
+    assert response.status_code == status.HTTP_200_OK
+    assert retrieved_user == response_helpers.format_response(
+        {
+            "id": user.id,
+            "name": new_name,
+        }
+    )
+
+
+@pytest.mark.asyncio
+async def test_update_me_inactive_user(
+    async_client: "conftest.TestClient", session: "conftest.AsyncSession"
+) -> None:
+    user = await user_helpers.create_user(session=session)
+    request_data = {"name": "Updated Name"}
+    token = jwt_auth.AuthJWT().create_access_token(str(user.id))
+    headers = {"Authorization": f"Bearer {token}"}
+
+    response = await async_client.patch(
+        f"{API_URL}/users/me", json=request_data, headers=headers
+    )
+
+    assert response.status_code == status.HTTP_403_FORBIDDEN
+
+
+@pytest.mark.asyncio
+async def test_delete_me(
+    async_client: "conftest.TestClient", session: "conftest.AsyncSession"
+) -> None:
+    user = await user_helpers.create_active_user(session=session)
+    token = jwt_auth.AuthJWT().create_access_token(str(user.id), fresh=True)
+    headers = {"Authorization": f"Bearer {token}"}
+
+    response = await async_client.delete(f"{API_URL}/users/me", headers=headers)
+
+    assert response.status_code == status.HTTP_204_NO_CONTENT
+
+
+@pytest.mark.asyncio
+async def test_delete_me_inactive_user(
+    async_client: "conftest.TestClient", session: "conftest.AsyncSession"
+) -> None:
+    user = await user_helpers.create_user(session=session)
+    token = jwt_auth.AuthJWT().create_access_token(str(user.id))
+    headers = {"Authorization": f"Bearer {token}"}
+
+    response = await async_client.delete(f"{API_URL}/users/me", headers=headers)
+
+    assert response.status_code == status.HTTP_403_FORBIDDEN
+
+
+@pytest.mark.asyncio
+async def test_delete_me_no_fresh_token(
+    async_client: "conftest.TestClient", session: "conftest.AsyncSession"
+) -> None:
+    user = await user_helpers.create_active_user(session=session)
+    token = jwt_auth.AuthJWT().create_access_token(str(user.id), fresh=False)
+    headers = {"Authorization": f"Bearer {token}"}
+
+    response = await async_client.delete(f"{API_URL}/users/me", headers=headers)
+
+    assert response.status_code == status.HTTP_401_UNAUTHORIZED
+
+
+@pytest.mark.asyncio
 async def test_get_user(
     async_client: "conftest.TestClient", session: "conftest.AsyncSession"
 ) -> None:
@@ -64,85 +176,6 @@ async def test_get_user_inactive_user(
     response = await async_client.get(f"{API_URL}/users/{user.id}", headers=headers)
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
-
-
-@pytest.mark.asyncio
-async def test_update_user(
-    async_client: "conftest.TestClient", session: "conftest.AsyncSession"
-) -> None:
-    user = await user_helpers.create_active_user(session=session, name="Test User")
-    new_name = "Updated Name"
-    request_data = {"name": new_name}
-    token = jwt_auth.AuthJWT().create_access_token(str(user.id))
-    headers = {"Authorization": f"Bearer {token}"}
-
-    response = await async_client.patch(
-        f"{API_URL}/users/me", json=request_data, headers=headers
-    )
-    retrieved_user = response.json()
-
-    assert response.status_code == status.HTTP_200_OK
-    assert retrieved_user == response_helpers.format_response(
-        {
-            "id": user.id,
-            "name": new_name,
-        }
-    )
-
-
-@pytest.mark.asyncio
-async def test_update_user_inactive_user(
-    async_client: "conftest.TestClient", session: "conftest.AsyncSession"
-) -> None:
-    user = await user_helpers.create_user(session=session)
-    request_data = {"name": "Updated Name"}
-    token = jwt_auth.AuthJWT().create_access_token(str(user.id))
-    headers = {"Authorization": f"Bearer {token}"}
-
-    response = await async_client.patch(
-        f"{API_URL}/users/me", json=request_data, headers=headers
-    )
-
-    assert response.status_code == status.HTTP_403_FORBIDDEN
-
-
-@pytest.mark.asyncio
-async def test_delete_user(
-    async_client: "conftest.TestClient", session: "conftest.AsyncSession"
-) -> None:
-    user = await user_helpers.create_active_user(session=session)
-    token = jwt_auth.AuthJWT().create_access_token(str(user.id), fresh=True)
-    headers = {"Authorization": f"Bearer {token}"}
-
-    response = await async_client.delete(f"{API_URL}/users/me", headers=headers)
-
-    assert response.status_code == status.HTTP_204_NO_CONTENT
-
-
-@pytest.mark.asyncio
-async def test_delete_user_inactive_user(
-    async_client: "conftest.TestClient", session: "conftest.AsyncSession"
-) -> None:
-    user = await user_helpers.create_user(session=session)
-    token = jwt_auth.AuthJWT().create_access_token(str(user.id))
-    headers = {"Authorization": f"Bearer {token}"}
-
-    response = await async_client.delete(f"{API_URL}/users/me", headers=headers)
-
-    assert response.status_code == status.HTTP_403_FORBIDDEN
-
-
-@pytest.mark.asyncio
-async def test_delete_user_no_fresh_token(
-    async_client: "conftest.TestClient", session: "conftest.AsyncSession"
-) -> None:
-    user = await user_helpers.create_active_user(session=session)
-    token = jwt_auth.AuthJWT().create_access_token(str(user.id), fresh=False)
-    headers = {"Authorization": f"Bearer {token}"}
-
-    response = await async_client.delete(f"{API_URL}/users/me", headers=headers)
-
-    assert response.status_code == status.HTTP_401_UNAUTHORIZED
 
 
 @pytest.mark.asyncio

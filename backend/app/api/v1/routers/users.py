@@ -33,18 +33,14 @@ async def create_user(
 
 
 @router.get(
-    "/{user_id}",
+    "/me",
     response_model=user_models.UserRead,
-    dependencies=[fastapi.Depends(user_deps.get_current_active_user)],
     responses=user_deps.INACTIVE_USER_RESPONSES,
 )
-async def get_user(
-    user_id: user_models.UserID,
-    session: db.AsyncSession = fastapi.Depends(db.get_session),
+async def get_me(
+    current_user: user_models.User = fastapi.Depends(user_deps.get_current_active_user),
 ) -> typing.Any:
-    return await user_services.UserService(session).get_user(
-        user_models.UserFilters(id=user_id)
-    )
+    return current_user
 
 
 @router.patch(
@@ -52,7 +48,7 @@ async def get_user(
     response_model=user_models.UserRead,
     responses=user_deps.INACTIVE_USER_RESPONSES,
 )
-async def update_user(
+async def update_me(
     user: user_models.UserUpdateAPI,
     current_user: user_models.User = fastapi.Depends(user_deps.get_current_active_user),
     session: db.AsyncSession = fastapi.Depends(db.get_session),
@@ -67,13 +63,28 @@ async def update_user(
     status_code=status.HTTP_204_NO_CONTENT,
     responses=user_deps.INACTIVE_USER_RESPONSES,
 )
-async def delete_user(
+async def delete_me(
     Authorize: jwt_auth.AuthJWT = fastapi.Depends(),
     current_user: user_models.User = fastapi.Depends(user_deps.get_current_active_user),
     session: db.AsyncSession = fastapi.Depends(db.get_session),
 ) -> typing.Any:
     Authorize.fresh_jwt_required()
     await user_services.UserService(session).delete_user(current_user)
+
+
+@router.get(
+    "/{user_id}",
+    response_model=user_models.UserRead,
+    dependencies=[fastapi.Depends(user_deps.get_current_active_user)],
+    responses=user_deps.INACTIVE_USER_RESPONSES,
+)
+async def get_user(
+    user_id: user_models.UserID,
+    session: db.AsyncSession = fastapi.Depends(db.get_session),
+) -> typing.Any:
+    return await user_services.UserService(session).get_user(
+        user_models.UserFilters(id=user_id)
+    )
 
 
 @router.post(
