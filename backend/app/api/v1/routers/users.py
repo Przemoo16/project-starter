@@ -50,7 +50,7 @@ async def get_user(
 @router.patch(
     "/me",
     response_model=user_models.UserRead,
-    responses=user_deps.ALL_RESPONSES,
+    responses=user_deps.INACTIVE_USER_RESPONSES,
 )
 async def update_user(
     user: user_models.UserUpdateAPI,
@@ -65,7 +65,7 @@ async def update_user(
 @router.delete(
     "/me",
     status_code=status.HTTP_204_NO_CONTENT,
-    responses=user_deps.ALL_RESPONSES,
+    responses=user_deps.INACTIVE_USER_RESPONSES,
 )
 async def delete_user(
     Authorize: jwt_auth.AuthJWT = fastapi.Depends(),
