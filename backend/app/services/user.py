@@ -8,8 +8,9 @@ from app.exceptions.http import user as user_exceptions
 from app.models import helpers
 from app.models import pagination as pagination_models
 from app.models import user as user_models
-from app.services import auth, base
+from app.services import base
 from app.tasks import user as user_tasks
+from app.utils import auth
 
 log = logging.getLogger(__name__)
 

@@ -1,4 +1,4 @@
-from app.services import auth
+from app.utils import auth
 
 
 def test_hash_password() -> None:
