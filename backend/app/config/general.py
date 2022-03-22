@@ -11,11 +11,6 @@ class App(pydantic.BaseSettings):
     API_URL: str = f"/api/{API_VERSION}"
 
 
-class Frontend(pydantic.BaseSettings):
-    FRONTEND_CONFIRM_EMAIL_URL: pydantic.AnyHttpUrl
-    FRONTEND_RESET_PASSWORD_URL: pydantic.AnyHttpUrl
-
-
 class Security(pydantic.BaseSettings):
     SECRET_KEY: str
     TOKEN_URL: str = "/token"
@@ -32,6 +27,8 @@ class Security(pydantic.BaseSettings):
     ACCOUNT_ACTIVATION_DAYS: int = 7
     USER_PASSWORD_MIN_LENGTH: int = 8
     USER_PASSWORD_MAX_LENGTH: int = 32
+    CONFIRM_EMAIL_URL: pydantic.AnyHttpUrl
+    RESET_PASSWORD_URL: pydantic.AnyHttpUrl
 
 
 class Database(pydantic.BaseSettings):
@@ -55,7 +52,7 @@ class Email(pydantic.BaseSettings):
     EMAIL_SENDER_EMAIL: pydantic.EmailStr
 
 
-class Settings(App, Frontend, Security, Database, Celery, Email):
+class Settings(App, Security, Database, Celery, Email):
     class Config:
         case_sensitive = True
 

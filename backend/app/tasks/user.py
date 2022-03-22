@@ -20,7 +20,7 @@ settings = general.get_settings()
 def send_email_to_confirm_email(
     email: "user.UserEmail", key: "user.UserConfirmationEmailKey"
 ) -> None:
-    link = settings.FRONTEND_CONFIRM_EMAIL_URL.format(key=key)
+    link = settings.CONFIRM_EMAIL_URL.format(key=key)
     subject = _("Confirm email")
     message_text = _("Click the link to confirm your email: %(link)s") % {"link": link}
     message_html = email_services.load_template(
@@ -40,7 +40,7 @@ def send_email_to_confirm_email(
 def send_email_to_reset_password(
     email: "user.UserEmail", key: "user.UserResetPasswordKey"
 ) -> None:
-    link = settings.FRONTEND_RESET_PASSWORD_URL.format(key=key)
+    link = settings.RESET_PASSWORD_URL.format(key=key)
     subject = _("Reset password")
     message_text = _("Click the link to reset your password: %(link)s") % {"link": link}
     message_html = email_services.load_template(
