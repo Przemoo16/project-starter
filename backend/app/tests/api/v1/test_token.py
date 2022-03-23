@@ -58,10 +58,11 @@ async def test_refresh_token(
 @pytest.mark.asyncio
 async def test_revoke_token(
     async_client: "conftest.TestClient",
+    session: "conftest.AsyncSession",
     mock_common: None,  # pylint: disable=unused-argument
 ) -> None:
-    user_id = "1dd53909-fcda-4c72-afcd-1bf4886389f8"
-    token = jwt_auth.AuthJWT().create_refresh_token(user_id)
+    user = await user_helpers.create_user(session=session)
+    token = jwt_auth.AuthJWT().create_access_token(str(user.id))
     request_data = {"token": token}
 
     response = await async_client.post(f"{API_URL}/token/revoke", json=request_data)

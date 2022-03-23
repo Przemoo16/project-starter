@@ -146,8 +146,8 @@ async def test_token_service_refresh_no_refresh_type(
     assert exc_info.value.context == {"token": token}
 
 
-@mock.patch("app.services.token.jwt_db.get", return_value="true")
 @pytest.mark.asyncio
+@mock.patch("app.services.token.jwt_db.get", return_value="true")
 async def test_token_service_refresh_revoked_token(
     _: mock.MagicMock, session: "conftest.AsyncSession"
 ) -> None:
@@ -157,22 +157,6 @@ async def test_token_service_refresh_revoked_token(
     with pytest.raises(token_exceptions.RevokedTokenError) as exc_info:
         await token_services.TokenService(session).refresh_token(token=token)
     assert exc_info.value.context == {"token": token}
-
-
-@pytest.mark.asyncio
-@mock.patch(
-    "app.services.user.UserService.get_user",
-    side_effect=user_exceptions.UserNotFoundError,
-)
-async def test_token_service_refresh_token_user_not_found(
-    _: mock.MagicMock,
-    session: "conftest.AsyncSession",
-) -> None:
-    user_id = "1dd53909-fcda-4c72-afcd-1bf4886389f8"
-    token = jwt_auth.AuthJWT().create_refresh_token(user_id)
-
-    with pytest.raises(user_exceptions.UserNotFoundError):
-        await token_services.TokenService(session).refresh_token(token=token)
 
 
 @pytest.mark.asyncio
@@ -189,49 +173,91 @@ async def test_token_service_refresh_token_inactive_user(
     assert exc_info.value.context == {"id": user.id}
 
 
+@pytest.mark.asyncio
 @mock.patch("app.services.token.jwt_db.setex")
-def test_token_service_revoke_token(
-    mock_redis_setex: mock.MagicMock, session: "conftest.AsyncSession"
+@mock.patch("app.services.user.UserService.get_user")
+async def test_token_service_revoke_access_token(
+    _: mock.MagicMock,
+    mock_redis_setex: mock.MagicMock,
+    session: "conftest.AsyncSession",
 ) -> None:
-    token = jwt_auth.AuthJWT().create_access_token("dummy_id")
+    user_id = "1dd53909-fcda-4c72-afcd-1bf4886389f8"
+    token = jwt_auth.AuthJWT().create_access_token(user_id)
 
-    token_services.TokenService(session).revoke_token(token=token)
+    await token_services.TokenService(session).revoke_token(token=token)
 
     mock_redis_setex.assert_called_once()
 
 
-@freezegun.freeze_time("2022-02-06 13:30:00")
-def test_token_service_revoke_token_already_expired(
+@pytest.mark.asyncio
+@mock.patch("app.services.token.jwt_db.setex")
+@mock.patch("app.services.user.UserService.get_user")
+async def test_token_service_revoke_refresh_token(
+    _: mock.MagicMock,
+    mock_redis_setex: mock.MagicMock,
     session: "conftest.AsyncSession",
 ) -> None:
+    user_id = "1dd53909-fcda-4c72-afcd-1bf4886389f8"
+    token = jwt_auth.AuthJWT().create_refresh_token(user_id)
+
+    await token_services.TokenService(session).revoke_token(token=token)
+
+    mock_redis_setex.assert_called_once()
+
+
+@pytest.mark.asyncio
+@freezegun.freeze_time("2022-02-06 13:30:00")
+async def test_token_service_revoke_token_already_expired(
+    session: "conftest.AsyncSession",
+) -> None:
+    user_id = "1dd53909-fcda-4c72-afcd-1bf4886389f8"
     with freezegun.freeze_time("2021-02-05 13:30:00"):
-        token = jwt_auth.AuthJWT().create_access_token("dummy_id")
+        token = jwt_auth.AuthJWT().create_access_token(user_id)
 
     with pytest.raises(token_exceptions.InvalidTokenError) as exc_info:
-        token_services.TokenService(session).revoke_token(token=token)
+        await token_services.TokenService(session).revoke_token(token=token)
     assert exc_info.value.context == {"token": token}
 
 
-def test_token_service_revoke_token_invalid(session: "conftest.AsyncSession") -> None:
+@pytest.mark.asyncio
+async def test_token_service_revoke_token_invalid(
+    session: "conftest.AsyncSession",
+) -> None:
     token = "invalid_token"
 
     with pytest.raises(token_exceptions.InvalidTokenError) as exc_info:
-        token_services.TokenService(session).revoke_token(token=token)
+        await token_services.TokenService(session).revoke_token(token=token)
     assert exc_info.value.context == {"token": token}
 
 
+@pytest.mark.asyncio
+@mock.patch("app.services.token.jwt_db.get", return_value="true")
+async def test_token_service_revoke_already_revoked_token(
+    _: mock.MagicMock, session: "conftest.AsyncSession"
+) -> None:
+    user_id = "1dd53909-fcda-4c72-afcd-1bf4886389f8"
+    token = jwt_auth.AuthJWT().create_access_token(user_id)
+
+    with pytest.raises(token_exceptions.RevokedTokenError) as exc_info:
+        await token_services.TokenService(session).revoke_token(token=token)
+    assert exc_info.value.context == {"token": token}
+
+
+@pytest.mark.asyncio
 @mock.patch("app.services.token.jwt_db.set")
-def test_token_service_revoke_token_missing_expiration(
-    mock_redis_set: mock.MagicMock, session: "conftest.AsyncSession"
+@mock.patch("app.services.user.UserService.get_user")
+async def test_token_service_revoke_token_missing_expiration(
+    _: mock.MagicMock, mock_redis_set: mock.MagicMock, session: "conftest.AsyncSession"
 ) -> None:
     jti = "dummy_jti"
+    user_id = "1dd53909-fcda-4c72-afcd-1bf4886389f8"
     token = jwt.encode(
-        claims={"sub": "dummy_subject", "jti": jti},
+        claims={"sub": user_id, "jti": jti},
         key=settings.AUTHJWT_SECRET_KEY,
         algorithm=settings.AUTHJWT_ALGORITHM,
     )
 
-    token_services.TokenService(session).revoke_token(token=token)
+    await token_services.TokenService(session).revoke_token(token=token)
 
     mock_redis_set.assert_called_with(jti, "true")
 
@@ -259,4 +285,4 @@ def test_get_remaining_expiration_already_expired() -> None:
         )
     )
 
-    assert remaining_expiration == 0
+    assert remaining_expiration == 1
