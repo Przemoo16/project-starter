@@ -3,14 +3,6 @@ import smtplib
 import ssl
 import typing
 
-original_SMTP = smtplib.SMTP
-original_SMTP_SSL = smtplib.SMTP_SSL
-
-
-def mock_smtp() -> None:
-    smtplib.SMTP = MockSMTP  # type: ignore
-    smtplib.SMTP_SSL = MockSMTP_SSL  # type: ignore
-
 
 class MockSMTP(smtplib.SMTP):
     @staticmethod

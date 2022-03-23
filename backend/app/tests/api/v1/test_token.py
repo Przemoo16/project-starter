@@ -14,7 +14,9 @@ API_URL = "/api/v1"
 
 @pytest.mark.asyncio
 async def test_obtain_tokens(
-    async_client: "conftest.TestClient", session: "conftest.AsyncSession"
+    async_client: "conftest.TestClient",
+    session: "conftest.AsyncSession",
+    mock_common: None,  # pylint: disable=unused-argument
 ) -> None:
     email = "test@email.com"
     await user_helpers.create_active_user(
@@ -37,7 +39,9 @@ async def test_obtain_tokens(
 
 @pytest.mark.asyncio
 async def test_refresh_token(
-    async_client: "conftest.TestClient", session: "conftest.AsyncSession"
+    async_client: "conftest.TestClient",
+    session: "conftest.AsyncSession",
+    mock_common: None,  # pylint: disable=unused-argument
 ) -> None:
     user = await user_helpers.create_active_user(session=session)
     token = jwt_auth.AuthJWT().create_refresh_token(str(user.id))
@@ -52,7 +56,10 @@ async def test_refresh_token(
 
 
 @pytest.mark.asyncio
-async def test_revoke_token(async_client: "conftest.TestClient") -> None:
+async def test_revoke_token(
+    async_client: "conftest.TestClient",
+    mock_common: None,  # pylint: disable=unused-argument
+) -> None:
     user_id = "1dd53909-fcda-4c72-afcd-1bf4886389f8"
     token = jwt_auth.AuthJWT().create_refresh_token(user_id)
     request_data = {"token": token}

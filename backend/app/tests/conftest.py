@@ -8,22 +8,20 @@ from sqlalchemy import orm
 from sqlalchemy.ext import asyncio
 import sqlmodel
 
-from app import (  # noqa: F401 # pylint: disable=unused-import # Detect all models
-    main,
-    models,
-)
+from app import main
 from app.celery import worker
 from app.config import db, general
-from app.tests.mocks import email
+from app.tests.mocks import email as email_mocks
+
+if typing.TYPE_CHECKING:
+    from _pytest import monkeypatch as pytest_monkeypatch
+
 
 AsyncSession: typing.TypeAlias = asyncio.AsyncSession
 TestClient: typing.TypeAlias = httpx.AsyncClient
 RedisClient: typing.TypeAlias = redis.Redis
 
 settings = general.get_settings()
-
-# Mocking SMTP works only in the app container, Celery still uses the original code
-email.mock_smtp()
 
 
 @pytest.fixture(name="redis_client", scope="session")
@@ -83,3 +81,9 @@ async def async_client_fixture(
     async with httpx.AsyncClient(app=main.app, base_url="http://test") as client:
         yield client
     main.app.dependency_overrides.clear()
+
+
+@pytest.fixture(name="mock_common")
+def mock_common_fixture(monkeypatch: "pytest_monkeypatch.MonkeyPatch") -> None:
+    monkeypatch.setattr("smtplib.SMTP", email_mocks.MockSMTP)
+    monkeypatch.setattr("smtplib.SMTP_SSL", email_mocks.MockSMTP_SSL)
