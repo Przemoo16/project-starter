@@ -6,9 +6,8 @@ import fastapi_jwt_auth as jwt_auth
 from app.config import db
 from app.exceptions.http import user as user_exceptions
 from app.models import user as user_models
-from app.services import auth
 from app.services import user as user_services
-from app.utils import converters
+from app.utils import auth, converters
 
 log = logging.getLogger(__name__)
 

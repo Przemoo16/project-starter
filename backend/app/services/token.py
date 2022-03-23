@@ -11,8 +11,9 @@ from app.exceptions.http import token as token_exceptions
 from app.exceptions.http import user as user_exceptions
 from app.models import token as token_models
 from app.models import user as user_models
-from app.services import auth, base
+from app.services import base
 from app.services import user as user_services
+from app.utils import auth
 
 log = logging.getLogger(__name__)
 

@@ -10,6 +10,7 @@ import pytest
 from app.config import general
 from app.exceptions.http import token as token_exceptions
 from app.exceptions.http import user as user_exceptions
+from app.models import user as user_models
 from app.services import token as token_services
 from app.tests.helpers import token as token_helpers
 from app.tests.helpers import user as user_helpers
@@ -23,12 +24,19 @@ settings = general.get_settings()
 
 @pytest.mark.asyncio
 @freezegun.freeze_time("2022-02-05 18:30:00")
-async def test_token_service_obtain_tokens(session: "conftest.AsyncSession") -> None:
+@mock.patch("app.services.user.UserService.get_user")
+@mock.patch("app.services.user.UserService.update_user")
+async def test_token_service_obtain_tokens(
+    mock_update_user: mock.MagicMock,
+    mock_get_user: mock.MagicMock,
+    session: "conftest.AsyncSession",
+) -> None:
     user = await user_helpers.create_active_user(
         session,
         email="test@email.com",
         password="$2b$12$q8JcpltDZkSLOdMuPyt/jORzExLKp9HsKgCoFJQ1IzzITc2/Pg42q",
     )
+    mock_get_user.return_value = user
 
     with freezegun.freeze_time("2022-02-05 18:00:00"):
         tokens = await token_services.TokenService(session).obtain_tokens(
@@ -39,11 +47,18 @@ async def test_token_service_obtain_tokens(session: "conftest.AsyncSession") -> 
     assert tokens.refresh_token
     assert tokens.token_type == "bearer"
     assert token_helpers.is_token_fresh(tokens.access_token)
-    assert user.last_login == datetime.datetime(2022, 2, 5, 18, 0, 0)
+    mock_update_user.assert_called_once_with(
+        user, user_models.UserUpdate(last_login=datetime.datetime(2022, 2, 5, 18, 0, 0))
+    )
 
 
 @pytest.mark.asyncio
+@mock.patch(
+    "app.services.user.UserService.get_user",
+    side_effect=user_exceptions.UserNotFoundError,
+)
 async def test_token_service_obtain_tokens_user_not_found(
+    _: mock.MagicMock,
     session: "conftest.AsyncSession",
 ) -> None:
     email = converters.to_pydantic_email("test@email.com")
@@ -55,14 +70,16 @@ async def test_token_service_obtain_tokens_user_not_found(
 
 
 @pytest.mark.asyncio
+@mock.patch("app.services.user.UserService.get_user")
 async def test_token_service_obtain_tokens_invalid_password(
-    session: "conftest.AsyncSession",
+    mock_get_user: mock.MagicMock, session: "conftest.AsyncSession"
 ) -> None:
     user = await user_helpers.create_active_user(
         session,
         email="test@email.com",
         password="$2b$12$q8JcpltDZkSLOdMuPyt/jORzExLKp9HsKgCoFJQ1IzzITc2/Pg42q",
     )
+    mock_get_user.return_value = user
 
     with pytest.raises(token_exceptions.InvalidCredentials):
         await token_services.TokenService(session).obtain_tokens(
@@ -71,7 +88,9 @@ async def test_token_service_obtain_tokens_invalid_password(
 
 
 @pytest.mark.asyncio
+@mock.patch("app.services.user.UserService.get_user")
 async def test_token_service_obtain_tokens_inactive_user(
+    mock_get_user: mock.MagicMock,
     session: "conftest.AsyncSession",
 ) -> None:
     user = await user_helpers.create_user(
@@ -79,6 +98,7 @@ async def test_token_service_obtain_tokens_inactive_user(
         email="test@email.com",
         password="$2b$12$q8JcpltDZkSLOdMuPyt/jORzExLKp9HsKgCoFJQ1IzzITc2/Pg42q",
     )
+    mock_get_user.return_value = user
 
     with pytest.raises(token_exceptions.InactiveUserError) as exc_info:
         await token_services.TokenService(session).obtain_tokens(
@@ -88,8 +108,12 @@ async def test_token_service_obtain_tokens_inactive_user(
 
 
 @pytest.mark.asyncio
-async def test_token_service_refresh_token(session: "conftest.AsyncSession") -> None:
+@mock.patch("app.services.user.UserService.get_user")
+async def test_token_service_refresh_token(
+    mock_get_user: mock.MagicMock, session: "conftest.AsyncSession"
+) -> None:
     user = await user_helpers.create_active_user(session)
+    mock_get_user.return_value = user
     token = jwt_auth.AuthJWT().create_refresh_token(str(user.id))
 
     token = await token_services.TokenService(session).refresh_token(token=token)
@@ -122,18 +146,6 @@ async def test_token_service_refresh_no_refresh_type(
     assert exc_info.value.context == {"token": token}
 
 
-@pytest.mark.asyncio
-async def test_token_service_refresh_token_inactive_user(
-    session: "conftest.AsyncSession",
-) -> None:
-    user = await user_helpers.create_user(session)
-    token = jwt_auth.AuthJWT().create_refresh_token(str(user.id))
-
-    with pytest.raises(token_exceptions.InactiveUserError) as exc_info:
-        await token_services.TokenService(session).refresh_token(token=token)
-    assert exc_info.value.context == {"id": user.id}
-
-
 @mock.patch("app.services.token.jwt_db.get", return_value="true")
 @pytest.mark.asyncio
 async def test_token_service_refresh_revoked_token(
@@ -148,15 +160,33 @@ async def test_token_service_refresh_revoked_token(
 
 
 @pytest.mark.asyncio
+@mock.patch(
+    "app.services.user.UserService.get_user",
+    side_effect=user_exceptions.UserNotFoundError,
+)
 async def test_token_service_refresh_token_user_not_found(
+    _: mock.MagicMock,
     session: "conftest.AsyncSession",
 ) -> None:
     user_id = "1dd53909-fcda-4c72-afcd-1bf4886389f8"
     token = jwt_auth.AuthJWT().create_refresh_token(user_id)
 
-    with pytest.raises(user_exceptions.UserNotFoundError) as exc_info:
+    with pytest.raises(user_exceptions.UserNotFoundError):
         await token_services.TokenService(session).refresh_token(token=token)
-    assert exc_info.value.context == {"id": converters.to_uuid(user_id)}
+
+
+@pytest.mark.asyncio
+@mock.patch("app.services.user.UserService.get_user")
+async def test_token_service_refresh_token_inactive_user(
+    mock_get_user: mock.MagicMock, session: "conftest.AsyncSession"
+) -> None:
+    user = await user_helpers.create_user(session)
+    mock_get_user.return_value = user
+    token = jwt_auth.AuthJWT().create_refresh_token(str(user.id))
+
+    with pytest.raises(token_exceptions.InactiveUserError) as exc_info:
+        await token_services.TokenService(session).refresh_token(token=token)
+    assert exc_info.value.context == {"id": user.id}
 
 
 @mock.patch("app.services.token.jwt_db.setex")
