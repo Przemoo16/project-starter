@@ -71,20 +71,23 @@ class TokenService(base.AppService):
             token_type="bearer",
         )
 
-    @staticmethod
-    def revoke_token(token: token_models.Token) -> None:
+    async def revoke_token(self, token: token_models.Token) -> None:
+        token_context = {"token": token}
         try:
             decoded_token = decode_token(token)
         except jwt.JWTError as e:
-            raise token_exceptions.InvalidTokenError(context={"token": token}) from e
+            raise token_exceptions.InvalidTokenError(context=token_context) from e
+        if jwt_config.check_if_token_in_denylist(decoded_token):
+            raise token_exceptions.RevokedTokenError(context=token_context)
+        user_filters = user_models.UserFilters(id=decoded_token["sub"])
+        await user_services.UserService(self.session).get_user(user_filters)
         jti = decoded_token["jti"]
         if not (expiration := decoded_token.get("exp")):
             jwt_db.set(jti, "true")
             log.warning("Revoked token without expiration")
             return
         remaining_expiration = _get_remaining_expiration(expiration)
-        # Redis can only accept expiration values greater than 0
-        jwt_db.setex(jti, remaining_expiration or 1, "true")
+        jwt_db.setex(jti, remaining_expiration, "true")
         log.info("Token has been revoked")
 
 
@@ -103,4 +106,5 @@ def decode_token(
 
 def _get_remaining_expiration(exp: int) -> int:
     delta = int(exp - datetime.datetime.utcnow().timestamp())
-    return max(0, delta)
+    # Redis can only accept expiration values greater than 0
+    return max(1, delta)

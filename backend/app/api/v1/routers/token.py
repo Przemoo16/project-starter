@@ -55,4 +55,4 @@ async def revoke_token(
     token: token_models.Token = fastapi.Body(..., embed=True),
     session: db.AsyncSession = fastapi.Depends(db.get_session),
 ) -> typing.Any:
-    token_services.TokenService(session).revoke_token(token)
+    await token_services.TokenService(session).revoke_token(token)
