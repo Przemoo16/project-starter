@@ -1,4 +1,4 @@
-# Project Starter V2
+# Project Starter
 
 # Rules to follow:
 
