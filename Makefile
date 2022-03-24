@@ -7,10 +7,10 @@ build:
 	$(UPGRADE_MIGRATIONS_COMMAND)
 
 compile-messages:
-	$(COMPOSE_DEV) run --rm backend pybabel compile -d locale
+	$(COMPOSE_DEV) run --rm  --no-deps backend pybabel compile -d locale
 
 extract-messages:
-	$(COMPOSE_DEV) run --rm backend pybabel extract -F babel.ini -k gettext_lazy -k _ -o locale/messages.pot .
+	$(COMPOSE_DEV) run --rm --no-deps backend pybabel extract -F babel.ini -k gettext_lazy -k _ -o locale/messages.pot .
 
 lint-backend:
 	$(COMPOSE_DEV) run --rm --no-deps backend bash -c " \
@@ -20,7 +20,7 @@ lint-backend:
 		mypy .; \
 		pylint app; \
 		bandit . --exclude tests --exclude migrations --recursive; \
-		"
+	"
 
 create-migration:
 	$(COMPOSE_DEV) run --rm backend bash -c "sleep 5 && alembic revision --autogenerate -m '$(m)'"
@@ -38,4 +38,4 @@ test-backend:
 	$(COMPOSE_DEV) run --rm backend pytest .
 
 update-messages:
-	$(COMPOSE_DEV) run --rm backend pybabel update -i locale/messages.pot -d locale
+	$(COMPOSE_DEV) run --rm --no-deps backend pybabel update -i locale/messages.pot -d locale
