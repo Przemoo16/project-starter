@@ -13,13 +13,14 @@ extract-messages:
 	$(COMPOSE_DEV) run --rm backend pybabel extract -F babel.ini -k gettext_lazy -k _ -o locale/messages.pot .
 
 lint-backend:
-	$(COMPOSE_DEV) up -d backend
-	$(COMPOSE_DEV) exec -T backend isort .
-	$(COMPOSE_DEV) exec -T backend black . --exclude=migrations
-	$(COMPOSE_DEV) exec -T backend flake8 .
-	$(COMPOSE_DEV) exec -T backend mypy .
-	$(COMPOSE_DEV) exec -T backend pylint app
-	$(COMPOSE_DEV) exec -T backend bandit --exclude tests --exclude migrations --recursive .
+	$(COMPOSE_DEV) run --rm --no-deps backend bash -c " \
+		isort .; \
+		black . --exclude=migrations; \
+		flake8 .; \
+		mypy .; \
+		pylint app; \
+		bandit . --exclude tests --exclude migrations --recursive; \
+		"
 
 create-migration:
 	$(COMPOSE_DEV) run --rm backend bash -c "sleep 5 && alembic revision --autogenerate -m '$(m)'"

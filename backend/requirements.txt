@@ -80,6 +80,13 @@ fastapi==0.75.0
 fastapi-jwt-auth==0.5.0
     # via -r requirements.in
 flake8==4.0.1
+    # via
+    #   -r requirements.in
+    #   flake8-docstrings
+    #   flake8-print
+flake8-docstrings==1.6.0
+    # via -r requirements.in
+flake8-print==4.0.0
     # via -r requirements.in
 freezegun==1.2.1
     # via -r requirements.in
@@ -166,7 +173,9 @@ pyasn1==0.4.8
     #   python-jose
     #   rsa
 pycodestyle==2.8.0
-    # via flake8
+    # via
+    #   flake8
+    #   flake8-print
 pycparser==2.21
     # via cffi
 pydantic[email]==1.9.0
@@ -174,6 +183,8 @@ pydantic[email]==1.9.0
     #   -r requirements.in
     #   fastapi
     #   sqlmodel
+pydocstyle==6.1.1
+    # via flake8-docstrings
 pyflakes==2.4.0
     # via flake8
 pyhumps==3.5.3
@@ -222,6 +233,7 @@ six==1.16.0
     #   bcrypt
     #   click-repl
     #   ecdsa
+    #   flake8-print
     #   python-dateutil
     #   python-multipart
 smmap==5.0.0
@@ -231,6 +243,8 @@ sniffio==1.2.0
     #   anyio
     #   httpcore
     #   httpx
+snowballstemmer==2.2.0
+    # via pydocstyle
 sqlalchemy==1.4.32
     # via
     #   alembic
@@ -254,6 +268,12 @@ tomli==2.0.1
     #   mypy
     #   pep517
     #   pytest
+types-freezegun==1.1.7
+    # via -r requirements.in
+types-orjson==3.6.2
+    # via -r requirements.in
+types-redis==4.1.18
+    # via -r requirements.in
 typing-extensions==4.1.1
     # via
     #   mypy
