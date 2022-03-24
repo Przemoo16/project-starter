@@ -23,6 +23,8 @@ uvicorn[standard]
 bandit
 black
 flake8
+flake8-docstrings
+flake8-print
 freezegun
 httpx
 isort
@@ -32,3 +34,6 @@ pylint
 pytest
 pytest-asyncio
 pytest-cov
+types-freezegun
+types-orjson
+types-redis
