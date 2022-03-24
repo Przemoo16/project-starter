@@ -206,13 +206,10 @@ async def test_token_service_revoke_refresh_token(
 
 
 @pytest.mark.asyncio
-@freezegun.freeze_time("2022-02-06 13:30:00")
-async def test_token_service_revoke_token_already_expired(
+async def test_token_service_revoke_token_invalid(
     session: "conftest.AsyncSession",
 ) -> None:
-    user_id = "1dd53909-fcda-4c72-afcd-1bf4886389f8"
-    with freezegun.freeze_time("2021-02-05 13:30:00"):
-        token = jwt_auth.AuthJWT().create_access_token(user_id)
+    token = "invalid_token"
 
     with pytest.raises(token_exceptions.InvalidTokenError) as exc_info:
         await token_services.TokenService(session).revoke_token(token=token)
@@ -220,10 +217,13 @@ async def test_token_service_revoke_token_already_expired(
 
 
 @pytest.mark.asyncio
-async def test_token_service_revoke_token_invalid(
+@freezegun.freeze_time("2022-02-06 13:30:00")
+async def test_token_service_revoke_token_already_expired(
     session: "conftest.AsyncSession",
 ) -> None:
-    token = "invalid_token"
+    user_id = "1dd53909-fcda-4c72-afcd-1bf4886389f8"
+    with freezegun.freeze_time("2021-02-05 13:30:00"):
+        token = jwt_auth.AuthJWT().create_access_token(user_id)
 
     with pytest.raises(token_exceptions.InvalidTokenError) as exc_info:
         await token_services.TokenService(session).revoke_token(token=token)
