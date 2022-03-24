@@ -27,6 +27,16 @@ services:
     env_file:
       - .env
 
+  frontend:
+    build:
+      context: .
+      dockerfile: config/frontend.Dockerfile
+    depends_on:
+      - backend
+    volumes:
+      - ./frontend/src:/frontend/src
+      - ./frontend/public:/frontend/public
+
   celery:
     build:
       context: .
