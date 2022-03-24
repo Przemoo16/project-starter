@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2022-02-08 21:09+0000\n"
+"POT-Creation-Date: 2022-03-24 21:47+0000\n"
 "PO-Revision-Date: 2022-02-08 22:10+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: pl\n"
@@ -19,20 +19,20 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.9.1\n"
 
-#: app/tasks/user.py:19
+#: app/tasks/user.py:24
 msgid "Confirm email"
 msgstr "Potwierdź email"
 
-#: app/tasks/user.py:20
+#: app/tasks/user.py:25
 #, python-format
 msgid "Click the link to confirm your email: %(link)s"
 msgstr "Kliknij link, aby potwierdzić swój e-mail: %(link)s"
 
-#: app/tasks/user.py:39
+#: app/tasks/user.py:44
 msgid "Reset password"
 msgstr "Zresetuj hasło"
 
-#: app/tasks/user.py:40
+#: app/tasks/user.py:45
 #, python-format
 msgid "Click the link to reset your password: %(link)s"
 msgstr "Kliknij link, aby zresetować swoje hasło: %(link)s"
