@@ -17,7 +17,7 @@ class RevokedTokenError(base.HTTPException):
     def __init__(
         self, detail: base.Detail = None, context: base.Context = None
     ) -> None:
-        detail = "Token is revoked"
+        detail = "Token has been revoked"
         status_code = status.HTTP_401_UNAUTHORIZED
         super().__init__(status_code, detail, context)
 
