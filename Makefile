@@ -19,7 +19,7 @@ lint-backend:
 		flake8 .; \
 		mypy .; \
 		pylint app; \
-		bandit . --exclude tests --exclude migrations --recursive; \
+		bandit . --exclude migrations,tests --recursive; \
 	"
 
 create-migration:
