@@ -12,7 +12,6 @@ if typing.TYPE_CHECKING:
 
 
 Entry = typing.TypeVar("Entry", bound="base.BaseModel")
-Statement: typing.TypeAlias = expression.SelectOfScalar
 
 
 class DBSessionContext:
@@ -63,7 +62,9 @@ class AppCRUD(DBSessionContext):
     async def _count(
         self, model: typing.Type["base.BaseModel"], entry: "base.PydanticBaseModel"
     ) -> pagination_models.TotalResults:
-        select_statament = sqlmodel.select([sqlmodel.func.count()]).select_from(model)
+        select_statament: expression.SelectOfScalar[typing.Any] = sqlmodel.select(
+            [sqlmodel.func.count()]
+        ).select_from(model)
         filters_statement = _build_filters_statement(model, select_statament, entry)
         return (await self.session.execute(filters_statement)).scalar_one()
 
@@ -76,9 +77,9 @@ class AppCRUD(DBSessionContext):
 
 def _build_filters_statement(
     model: typing.Type["base.BaseModel"],
-    statement: Statement,
+    statement: expression.SelectOfScalar[Entry],
     filters: "base.PydanticBaseModel",
-) -> Statement:
+) -> expression.SelectOfScalar[Entry]:
     filters_data = filters.dict(exclude_unset=True)
     for attr, value in filters_data.items():
         statement = statement.where(getattr(model, attr) == value)

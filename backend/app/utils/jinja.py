@@ -7,4 +7,6 @@ env = jinja2.Environment(  # nosec
     autoescape=jinja2.select_autoescape(["html", "htm", "xml", "html.jinja"]),
     extensions=["jinja2.ext.i18n"],
 )
-env.install_gettext_translations(translation.translations)
+env.install_gettext_translations(  # type: ignore # pylint: disable=no-member
+    translation.translations,
+)

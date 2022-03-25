@@ -27,33 +27,37 @@ repos:
         args: [--config=backend/setup.cfg]
         additional_dependencies: [flake8-docstrings==1.6.0, flake8-print==4.0.0]
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v0.931
+    rev: v0.942
     hooks:
       - id: mypy
         args: [--config-file=backend/setup.cfg]
         additional_dependencies:
           [
+            fastapi==0.75.0,
+            jinja2==3.1.0,
             sqlmodel==0.0.6,
             types-freezegun==1.1.7,
             types-orjson==3.6.2,
             types-redis==4.1.18,
           ]
   - repo: https://github.com/pycqa/pylint
-    rev: v2.12.2
+    rev: v2.13.0
     hooks:
       - id: pylint
         args: [--rcfile=backend/setup.cfg]
+        additional_dependencies:
+          [fastapi==0.75.0, orjson==3.6.7, pydantic==1.9.0]
   - repo: https://github.com/Lucas-C/pre-commit-hooks-bandit
     rev: v1.0.5
     hooks:
       - id: python-bandit-vulnerability-check
         args: [--exclude, tests, --recursive, .]
   - repo: https://github.com/pre-commit/mirrors-prettier
-    rev: v2.5.1
+    rev: v2.6.1
     hooks:
       - id: prettier
   - repo: https://github.com/pre-commit/mirrors-eslint
-    rev: v8.9.0
+    rev: v8.11.0
     hooks:
       - id: eslint
         files: \.[jt]sx?$

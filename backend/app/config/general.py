@@ -52,7 +52,9 @@ class Email(pydantic.BaseSettings):
     EMAIL_SENDER_EMAIL: pydantic.EmailStr
 
 
-class Settings(App, Security, Database, Celery, Email):
+class Settings(
+    App, Security, Database, Celery, Email
+):  # pylint: disable=too-many-ancestors
     class Config:
         case_sensitive = True
 

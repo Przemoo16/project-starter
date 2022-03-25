@@ -1,26 +1,24 @@
-# pylint: disable=unused-argument
 import smtplib
 import ssl
 import typing
 
 
 class MockSMTP(smtplib.SMTP):
-    @staticmethod
     def connect(
+        self,
         host: str = "localhost",
         port: int = 0,
         source_address: tuple[bytearray | bytes | str, int] | None = None,
     ) -> tuple[int, bytes]:
         return (220, b"dummy response")
 
-    @staticmethod
     def login(
-        user: str, password: str, *, initial_response_ok: bool = True
+        self, user: str, password: str, *, initial_response_ok: bool = True
     ) -> tuple[int, bytes]:
         return (235, b"dummy response")
 
-    @staticmethod
     def sendmail(
+        self,
         from_addr: str,
         to_addrs: str | typing.Sequence[str],
         msg: str | bytes,

@@ -6,7 +6,7 @@ from app.models import base
 
 TotalResults: typing.TypeAlias = int
 
-PaginationOffset: typing.TypeAlias = pydantic.conint(ge=0)
+PaginationOffset: typing.TypeAlias = pydantic.conint(ge=0)  # type: ignore
 PaginationLimit: typing.TypeAlias = pydantic.PositiveInt | None
 
 
