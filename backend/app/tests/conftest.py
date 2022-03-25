@@ -60,11 +60,11 @@ async def create_tables_fixture(
 
 
 @pytest_asyncio.fixture(name="session")
-async def session_fixture(
+async def session_fixture(  # pylint: disable=unused-argument
     engine: asyncio.AsyncEngine,
-    create_tables: None,  # pylint: disable=unused-argument
-    purge_celery: None,  # pylint: disable=unused-argument
-    flush_redis: None,  # pylint: disable=unused-argument
+    create_tables: None,
+    purge_celery: None,
+    flush_redis: None,
 ) -> typing.AsyncGenerator[AsyncSession, None]:
     async_session = orm.sessionmaker(
         engine, class_=asyncio.AsyncSession, expire_on_commit=False
