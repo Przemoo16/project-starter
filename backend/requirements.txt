@@ -15,8 +15,10 @@ anyio==3.5.0
     #   watchgod
 asgiref==3.5.0
     # via uvicorn
-astroid==2.9.3
+astroid==2.11.1
     # via pylint
+async-timeout==4.0.2
+    # via redis
 asyncpg==0.25.0
     # via -r requirements.in
 attrs==21.4.0
@@ -67,6 +69,8 @@ cryptography==36.0.2
     # via python-jose
 deprecated==1.2.13
     # via redis
+dill==0.3.4
+    # via pylint
 dnspython==2.2.1
     # via email-validator
 ecdsa==0.17.0
@@ -118,7 +122,7 @@ isort==5.10.1
     # via
     #   -r requirements.in
     #   pylint
-jinja2==3.0.3
+jinja2==3.1.0
     # via -r requirements.in
 kombu==5.2.4
     # via celery
@@ -134,7 +138,7 @@ mccabe==0.6.1
     # via
     #   flake8
     #   pylint
-mypy==0.941
+mypy==0.942
     # via -r requirements.in
 mypy-extensions==0.4.3
     # via
@@ -191,7 +195,7 @@ pyhumps==3.5.3
     # via -r requirements.in
 pyjwt==1.7.1
     # via fastapi-jwt-auth
-pylint==2.12.2
+pylint==2.13.0
     # via -r requirements.in
 pyparsing==3.0.7
     # via packaging
@@ -200,19 +204,19 @@ pytest==7.1.1
     #   -r requirements.in
     #   pytest-asyncio
     #   pytest-cov
-pytest-asyncio==0.18.2
+pytest-asyncio==0.18.3
     # via -r requirements.in
 pytest-cov==3.0.0
     # via -r requirements.in
 python-dateutil==2.8.2
     # via freezegun
-python-dotenv==0.19.2
+python-dotenv==0.20.0
     # via uvicorn
 python-jose[cryptography]==3.3.0
     # via -r requirements.in
 python-multipart==0.0.5
     # via -r requirements.in
-pytz==2021.3
+pytz==2022.1
     # via
     #   babel
     #   celery
@@ -220,7 +224,7 @@ pyyaml==6.0
     # via
     #   bandit
     #   uvicorn
-redis==4.1.4
+redis==4.2.0
     # via -r requirements.in
 requests==2.27.1
     # via -r requirements.in
@@ -249,7 +253,7 @@ sqlalchemy==1.4.32
     # via
     #   alembic
     #   sqlmodel
-sqlalchemy2-stubs==0.0.2a20
+sqlalchemy2-stubs==0.0.2a21
     # via sqlmodel
 sqlmodel==0.0.6
     # via -r requirements.in
@@ -259,14 +263,13 @@ starlette==0.17.1
     #   fastapi
 stevedore==3.5.0
     # via bandit
-toml==0.10.2
-    # via pylint
 tomli==2.0.1
     # via
     #   black
     #   coverage
     #   mypy
     #   pep517
+    #   pylint
     #   pytest
 types-freezegun==1.1.7
     # via -r requirements.in
@@ -278,6 +281,7 @@ typing-extensions==4.1.1
     # via
     #   mypy
     #   pydantic
+    #   redis
     #   sqlalchemy2-stubs
 urllib3==1.26.9
     # via requests
@@ -290,7 +294,7 @@ vine==5.0.0
     #   amqp
     #   celery
     #   kombu
-watchgod==0.8
+watchgod==0.8.1
     # via uvicorn
 wcwidth==0.2.5
     # via prompt-toolkit
@@ -298,7 +302,7 @@ websockets==10.2
     # via uvicorn
 wheel==0.37.1
     # via pip-tools
-wrapt==1.13.3
+wrapt==1.14.0
     # via
     #   astroid
     #   deprecated

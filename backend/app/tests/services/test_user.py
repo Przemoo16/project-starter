@@ -271,9 +271,8 @@ async def test_user_crud_update(session: "conftest.AsyncSession") -> None:
     assert updated_user.name == user_update.name
     assert updated_user.confirmed_email is True
     assert updated_user.password == user.password
-    statement = sqlmodel.select(
-        user_models.User
-    ).where(  # pylint: disable=singleton-comparison,
+    # pylint: disable=singleton-comparison
+    statement = sqlmodel.select(user_models.User).where(
         user_models.User.name == user_update.name,
         user_models.User.confirmed_email == True,  # noqa: E712
     )

@@ -25,13 +25,13 @@ settings = general.get_settings()
 
 
 @pytest.fixture(name="redis_client", scope="session")
-def redis_client_fixture() -> typing.Generator[RedisClient, None, None]:
+def redis_client_fixture() -> typing.Generator[RedisClient, None, None]:  # type: ignore
     yield redis.Redis.from_url(settings.REDIS_URL, decode_responses=True)
 
 
 @pytest.fixture(name="flush_redis")
 def flush_redis_fixture(
-    redis_client: RedisClient,
+    redis_client: RedisClient,  # type: ignore
 ) -> typing.Generator[None, None, None]:
     yield
     redis_client.flushall()

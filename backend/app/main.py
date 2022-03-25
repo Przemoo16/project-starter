@@ -21,4 +21,4 @@ handlers.init_handlers(app)
 
 app.include_router(api.router, prefix=settings.API_URL)
 
-app.openapi = openapi.generate_openapi_schema(app)
+app.openapi = openapi.generate_openapi_schema(app)  # type: ignore
