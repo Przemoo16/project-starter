@@ -20,10 +20,10 @@ services:
     depends_on:
       - postgres
       - redis
-    volumes:
-      - ./backend:/backend
     ports:
       - "8000:80"
+    volumes:
+      - ./backend:/backend
     env_file:
       - .env
 
@@ -37,38 +37,52 @@ services:
       - ./frontend/src:/frontend/src
       - ./frontend/public:/frontend/public
 
+  nginx:
+    build:
+      context: .
+      dockerfile: config/nginx.Dockerfile
+    depends_on:
+      - backend
+      - frontend
+    ports:
+      - "3000:80"
+    volumes:
+      - ./config/nginx/nginx.conf:/var/nginx.conf
+    env_file:
+      - .env
+
   celery:
     build:
       context: .
       dockerfile: config/backend.Dockerfile
-    command: "celery -A app.celery worker -l INFO"
-    volumes:
-      - ./backend:/backend
     depends_on:
       - postgres
       - redis
+    volumes:
+      - ./backend:/backend
     env_file:
       - .env
+    command: "celery -A app.celery worker -l INFO"
 
   celery-beat:
     build:
       context: .
       dockerfile: config/backend.Dockerfile
-    command: "celery -A app.celery beat -l INFO"
-    volumes:
-      - ./backend:/backend
     depends_on:
       - postgres
       - redis
+    volumes:
+      - ./backend:/backend
     env_file:
       - .env
+    command: "celery -A app.celery beat -l INFO"
 
   flower:
     image: mher/flower
-    env_file:
-      - .env
     ports:
       - 8888:8888
+    env_file:
+      - .env
 
   redis:
     image: redis:latest
