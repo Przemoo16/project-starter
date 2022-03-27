@@ -2,12 +2,13 @@
 
 HOST=0.0.0.0
 PORT=80
+MESSAGE="Running backend on $HOST:$PORT"
 
 if [[ "$DEV_MODE" == "on" ]]; then
-    echo "Running backend with reloading"
+    echo "$MESSAGE with reloading"
     RELOAD=--reload
 else
-    echo "Running backend without reloading"
+    echo "$MESSAGE without reloading"
     RELOAD=""
 fi
 
