@@ -36,7 +36,7 @@
     "eslint:fix": "eslint --ext .js,.jsx,.ts,.tsx . --fix",
     "lint": "npm-run-all -c --parallel prettier:lint eslint:lint --silent",
     "lint:fix": "npm-run-all -c --sequential prettier:fix eslint:fix --silent",
-    "extract-translation": "i18next 'src/**/*.{ts,tsx}' 'lib/**/*.{ts,tsx}' [-oc] --silent",
+    "extract-translation": "i18next 'src/**/*.{js,jsx,ts,tsx}' 'lib/**/*.{js,jsx,ts,tsx}' [-oc] --silent",
     "watch-translation": "watch 'yarn run extract-translation' ./src -p=/src/translations/"
   },
   "browserslist": {
