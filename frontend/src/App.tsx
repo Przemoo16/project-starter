@@ -1,23 +1,46 @@
-import './App.css';
+import './index.css';
 
-function App() {
+import { Route, Routes } from 'react-router-dom';
+
+import { LazyPages } from './pages/lazy';
+import { AnonymousLayout } from './ui-components/layouts/AnonymousLayout';
+import { EnhancedRoute, RouteDefinition } from './ui-components/Routing';
+
+const route404: RouteDefinition = {
+  path: '*',
+  requiresAuth: false,
+  layout: AnonymousLayout,
+  content: () => <>404</>,
+};
+
+const routes: RouteDefinition[] = [
+  { path: '/', requiresAuth: false, layout: AnonymousLayout, content: LazyPages.HomePage },
+  route404,
+];
+
+const App = () => {
+  // TODO: Implement authentication
+  const isAuthenticated = true;
+  const isAuthPending = false;
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Routes>
+      {routes.map((route, i) => (
+        <Route
+          key={i}
+          path={route.path}
+          element={
+            <EnhancedRoute
+              route={route}
+              isAuthenticated={isAuthenticated}
+              isAuthPending={isAuthPending}
+              authFallbackRoute={route404}
+            />
+          }
+        />
+      ))}
+    </Routes>
   );
-}
+};
 
 export default App;
