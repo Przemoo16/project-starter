@@ -36,6 +36,9 @@ services:
     volumes:
       - ./frontend/src:/frontend/src
       - ./frontend/public:/frontend/public
+    environment:
+      - BROWSER=none
+      - CI=true
 
   nginx:
     build:
