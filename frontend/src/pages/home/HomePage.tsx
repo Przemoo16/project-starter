@@ -1,15 +1,9 @@
-import styled from 'styled-components';
-
 export const HomePage = () => {
   return (
-    <Page>
-      <SubTitle>Project Starter</SubTitle>
-    </Page>
+    <div>
+      <h2>Project Starter</h2>
+    </div>
   );
 };
-
-const Page = styled.div``;
-
-const SubTitle = styled.h2``;
 
 export default HomePage;
