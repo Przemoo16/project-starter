@@ -21,9 +21,10 @@ export const AnonymousLayout = ({ children }: Props) => {
     <Grid container component="main" sx={{ minHeight: '100vh' }}>
       <Grid
         item
-        sm={false}
+        xs={0}
         md={6}
         sx={{
+          display: { xs: 'none', md: 'block' },
           backgroundImage: `url(${heroIcon})`,
           backgroundRepeat: 'no-repeat',
           backgroundSize: '80% 80%',
@@ -35,7 +36,7 @@ export const AnonymousLayout = ({ children }: Props) => {
         component={Paper}
         elevation={6}
         square
-        sm={12}
+        xs={12}
         md={6}
         sx={{
           display: 'flex',
@@ -70,7 +71,7 @@ export const AnonymousLayout = ({ children }: Props) => {
             </Button>
           </Box>
         </Box>
-        <Box sx={{ mb: 3 }}>
+        <Box component="footer" sx={{ mb: 3 }}>
           <Copyright />
         </Box>
       </Grid>
