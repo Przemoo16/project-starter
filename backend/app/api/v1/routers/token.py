@@ -1,14 +1,14 @@
 import typing
 
 import fastapi
-from fastapi import security, status
+from fastapi import status
 
 from app.config import db, general
 from app.exceptions.http import token as token_exceptions
 from app.exceptions.http import user as user_exceptions
 from app.models import token as token_models
+from app.models import user as user_models
 from app.services import token as token_services
-from app.utils import converters
 
 settings = general.get_settings()
 
@@ -21,12 +21,11 @@ router = fastapi.APIRouter()
     responses={**token_exceptions.InvalidCredentials().doc},
 )
 async def obtain_tokens(
-    form_data: security.OAuth2PasswordRequestForm = fastapi.Depends(),
+    username: user_models.UserEmail = fastapi.Form(...),
+    password: user_models.UserPassword = fastapi.Form(...),
     session: db.AsyncSession = fastapi.Depends(db.get_session),
 ) -> typing.Any:
-    return await token_services.TokenService(session).obtain_tokens(
-        converters.to_pydantic_email(form_data.username), form_data.password
-    )
+    return await token_services.TokenService(session).obtain_tokens(username, password)
 
 
 @router.post(
