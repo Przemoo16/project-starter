@@ -1,1 +1,12 @@
-{}
+{
+  "auth": {
+    "loginButton": "Log in",
+    "loginTitle": "Log in to your account"
+  },
+  "common": {
+    "copyright": "Copyright"
+  },
+  "general": {
+    "websiteName": "Project Starter"
+  }
+}

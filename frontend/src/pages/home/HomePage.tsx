@@ -1,8 +1,13 @@
-export const HomePage = () => {
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+
+const HomePage = () => {
   return (
-    <div>
-      <h2>Project Starter</h2>
-    </div>
+    <Typography variant="h2" align="center">
+      <Box component="span" fontWeight="bold">
+        Project Starter
+      </Box>
+    </Typography>
   );
 };
 
