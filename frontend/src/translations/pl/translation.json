@@ -1,12 +1,17 @@
 {
   "auth": {
+    "email": "E-mail",
+    "forgotLink": "Zapomniałeś hasła?",
     "loginButton": "Zaloguj sie",
-    "loginTitle": "Zaloguj się na swoje konto"
+    "loginTitle": "Zaloguj się na swoje konto",
+    "password": "Hasło",
+    "registerLink": "Nie masz jeszcze konta?"
   },
   "common": {
     "copyright": "Copyright"
   },
-  "general": {
-    "websiteName": "Project Starter"
+  "validation": {
+    "invalidEmail": "Nieprawidłowy e-mail",
+    "required": "To pole jest wymagane"
   }
 }

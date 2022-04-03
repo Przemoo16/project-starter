@@ -39,6 +39,7 @@ export const AnonymousLayout = ({ children }: Props) => {
         xs={12}
         md={6}
         sx={{
+          px: 5,
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
@@ -48,6 +49,7 @@ export const AnonymousLayout = ({ children }: Props) => {
         <Box
           component="section"
           sx={{
+            width: '100%',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
@@ -59,6 +61,8 @@ export const AnonymousLayout = ({ children }: Props) => {
           <Box sx={{ my: 5 }}>{children}</Box>
           <Box
             sx={{
+              width: '100%',
+              maxWidth: 500,
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
@@ -66,7 +70,7 @@ export const AnonymousLayout = ({ children }: Props) => {
             }}
           >
             <Typography>{t('auth.loginTitle')}:</Typography>
-            <Button to="/login" component={RouterLink} variant="contained" sx={{ mt: 3 }}>
+            <Button to="/login" component={RouterLink} fullWidth variant="contained" sx={{ mt: 3 }}>
               {t('auth.loginButton')}
             </Button>
           </Box>

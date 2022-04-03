@@ -33,6 +33,7 @@ export const AuthLayout = ({ children }: Props) => (
       xs={12}
       md={6}
       sx={{
+        px: 5,
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
@@ -42,6 +43,7 @@ export const AuthLayout = ({ children }: Props) => (
       <Box
         component="section"
         sx={{
+          width: '100%',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',

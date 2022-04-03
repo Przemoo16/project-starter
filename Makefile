@@ -32,10 +32,14 @@ setup:
 	git config blame.ignoreRevsFile .git-blame-ignore-revs
 	pre-commit install --hook-type pre-commit --hook-type pre-push
 
+test: test-backend test-frontend
+
 test-backend:
-	$(BUILD_COMMAND)
 	$(UPGRADE_MIGRATIONS_COMMAND)
 	$(COMPOSE_DEV) run --rm backend pytest .
+
+test-frontend:
+	$(COMPOSE_DEV) run --rm frontend yarn test
 
 update-messages:
 	$(COMPOSE_DEV) run --rm --no-deps backend pybabel update -i locale/messages.pot -d locale
