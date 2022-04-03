@@ -39,6 +39,8 @@ services:
     environment:
       - BROWSER=none
       - CI=true
+    env_file:
+      - .env
 
   nginx:
     build:

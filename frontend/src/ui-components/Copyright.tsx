@@ -9,7 +9,7 @@ export const Copyright = () => {
     <Typography variant="body2" color="text.secondary" align="center">
       {`${t('common.copyright')} © `}
       <Link color="inherit" to="/" component={RouterLink}>
-        {t('general.websiteName')}
+        {process.env.REACT_APP_NAME}
       </Link>
       {` ${new Date().getFullYear()}.`}
     </Typography>
