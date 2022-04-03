@@ -1,5 +1,5 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import AppRegistrationOutlined from '@mui/icons-material/AppRegistrationOutlined';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -10,17 +10,19 @@ import { useTranslation } from 'react-i18next';
 import { Link as RouterLink } from 'react-router-dom';
 
 import { TextInput } from '../../ui-components/Input';
-import { getLoginSchema } from './validation';
+import { getRegisterSchema } from './validation';
 
-const LoginPage = () => {
+const RegisterPage = () => {
   const { t } = useTranslation();
   const { control, handleSubmit } = useForm({
     mode: 'onTouched',
     defaultValues: {
+      name: '',
       email: '',
       password: '',
+      repeatPassword: '',
     },
-    resolver: yupResolver(getLoginSchema()),
+    resolver: yupResolver(getRegisterSchema()),
   });
 
   // TODO: Implement request
@@ -36,10 +38,12 @@ const LoginPage = () => {
       }}
     >
       <Avatar sx={{ bgcolor: 'secondary.main' }}>
-        <LockOutlinedIcon />
+        <AppRegistrationOutlined />
       </Avatar>
       <Typography component="h1" variant="h4" sx={{ textAlign: 'center', mt: 2 }}>
-        {t('auth.loginTitle')}
+        {t('auth.getStarted')}
+        <br />
+        {t('auth.withFreeAccount')}
       </Typography>
       <Box
         component="form"
@@ -47,6 +51,17 @@ const LoginPage = () => {
         onSubmit={handleSubmit(onSubmit)}
         sx={{ width: '100%', maxWidth: 500, mt: 3 }}
       >
+        <TextInput
+          name="name"
+          control={control}
+          size="small"
+          margin="normal"
+          fullWidth
+          label={t('auth.name')}
+          type="text"
+          placeholder="Jon Doe"
+          autoComplete="name"
+        />
         <TextInput
           name="email"
           control={control}
@@ -67,31 +82,29 @@ const LoginPage = () => {
           label={t('auth.password')}
           type="password"
           placeholder="********"
-          autoComplete="current-password"
+          autoComplete="new-password"
+        />
+        <TextInput
+          name="repeatPassword"
+          control={control}
+          size="small"
+          margin="normal"
+          fullWidth
+          label={t('auth.repeatPassword')}
+          type="password"
+          placeholder="********"
+          autoComplete="new-password"
         />
         <Button type="submit" fullWidth variant="contained" sx={{ mt: 2 }}>
-          {t('auth.loginButton')}
+          {t('auth.getStarted')}
         </Button>
         <Box
           sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'flex-start',
-            justifyContent: 'center',
             mt: 2,
           }}
         >
-          <Link to="/register" component={RouterLink} underline="hover" variant="body2">
-            {t('auth.registerLink')}
-          </Link>
-          <Link
-            to="/reset-password"
-            component={RouterLink}
-            underline="hover"
-            variant="body2"
-            sx={{ mt: 0.5 }}
-          >
-            {t('auth.forgotLink')}
+          <Link to="/login" component={RouterLink} underline="hover" variant="body2">
+            {t('auth.loginLink')}
           </Link>
         </Box>
       </Box>
@@ -99,4 +112,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+export default RegisterPage;

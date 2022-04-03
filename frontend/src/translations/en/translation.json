@@ -2,16 +2,25 @@
   "auth": {
     "email": "Email",
     "forgotLink": "Forgot your password?",
+    "getStarted": "Get started",
     "loginButton": "Log in",
+    "loginLink": "Do you already have an account?",
     "loginTitle": "Log in to your account",
+    "name": "Name",
     "password": "Password",
-    "registerLink": "Don't have an account yet?"
+    "registerLink": "Don't have an account yet?",
+    "repeatPassword": "Repeat password",
+    "withFreeAccount": "with a free account"
   },
   "common": {
     "copyright": "Copyright"
   },
   "validation": {
     "invalidEmail": "Invalid email",
+    "maxName": "Name can be up to {{max}} characters",
+    "maxPassword": "Password can be up to {{max}} characters",
+    "minPassword": "Password must be at least {{min}} characters",
+    "passwordMatch": "Password doesn't match",
     "required": "This field is required"
   }
 }

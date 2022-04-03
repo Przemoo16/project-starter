@@ -52,7 +52,7 @@ export const AuthLayout = ({ children }: Props) => (
         }}
       >
         <Logo />
-        <Box sx={{ mt: 5 }}>{children}</Box>
+        <Box sx={{ mt: 10 }}>{children}</Box>
       </Box>
       <Box component="footer" sx={{ mb: 3 }}>
         <Copyright />
