@@ -2,16 +2,25 @@
   "auth": {
     "email": "E-mail",
     "forgotLink": "Zapomniałeś hasła?",
+    "getStarted": "Zacznij korzystać",
     "loginButton": "Zaloguj sie",
+    "loginLink": "Masz już konto?",
     "loginTitle": "Zaloguj się na swoje konto",
+    "name": "Nazwa",
     "password": "Hasło",
-    "registerLink": "Nie masz jeszcze konta?"
+    "registerLink": "Nie masz jeszcze konta?",
+    "repeatPassword": "Powtórz hasło",
+    "withFreeAccount": "z bezpłatnym kontem"
   },
   "common": {
     "copyright": "Copyright"
   },
   "validation": {
     "invalidEmail": "Nieprawidłowy e-mail",
+    "maxName": "Nazwa może mieć maksymalnie {{max}} znaków",
+    "maxPassword": "Hasło może mieć maksymalnie {{max}} znaków",
+    "minPassword": "Hasło musi mieć co najmniej {{min}} znaków",
+    "passwordMatch": "Hasło się nie zgadza",
     "required": "To pole jest wymagane"
   }
 }

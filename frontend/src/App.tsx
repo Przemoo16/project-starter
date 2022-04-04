@@ -22,6 +22,12 @@ const routes: RouteDefinition[] = [
     layout: AuthLayout,
     content: LazyPages.LoginPage,
   },
+  {
+    path: '/register',
+    requiresAuth: false,
+    layout: AuthLayout,
+    content: LazyPages.RegisterPage,
+  },
   route404,
 ];
 
