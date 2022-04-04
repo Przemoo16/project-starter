@@ -58,7 +58,7 @@ const ResetPasswordPage = () => {
           autoComplete="email"
         />
         <Button type="submit" fullWidth variant="contained" sx={{ mt: 2 }}>
-          {t('auth.sendPasswordReset')}
+          {t('auth.sendEmailButton')}
         </Button>
         <Box
           sx={{
@@ -66,7 +66,7 @@ const ResetPasswordPage = () => {
           }}
         >
           <Link to="/login" component={RouterLink} underline="hover" variant="body2">
-            {t('auth.backToLogin')}
+            {t('auth.backToLoginLink')}
           </Link>
         </Box>
       </Box>

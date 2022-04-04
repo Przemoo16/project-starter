@@ -1,6 +1,6 @@
 {
   "auth": {
-    "backToLogin": "Back to login",
+    "backToLoginLink": "Back to login",
     "email": "Email",
     "forgotLink": "Forgot your password?",
     "getStarted": "Get started",
@@ -12,7 +12,7 @@
     "registerLink": "Don't have an account yet?",
     "repeatPassword": "Repeat password",
     "resetPasswordTitle": "Reset your password",
-    "sendPasswordReset": "Send email",
+    "sendEmailButton": "Send email",
     "withFreeAccount": "with a free account"
   },
   "common": {
