@@ -1,5 +1,5 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import AppRegistrationOutlinedIcon from '@mui/icons-material/AppRegistrationOutlined';
+import LockResetOutlinedIcon from '@mui/icons-material/LockResetOutlined';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -10,19 +10,16 @@ import { useTranslation } from 'react-i18next';
 import { Link as RouterLink } from 'react-router-dom';
 
 import { TextInput } from '../../ui-components/Input';
-import { getRegisterSchema } from './validation';
+import { getResetPasswordSchema } from './validation';
 
-const RegisterPage = () => {
+const ResetPasswordPage = () => {
   const { t } = useTranslation();
   const { control, handleSubmit } = useForm({
     mode: 'onTouched',
     defaultValues: {
-      name: '',
       email: '',
-      password: '',
-      repeatPassword: '',
     },
-    resolver: yupResolver(getRegisterSchema()),
+    resolver: yupResolver(getResetPasswordSchema()),
   });
 
   // TODO: Implement request
@@ -38,12 +35,10 @@ const RegisterPage = () => {
       }}
     >
       <Avatar sx={{ bgcolor: 'secondary.main' }}>
-        <AppRegistrationOutlinedIcon />
+        <LockResetOutlinedIcon />
       </Avatar>
       <Typography component="h1" variant="h4" sx={{ textAlign: 'center', mt: 2 }}>
-        {t('auth.getStarted')}
-        <br />
-        {t('auth.withFreeAccount')}
+        {t('auth.resetPasswordTitle')}
       </Typography>
       <Box
         component="form"
@@ -51,17 +46,6 @@ const RegisterPage = () => {
         onSubmit={handleSubmit(onSubmit)}
         sx={{ width: '100%', maxWidth: 500, mt: 3 }}
       >
-        <TextInput
-          name="name"
-          control={control}
-          size="small"
-          margin="normal"
-          fullWidth
-          label={t('auth.name')}
-          type="text"
-          placeholder="Jon Doe"
-          autoComplete="name"
-        />
         <TextInput
           name="email"
           control={control}
@@ -73,30 +57,8 @@ const RegisterPage = () => {
           placeholder="joe@example.com"
           autoComplete="email"
         />
-        <TextInput
-          name="password"
-          control={control}
-          size="small"
-          margin="normal"
-          fullWidth
-          label={t('auth.password')}
-          type="password"
-          placeholder="********"
-          autoComplete="new-password"
-        />
-        <TextInput
-          name="repeatPassword"
-          control={control}
-          size="small"
-          margin="normal"
-          fullWidth
-          label={t('auth.repeatPassword')}
-          type="password"
-          placeholder="********"
-          autoComplete="new-password"
-        />
         <Button type="submit" fullWidth variant="contained" sx={{ mt: 2 }}>
-          {t('auth.getStarted')}
+          {t('auth.sendPasswordReset')}
         </Button>
         <Box
           sx={{
@@ -104,7 +66,7 @@ const RegisterPage = () => {
           }}
         >
           <Link to="/login" component={RouterLink} underline="hover" variant="body2">
-            {t('auth.loginLink')}
+            {t('auth.backToLogin')}
           </Link>
         </Box>
       </Box>
@@ -112,4 +74,4 @@ const RegisterPage = () => {
   );
 };
 
-export default RegisterPage;
+export default ResetPasswordPage;

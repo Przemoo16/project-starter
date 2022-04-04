@@ -28,6 +28,12 @@ const routes: RouteDefinition[] = [
     layout: AuthLayout,
     content: LazyPages.RegisterPage,
   },
+  {
+    path: '/reset-password',
+    requiresAuth: false,
+    layout: AuthLayout,
+    content: LazyPages.ResetPasswordPage,
+  },
   route404,
 ];
 
