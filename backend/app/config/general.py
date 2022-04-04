@@ -6,9 +6,8 @@ import pydantic
 
 class App(pydantic.BaseSettings):
     APP_NAME: str
-    API_VERSION: str = "v1"
     LOCALES: list[str] = ["en"]
-    API_URL: str = f"/api/{API_VERSION}"
+    API_URL: str
 
 
 class Security(pydantic.BaseSettings):
@@ -25,8 +24,8 @@ class Security(pydantic.BaseSettings):
     AUTHJWT_DECODE_ALGORITHMS: set[str] = {"HS256"}
     AUTHJWT_DATABASE_URL: pydantic.RedisDsn
     ACCOUNT_ACTIVATION_DAYS: int = 7
-    USER_PASSWORD_MIN_LENGTH: int = 8
-    USER_PASSWORD_MAX_LENGTH: int = 32
+    USER_PASSWORD_MIN_LENGTH: int
+    USER_PASSWORD_MAX_LENGTH: int
     CONFIRM_EMAIL_URL: pydantic.AnyHttpUrl
     RESET_PASSWORD_URL: pydantic.AnyHttpUrl
 

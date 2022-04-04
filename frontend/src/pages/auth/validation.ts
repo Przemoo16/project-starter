@@ -8,8 +8,10 @@ export const getLoginSchema = () =>
     password: yup.string().required(t('validation.required')),
   });
 
-export const getRegisterSchema = () =>
-  yup.object().shape({
+export const getRegisterSchema = () => {
+  const passwordMinLength = +(process.env.REACT_APP_USER_PASSWORD_MIN_LENGTH || 8);
+  const passwordMaxLength = +(process.env.REACT_APP_USER_PASSWORD_MAX_LENGTH || 32);
+  return yup.object().shape({
     name: yup
       .string()
       .required(t('validation.required'))
@@ -18,7 +20,13 @@ export const getRegisterSchema = () =>
     password: yup
       .string()
       .required(t('validation.required'))
-      .min(8, t('validation.minPassword', { min: '8' }))
-      .max(32, t('validation.maxPassword', { max: '32' })),
+      .min(passwordMinLength, t('validation.minPassword', { min: passwordMinLength }))
+      .max(passwordMaxLength, t('validation.maxPassword', { max: passwordMaxLength })),
     repeatPassword: yup.string().oneOf([yup.ref('password'), null], t(`validation.passwordMatch`)),
+  });
+};
+
+export const getResetPasswordSchema = () =>
+  yup.object().shape({
+    email: yup.string().email(t('validation.invalidEmail')).required(t('validation.required')),
   });

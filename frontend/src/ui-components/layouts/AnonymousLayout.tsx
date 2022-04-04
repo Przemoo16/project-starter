@@ -58,7 +58,7 @@ export const AnonymousLayout = ({ children }: Props) => {
           }}
         >
           <Logo />
-          <Box sx={{ mt: 10, mb: 5 }}>{children}</Box>
+          <Box sx={{ width: '100%', mt: 10, mb: 5 }}>{children}</Box>
           <Box
             sx={{
               width: '100%',
