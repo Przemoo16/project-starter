@@ -1,4 +1,5 @@
 COMPOSE_DEV=docker-compose -f docker-compose.yml
+COMPOSE_CYPRESS=$(COMPOSE_DEV) -f docker-compose.cypress.yml
 BUILD_COMMAND=$(COMPOSE_DEV) build
 UPGRADE_MIGRATIONS_COMMAND=$(COMPOSE_DEV) run --rm backend bash -c "sleep 5 && alembic upgrade head"
 
@@ -38,8 +39,11 @@ test-backend:
 	$(UPGRADE_MIGRATIONS_COMMAND)
 	$(COMPOSE_DEV) run --rm backend pytest .
 
+test-e2e:
+	$(COMPOSE_CYPRESS) up --exit-code-from e2e
+
 test-frontend:
-	$(COMPOSE_DEV) run --rm frontend yarn test
+	$(COMPOSE_DEV) run --rm frontend sh -c "CI=true yarn test"
 
 update-messages:
 	$(COMPOSE_DEV) run --rm --no-deps backend pybabel update -i locale/messages.pot -d locale
