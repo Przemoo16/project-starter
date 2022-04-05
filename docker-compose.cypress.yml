@@ -1,0 +1,12 @@
+version: "3.9"
+
+services:
+  e2e:
+    image: "cypress/included:9.5.3"
+    volumes:
+      - ./e2e/cypress:/cypress
+      - ./e2e/cypress.json:/cypress.json
+    depends_on:
+      - frontend
+    environment:
+      - CYPRESS_baseUrl=http://frontend:3000
