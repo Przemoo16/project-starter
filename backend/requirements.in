@@ -16,6 +16,7 @@ python-jose[cryptography]
 python-multipart
 redis
 requests
+sentry-sdk
 sqlmodel
 starlette
 uvicorn[standard]

@@ -5,7 +5,7 @@ import fastapi
 from app.api.v1 import api
 from app.config import general
 from app.exceptions import handlers
-from app.utils import openapi, responses
+from app.utils import openapi, responses, sentry
 
 settings = general.get_settings()
 
@@ -16,6 +16,8 @@ app = fastapi.FastAPI(
     openapi_url=f"{settings.API_URL}/openapi.json",
     default_response_class=responses.ORJSONResponse,
 )
+
+sentry.init_sentry(settings.SENTRY_DSN, settings.DEV_MODE)
 
 handlers.init_handlers(app)
 
