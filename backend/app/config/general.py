@@ -6,6 +6,7 @@ import pydantic
 
 class App(pydantic.BaseSettings):
     APP_NAME: str
+    DEV_MODE: bool
     LOCALES: list[str] = ["en"]
     API_URL: str
 
@@ -51,8 +52,12 @@ class Email(pydantic.BaseSettings):
     EMAIL_SENDER_EMAIL: pydantic.EmailStr
 
 
+class Integration(pydantic.BaseSettings):
+    SENTRY_DSN: str
+
+
 class Settings(
-    App, Security, Database, Celery, Email
+    App, Security, Database, Celery, Email, Integration
 ):  # pylint: disable=too-many-ancestors
     class Config:
         case_sensitive = True

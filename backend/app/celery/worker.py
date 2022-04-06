@@ -1,10 +1,13 @@
 import celery
 
 from app.config import general
+from app.utils import sentry
 
 APPS = ["app"]
 
 settings = general.get_settings()
+
+sentry.init_sentry(settings.SENTRY_DSN, settings.DEV_MODE)
 
 app = celery.Celery(
     "celery",
