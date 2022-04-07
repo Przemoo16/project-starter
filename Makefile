@@ -13,6 +13,8 @@ compile-messages:
 extract-messages:
 	$(COMPOSE_DEV) run --rm --no-deps backend pybabel extract -F babel.ini -k gettext_lazy -k _ -o locale/messages.pot .
 
+lint: lint-backend lint-frontend
+
 lint-backend:
 	$(COMPOSE_DEV) run --rm --no-deps backend bash -c " \
 		isort .; \
@@ -22,6 +24,9 @@ lint-backend:
 		pylint app; \
 		bandit . --exclude migrations,tests --recursive; \
 	"
+
+lint-frontend:
+	$(COMPOSE_DEV) run --rm --no-deps frontend sh -c "yarn lint"
 
 create-migration:
 	$(COMPOSE_DEV) run --rm backend bash -c "sleep 5 && alembic revision --autogenerate -m '$(m)'"
