@@ -4,13 +4,16 @@ on:
   push:
     branches: [main]
 jobs:
-  lint:
+  lint-and-test: # TODO: Split to two separate jobs running in parallel (The built container has to be shared across jobs)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - run: make lint
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - run: make test
+      - name: Check out repository code
+        uses: actions/checkout@v3
+      - name: Copy .env file
+        run: cp .env.template .env
+      - name: Build
+        run: make build
+      - name: Lint
+        run: make lint
+      - name: Test
+        run: make test

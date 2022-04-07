@@ -17,12 +17,12 @@ lint: lint-backend lint-frontend
 
 lint-backend:
 	$(COMPOSE_DEV) run --rm --no-deps backend bash -c " \
-		isort .; \
-		black . --exclude=migrations; \
-		flake8 .; \
-		mypy .; \
-		pylint app; \
-		bandit . --exclude migrations,tests --recursive; \
+		isort . --check-only && \
+		black . --check --exclude=migrations && \
+		flake8 . && \
+		mypy . && \
+		pylint app && \
+		bandit . --exclude migrations,tests --recursive \
 	"
 
 lint-frontend:
