@@ -41,7 +41,7 @@ const RegisterPage = () => {
       <Avatar sx={{ bgcolor: 'secondary.main' }}>
         <AppRegistrationOutlinedIcon />
       </Avatar>
-      <Typography component="h1" variant="h4" sx={{ textAlign: 'center', mt: 2 }}>
+      <Typography component="h1" variant="h4" align="center" sx={{ mt: 2 }}>
         {t('auth.getStarted')}
         <br />
         {t('auth.withFreeAccount')}

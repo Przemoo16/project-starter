@@ -1,4 +1,4 @@
-import { LoginData, SignUpData, User } from '../backendTypes';
+import { LoginData, RequestResetPasswordData, SignUpData, User } from '../backendTypes';
 import { RestClient } from './client/restClient';
 import { TokenStorage } from './storage/tokenStorage';
 
@@ -27,10 +27,10 @@ class Backend {
     this.invalidTokensListeners.push(cb);
   }
 
-  async login(credentials: LoginData) {
+  async login(data: LoginData) {
     const formData = new FormData();
-    formData.append('username', credentials.email);
-    formData.append('password', credentials.password);
+    formData.append('username', data.email);
+    formData.append('password', data.password);
     return this.client
       .request('/token/', {
         method: 'POST',
@@ -53,8 +53,13 @@ class Backend {
     if (!this.tokenStorage.accessToken) {
       throw new Error('No token to get the user with');
     }
-    const { data } = await this.client.request('/users/me');
+    const { data } = await this.client.request('/users/me/');
     return data;
+  }
+
+  async logout() {
+    await this.revokeTokens();
+    this.clearCredentials();
   }
 
   private async refreshTokens(): Promise<void> {
@@ -62,14 +67,28 @@ class Backend {
       data: { accessToken, refreshToken },
     } = await this.client.request('/token/refresh/', {
       method: 'POST',
-      data: { refreshToken: this.tokenStorage.refreshToken },
+      data: { token: this.tokenStorage.refreshToken },
       _skipErrorHandler: true,
     });
 
     this.setTokens({ accessToken, refreshToken });
   }
 
-  clearCredentials() {
+  private async revokeTokens() {
+    for (const token of [this.tokenStorage.accessToken, this.tokenStorage.refreshToken]) {
+      try {
+        await this.client.request('/token/revoke/', {
+          method: 'POST',
+          data: { token: token },
+          _skipErrorHandler: true,
+        });
+      } catch (e) {
+        console.log('Could not revoke token');
+      }
+    }
+  }
+
+  private clearCredentials() {
     this.setTokens({ accessToken: null, refreshToken: null });
   }
 
@@ -83,6 +102,13 @@ class Backend {
     this.client.setAuthHeader(accessToken ? `Bearer ${accessToken}` : null);
     this.tokenStorage.accessToken = accessToken;
     this.tokenStorage.refreshToken = refreshToken;
+  }
+
+  async requestResetPassword(data: RequestResetPasswordData) {
+    return this.client.request('/users/password/reset-request/', {
+      method: 'POST',
+      data,
+    });
   }
 }
 
