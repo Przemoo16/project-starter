@@ -20,15 +20,21 @@ settings = general.get_settings()
 class UserService(base.AppService):
     async def create_user(self, user: user_models.UserCreate) -> user_models.User:
         user.password = auth.hash_password(user.password)
+        user_crud = UserCRUD(self.session)
         try:
-            user_db = await UserCRUD(self.session).create(user)
+            user_db = await user_crud.create(user)
         except exc.IntegrityError as e:
             raise user_exceptions.UserAlreadyExistsError(
                 context={"email": user.email}
             ) from e
-        user_tasks.send_email_to_confirm_email.delay(
-            user_db.email, user_db.confirmation_email_key
-        )
+        if settings.DEV_MODE:  # pragma: no cover
+            await user_crud.update(
+                user_db, user_models.UserUpdate(confirmed_email=True)
+            )
+        else:
+            user_tasks.send_email_to_confirm_email.delay(
+                user_db.email, user_db.confirmation_email_key
+            )
         log.info("The task to send email to confirm email has been invoked")
         return user_db
 
