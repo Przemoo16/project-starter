@@ -21,7 +21,7 @@ services:
       - postgres
       - redis
     ports:
-      - "8000:80"
+      - "8000:8000"
     volumes:
       - ./backend:/backend
     env_file:

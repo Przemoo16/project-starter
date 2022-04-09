@@ -1,26 +1,13 @@
+import { LoginData, SignUpData, User } from '../backendTypes';
 import { RestClient } from './client/restClient';
 import { TokenStorage } from './storage/tokenStorage';
 
-export interface User {
-  id: string;
-  name: string;
-}
-
-export interface SignUpData {
-  name: string;
-  email: string;
-  password: string;
-}
-
-interface LoginData {
-  email: string;
-  password: string;
-}
+type InvalidTokensListener = () => Promise<void>;
 
 class Backend {
   private readonly client: RestClient;
   private readonly tokenStorage = new TokenStorage();
-  private invalidTokensListeners: Array<() => Promise<void>> = [];
+  private invalidTokensListeners: Array<InvalidTokensListener> = [];
 
   constructor(apiUrl: string) {
     this.client = new RestClient(apiUrl);
@@ -36,21 +23,27 @@ class Backend {
     this.client.setAuthHeader(accessToken ? `Bearer ${accessToken}` : null);
   }
 
-  listenOnInvalidTokens(cb: () => Promise<void>) {
+  listenOnInvalidTokens(cb: InvalidTokensListener) {
     this.invalidTokensListeners.push(cb);
   }
 
   async login(credentials: LoginData) {
+    const formData = new FormData();
+    formData.append('username', credentials.email);
+    formData.append('password', credentials.password);
     return this.client
-      .request('/token', {
+      .request('/token/', {
         method: 'POST',
-        data: credentials,
+        data: formData,
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
       })
       .then(({ data }) => this.setTokens(data));
   }
 
   async signUp(data: SignUpData) {
-    return this.client.request('/users', {
+    return this.client.request('/users/', {
       method: 'POST',
       data,
     });
@@ -67,7 +60,7 @@ class Backend {
   private async refreshTokens(): Promise<void> {
     const {
       data: { accessToken, refreshToken },
-    } = await this.client.request('/token/refresh', {
+    } = await this.client.request('/token/refresh/', {
       method: 'POST',
       data: { refreshToken: this.tokenStorage.refreshToken },
       _skipErrorHandler: true,
