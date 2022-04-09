@@ -7,12 +7,16 @@ import Link from '@mui/material/Link';
 import Typography from '@mui/material/Typography';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
+import { useDispatch } from 'react-redux';
 import { Link as RouterLink } from 'react-router-dom';
 
 import { TextInput } from '../../ui-components/Input';
+import { authActions } from './store';
 import { getRegisterSchema } from './validation';
 
 const RegisterPage = () => {
+  const dispatch = useDispatch();
+  const { signUp } = authActions;
   const { t } = useTranslation();
   const { control, handleSubmit } = useForm({
     mode: 'onTouched',
@@ -24,9 +28,6 @@ const RegisterPage = () => {
     },
     resolver: yupResolver(getRegisterSchema()),
   });
-
-  // TODO: Implement request
-  const onSubmit = (data: any) => console.log(data);
 
   return (
     <Box
@@ -48,7 +49,7 @@ const RegisterPage = () => {
       <Box
         component="form"
         noValidate
-        onSubmit={handleSubmit(onSubmit)}
+        onSubmit={handleSubmit(async values => dispatch(signUp(values)))}
         sx={{ width: '100%', maxWidth: 500, mt: 3 }}
       >
         <TextInput

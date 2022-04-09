@@ -1,7 +1,7 @@
 #!/bin/bash
 
 HOST=0.0.0.0
-PORT=80
+PORT=8000
 MESSAGE="Running backend on $HOST:$PORT"
 
 if [[ "$DEV_MODE" == "on" ]]; then

@@ -2,7 +2,8 @@ import './index.css';
 
 import { Route, Routes } from 'react-router-dom';
 
-import { LazyPages } from './pages/lazy';
+import { LazyPages } from './features/lazy';
+import { useAppSelector } from './services/store';
 import { AnonymousLayout } from './ui-components/layouts/AnonymousLayout';
 import { AuthLayout } from './ui-components/layouts/AuthLayout';
 import { EnhancedRoute, RouteDefinition } from './ui-components/Routing';
@@ -11,7 +12,7 @@ const route404: RouteDefinition = {
   path: '*',
   requiresAuth: false,
   layout: AnonymousLayout,
-  content: () => <>404</>,
+  content: LazyPages.NotFoundPage,
 };
 
 const routes: RouteDefinition[] = [
@@ -38,9 +39,8 @@ const routes: RouteDefinition[] = [
 ];
 
 const App = () => {
-  // TODO: Implement authentication
-  const isAuthenticated = true;
-  const isAuthPending = false;
+  const isAuthenticated = useAppSelector(state => !!state.auth.user);
+  const isAuthPending = useAppSelector(state => state.auth.pending);
 
   return (
     <Routes>

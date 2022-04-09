@@ -38,7 +38,7 @@ export class RestClient {
 
   request(url: string, config: RequestConfig = {}) {
     const conf = stripUndefined({ url, ...this.defaultConfig, ...config }) as AxiosRequestConfig;
-
+    conf.data = config.data instanceof FormData ? config.data : conf.data;
     return this.fetcher(conf);
   }
 
