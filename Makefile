@@ -1,11 +1,8 @@
-COMPOSE_DEV=docker-compose -f docker-compose.yml
+COMPOSE_DEV=docker-compose -f docker-compose.yml -f docker-compose.dev.yml
 COMPOSE_CYPRESS=$(COMPOSE_DEV) -f docker-compose.cypress.yml
-BUILD_COMMAND=$(COMPOSE_DEV) build
-UPGRADE_MIGRATIONS_COMMAND=$(COMPOSE_DEV) run --rm backend bash -c "sleep 5 && alembic upgrade head"
 
 build:
-	$(BUILD_COMMAND)
-	$(UPGRADE_MIGRATIONS_COMMAND)
+	$(COMPOSE_DEV) build
 
 compile-messages:
 	$(COMPOSE_DEV) run --rm  --no-deps backend pybabel compile -d locale
@@ -29,10 +26,16 @@ lint-frontend:
 	$(COMPOSE_DEV) run --rm --no-deps frontend sh -c "yarn lint"
 
 create-migration:
-	$(COMPOSE_DEV) run --rm backend bash -c "sleep 5 && alembic revision --autogenerate -m '$(m)'"
+	$(COMPOSE_DEV) run --rm backend alembic revision --autogenerate -m '$(m)'
 
-upgrade-migrations:
-	$(UPGRADE_MIGRATIONS_COMMAND)
+migrate:
+	$(COMPOSE_DEV) run --rm backend alembic upgrade head
+
+remove:
+	$(COMPOSE_DEV) down
+
+run:
+	$(COMPOSE_DEV) up
 
 setup:
 	git config blame.ignoreRevsFile .git-blame-ignore-revs
@@ -41,7 +44,6 @@ setup:
 test: test-backend test-frontend
 
 test-backend:
-	$(UPGRADE_MIGRATIONS_COMMAND)
 	$(COMPOSE_DEV) run --rm backend pytest .
 
 test-e2e:
