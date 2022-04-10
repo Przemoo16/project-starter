@@ -1,0 +1,43 @@
+version: "3.9"
+
+services:
+  postgres:
+    ports:
+      - "5432:5432"
+
+  backend:
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/backend
+
+  frontend:
+    volumes:
+      - ./frontend/src:/frontend/src
+      - ./frontend/public:/frontend/public
+    environment:
+      - BROWSER=none
+      - CI=true
+
+  nginx:
+    volumes:
+      - ./config/nginx/nginx.conf:/var/nginx.conf
+
+  celery:
+    volumes:
+      - ./backend:/backend
+
+  celery-beat:
+    volumes:
+      - ./backend:/backend
+
+  flower:
+    image: mher/flower
+    ports:
+      - 8888:8888
+    env_file:
+      - .env
+
+  redis:
+    ports:
+      - "6379:6379"
