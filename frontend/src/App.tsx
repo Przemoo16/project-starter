@@ -30,6 +30,12 @@ const routes: RouteDefinition[] = [
     content: LazyPages.RegisterPage,
   },
   {
+    path: '/confirm-email/:key',
+    requiresAuth: false,
+    layout: AuthLayout,
+    content: LazyPages.ConfirmEmailPage,
+  },
+  {
     path: '/reset-password',
     requiresAuth: false,
     layout: AuthLayout,

@@ -3,7 +3,7 @@ import { AxiosError } from 'axios';
 import { channel } from 'redux-saga';
 import { fork, put, takeEvery, takeLeading } from 'redux-saga/effects';
 
-import { LoginData, SignUpData, User } from '../../backendTypes';
+import { LoginData, User } from '../../backendTypes';
 import { backend } from '../../services/backend';
 import { history } from '../../services/history';
 
@@ -33,16 +33,6 @@ export const authSlice = createSlice({
       state.user = payload.user;
     },
     loginFailure(state, { payload }: PayloadAction<{ errors: Record<string, string> }>) {
-      state.pending = false;
-      state.errors = payload.errors;
-    },
-    signUp(state, action: PayloadAction<SignUpData>) {
-      state.pending = true;
-    },
-    signUpSuccess(state) {
-      state.pending = false;
-    },
-    signUpFailure(state, { payload }: PayloadAction<{ errors: Record<string, string> }>) {
       state.pending = false;
       state.errors = payload.errors;
     },
@@ -76,19 +66,6 @@ function* loginSaga() {
   });
 }
 
-function* signUpSaga() {
-  yield takeLeading(authActions.signUp, function* ({ payload }) {
-    try {
-      yield backend.signUp(payload);
-      yield put(authActions.signUpSuccess());
-    } catch (e) {
-      const error = e as AxiosError;
-      const errors = error.response?.data;
-      yield put(authActions.signUpFailure({ errors }));
-    }
-  });
-}
-
 export function* logoutSaga() {
   const badTokenChannel = channel<any>();
   backend.listenOnInvalidTokens(async () => badTokenChannel.put(''));
@@ -105,5 +82,4 @@ export function* logoutSaga() {
 export function* authSaga() {
   yield fork(loginSaga);
   yield fork(logoutSaga);
-  yield fork(signUpSaga);
 }
