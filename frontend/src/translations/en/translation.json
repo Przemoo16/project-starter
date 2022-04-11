@@ -13,6 +13,8 @@
     "repeatPassword": "Repeat password",
     "resetPasswordTitle": "Reset your password",
     "sendEmailButton": "Send email",
+    "setPasswordButton": "Set password",
+    "setPasswordTitle": "Set new password",
     "withFreeAccount": "with a free account"
   },
   "common": {

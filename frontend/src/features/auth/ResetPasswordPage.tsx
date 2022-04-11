@@ -41,7 +41,7 @@ const ResetPasswordPage = () => {
       <Box
         component="form"
         noValidate
-        onSubmit={handleSubmit(async values => await backend.requestResetPassword(values))}
+        onSubmit={handleSubmit(async values => await backend.resetPassword(values))}
         sx={{ width: '100%', maxWidth: 500, mt: 3 }}
       >
         <TextInput

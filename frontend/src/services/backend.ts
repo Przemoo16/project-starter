@@ -1,4 +1,4 @@
-import { LoginData, RequestResetPasswordData, SignUpData, User } from '../backendTypes';
+import { LoginData, ResetPasswordData, SetPasswordData, SignUpData, User } from '../backendTypes';
 import { RestClient } from './client/restClient';
 import { TokenStorage } from './storage/tokenStorage';
 
@@ -53,7 +53,7 @@ class Backend {
     if (!this.tokenStorage.accessToken) {
       throw new Error('No token to get the user with');
     }
-    const { data } = await this.client.request('/users/me/');
+    const { data } = await this.client.request('/users/me');
     return data;
   }
 
@@ -65,7 +65,7 @@ class Backend {
   private async refreshTokens(): Promise<void> {
     const {
       data: { accessToken, refreshToken },
-    } = await this.client.request('/token/refresh/', {
+    } = await this.client.request('/token/refresh', {
       method: 'POST',
       data: { token: this.tokenStorage.refreshToken },
       _skipErrorHandler: true,
@@ -77,7 +77,7 @@ class Backend {
   private async revokeTokens() {
     for (const token of [this.tokenStorage.accessToken, this.tokenStorage.refreshToken]) {
       try {
-        await this.client.request('/token/revoke/', {
+        await this.client.request('/token/revoke', {
           method: 'POST',
           data: { token: token },
           _skipErrorHandler: true,
@@ -104,8 +104,15 @@ class Backend {
     this.tokenStorage.refreshToken = refreshToken;
   }
 
-  async requestResetPassword(data: RequestResetPasswordData) {
-    return this.client.request('/users/password/reset-request/', {
+  async resetPassword(data: ResetPasswordData) {
+    return this.client.request('/users/password/reset-request', {
+      method: 'POST',
+      data,
+    });
+  }
+
+  async setPassword(data: SetPasswordData) {
+    return this.client.request('/users/password/reset', {
       method: 'POST',
       data,
     });

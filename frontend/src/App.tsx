@@ -35,6 +35,12 @@ const routes: RouteDefinition[] = [
     layout: AuthLayout,
     content: LazyPages.ResetPasswordPage,
   },
+  {
+    path: '/set-password/:key',
+    requiresAuth: false,
+    layout: AuthLayout,
+    content: LazyPages.SetPasswordPage,
+  },
   route404,
 ];
 
