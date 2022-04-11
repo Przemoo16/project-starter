@@ -14,6 +14,11 @@ export interface LoginData {
   password: string;
 }
 
-export interface RequestResetPasswordData {
+export interface ResetPasswordData {
   email: string;
+}
+
+export interface SetPasswordData {
+  key: string;
+  password: string;
 }

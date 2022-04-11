@@ -15,9 +15,9 @@ import { authActions } from './store';
 import { getLoginSchema } from './validation';
 
 const LoginPage = () => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const { login } = authActions;
-  const { t } = useTranslation();
   const { control, handleSubmit } = useForm({
     mode: 'onTouched',
     defaultValues: {

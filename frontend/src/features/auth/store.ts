@@ -81,7 +81,6 @@ function* signUpSaga() {
     try {
       yield backend.signUp(payload);
       yield put(authActions.signUpSuccess());
-      yield put(authActions.login(payload));
     } catch (e) {
       const error = e as AxiosError;
       const errors = error.response?.data;

@@ -1,5 +1,5 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import AppRegistrationOutlinedIcon from '@mui/icons-material/AppRegistrationOutlined';
+import KeyOutlinedIcon from '@mui/icons-material/KeyOutlined';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -7,26 +7,23 @@ import Link from '@mui/material/Link';
 import Typography from '@mui/material/Typography';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { useDispatch } from 'react-redux';
 import { Link as RouterLink } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
+import { backend } from '../../services/backend';
 import { TextInput } from '../../ui-components/Input';
-import { authActions } from './store';
-import { getRegisterSchema } from './validation';
+import { getSetPasswordSchema } from './validation';
 
-const RegisterPage = () => {
+const SetPasswordPage = () => {
   const { t } = useTranslation();
-  const dispatch = useDispatch();
-  const { signUp } = authActions;
+  const { key } = useParams();
   const { control, handleSubmit } = useForm({
     mode: 'onTouched',
     defaultValues: {
-      name: '',
-      email: '',
       password: '',
       repeatPassword: '',
     },
-    resolver: yupResolver(getRegisterSchema()),
+    resolver: yupResolver(getSetPasswordSchema()),
   });
 
   return (
@@ -39,41 +36,19 @@ const RegisterPage = () => {
       }}
     >
       <Avatar sx={{ bgcolor: 'secondary.main' }}>
-        <AppRegistrationOutlinedIcon />
+        <KeyOutlinedIcon />
       </Avatar>
       <Typography component="h1" variant="h4" align="center" sx={{ mt: 2 }}>
-        {t('auth.getStarted')}
-        <br />
-        {t('auth.withFreeAccount')}
+        {t('auth.setPasswordTitle')}
       </Typography>
       <Box
         component="form"
         noValidate
-        onSubmit={handleSubmit(async values => dispatch(signUp(values)))}
+        onSubmit={handleSubmit(
+          async values => await backend.setPassword({ ...values, key: key || '' })
+        )}
         sx={{ width: '100%', maxWidth: 500, mt: 3 }}
       >
-        <TextInput
-          name="name"
-          control={control}
-          size="small"
-          margin="normal"
-          fullWidth
-          label={t('auth.name')}
-          type="text"
-          placeholder="Jon Doe"
-          autoComplete="name"
-        />
-        <TextInput
-          name="email"
-          control={control}
-          size="small"
-          margin="normal"
-          fullWidth
-          label={t('auth.email')}
-          type="text"
-          placeholder="joe@example.com"
-          autoComplete="email"
-        />
         <TextInput
           name="password"
           control={control}
@@ -95,7 +70,7 @@ const RegisterPage = () => {
           placeholder="********"
         />
         <Button type="submit" fullWidth variant="contained" sx={{ mt: 2 }}>
-          {t('auth.getStarted')}
+          {t('auth.setPasswordButton')}
         </Button>
         <Box
           sx={{
@@ -103,7 +78,7 @@ const RegisterPage = () => {
           }}
         >
           <Link to="/login" component={RouterLink} underline="hover" variant="body2">
-            {t('auth.loginLink')}
+            {t('auth.backToLoginLink')}
           </Link>
         </Box>
       </Box>
@@ -111,4 +86,4 @@ const RegisterPage = () => {
   );
 };
 
-export default RegisterPage;
+export default SetPasswordPage;
