@@ -97,8 +97,8 @@ export function* logoutSaga() {
     yield put(authActions.logout());
   });
 
-  yield takeLeading(authActions.logout, function () {
-    backend.clearCredentials();
+  yield takeLeading(authActions.logout, function* () {
+    yield backend.logout();
     window.location.assign('/');
   });
 }

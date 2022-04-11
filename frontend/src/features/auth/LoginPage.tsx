@@ -39,7 +39,7 @@ const LoginPage = () => {
       <Avatar sx={{ bgcolor: 'secondary.main' }}>
         <LockOutlinedIcon />
       </Avatar>
-      <Typography component="h1" variant="h4" sx={{ textAlign: 'center', mt: 2 }}>
+      <Typography component="h1" variant="h4" align="center" sx={{ mt: 2 }}>
         {t('auth.loginTitle')}
       </Typography>
       <Box

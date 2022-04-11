@@ -9,6 +9,7 @@ import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { Link as RouterLink } from 'react-router-dom';
 
+import { backend } from '../../services/backend';
 import { TextInput } from '../../ui-components/Input';
 import { getResetPasswordSchema } from './validation';
 
@@ -22,9 +23,6 @@ const ResetPasswordPage = () => {
     resolver: yupResolver(getResetPasswordSchema()),
   });
 
-  // TODO: Implement request
-  const onSubmit = (data: any) => console.log(data);
-
   return (
     <Box
       sx={{
@@ -37,13 +35,13 @@ const ResetPasswordPage = () => {
       <Avatar sx={{ bgcolor: 'secondary.main' }}>
         <LockResetOutlinedIcon />
       </Avatar>
-      <Typography component="h1" variant="h4" sx={{ textAlign: 'center', mt: 2 }}>
+      <Typography component="h1" variant="h4" align="center" sx={{ mt: 2 }}>
         {t('auth.resetPasswordTitle')}
       </Typography>
       <Box
         component="form"
         noValidate
-        onSubmit={handleSubmit(onSubmit)}
+        onSubmit={handleSubmit(async values => await backend.requestResetPassword(values))}
         sx={{ width: '100%', maxWidth: 500, mt: 3 }}
       >
         <TextInput
