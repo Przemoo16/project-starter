@@ -14,6 +14,10 @@ export interface LoginData {
   password: string;
 }
 
+export interface ConfirmEmailData {
+  key: string;
+}
+
 export interface ResetPasswordData {
   email: string;
 }

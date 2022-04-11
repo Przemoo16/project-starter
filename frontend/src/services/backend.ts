@@ -1,4 +1,11 @@
-import { LoginData, ResetPasswordData, SetPasswordData, SignUpData, User } from '../backendTypes';
+import {
+  ConfirmEmailData,
+  LoginData,
+  ResetPasswordData,
+  SetPasswordData,
+  SignUpData,
+  User,
+} from '../backendTypes';
 import { RestClient } from './client/restClient';
 import { TokenStorage } from './storage/tokenStorage';
 
@@ -64,14 +71,14 @@ class Backend {
 
   private async refreshTokens(): Promise<void> {
     const {
-      data: { accessToken, refreshToken },
+      data: { accessToken },
     } = await this.client.request('/token/refresh', {
       method: 'POST',
       data: { token: this.tokenStorage.refreshToken },
       _skipErrorHandler: true,
     });
 
-    this.setTokens({ accessToken, refreshToken });
+    this.setTokens({ accessToken, refreshToken: this.tokenStorage.refreshToken });
   }
 
   private async revokeTokens() {
@@ -102,6 +109,13 @@ class Backend {
     this.client.setAuthHeader(accessToken ? `Bearer ${accessToken}` : null);
     this.tokenStorage.accessToken = accessToken;
     this.tokenStorage.refreshToken = refreshToken;
+  }
+
+  async confirmEmail(data: ConfirmEmailData) {
+    return this.client.request('/users/email-confirmation', {
+      method: 'POST',
+      data,
+    });
   }
 
   async resetPassword(data: ResetPasswordData) {

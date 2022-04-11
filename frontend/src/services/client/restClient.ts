@@ -60,9 +60,11 @@ export class RestClient {
         const originalRequest = error.config as RequestConfig;
 
         if (
-          error.response.status === 401 &&
           this.authHeader &&
-          !originalRequest._skipErrorHandler
+          !originalRequest._skipErrorHandler &&
+          error.response.status === 422 &&
+          error.response.data.case === 'JWTDecodeError' &&
+          error.response.data.detail === 'Signature has expired'
         ) {
           originalRequest._skipErrorHandler = true;
 
