@@ -3,14 +3,13 @@ import LockResetOutlinedIcon from '@mui/icons-material/LockResetOutlined';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import Link from '@mui/material/Link';
 import Typography from '@mui/material/Typography';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { Link as RouterLink } from 'react-router-dom';
 
 import { backend } from '../../services/backend';
 import { TextInput } from '../../ui-components/Input';
+import { Link } from './common/Link';
 import { getResetPasswordSchema } from './validation';
 
 const ResetPasswordPage = () => {
@@ -63,9 +62,7 @@ const ResetPasswordPage = () => {
             mt: 2,
           }}
         >
-          <Link to="/login" component={RouterLink} underline="hover" variant="body2">
-            {t('auth.backToLoginLink')}
-          </Link>
+          <Link to="/login">{t('auth.backToLoginLink')}</Link>
         </Box>
       </Box>
     </Box>
