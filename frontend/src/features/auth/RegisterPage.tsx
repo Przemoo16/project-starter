@@ -1,11 +1,11 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import AppRegistrationOutlinedIcon from '@mui/icons-material/AppRegistrationOutlined';
-import Button from '@mui/material/Button';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
 import { backend } from '../../services/backend';
 import { TextInput } from '../../ui-components/Input';
+import { SubmitButton } from './common/Button';
 import { PageContainer } from './common/Container';
 import { Form } from './common/Form';
 import { Link, LinksContainer } from './common/Link';
@@ -78,9 +78,7 @@ const RegisterPage = () => {
           type="password"
           placeholder="********"
         />
-        <Button type="submit" fullWidth variant="contained" sx={{ mt: 2 }}>
-          {t('auth.getStarted')}
-        </Button>
+        <SubmitButton>{t('auth.getStarted')}</SubmitButton>
         <LinksContainer>
           <Link to="/login">{t('auth.loginLink')}</Link>
         </LinksContainer>

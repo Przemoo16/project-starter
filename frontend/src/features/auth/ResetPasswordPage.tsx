@@ -1,11 +1,11 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import LockResetOutlinedIcon from '@mui/icons-material/LockResetOutlined';
-import Button from '@mui/material/Button';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
 import { backend } from '../../services/backend';
 import { TextInput } from '../../ui-components/Input';
+import { SubmitButton } from './common/Button';
 import { PageContainer } from './common/Container';
 import { Form } from './common/Form';
 import { Link, LinksContainer } from './common/Link';
@@ -35,9 +35,7 @@ const ResetPasswordPage = () => {
           placeholder="joe@example.com"
           autoComplete="email"
         />
-        <Button type="submit" fullWidth variant="contained" sx={{ mt: 2 }}>
-          {t('auth.sendEmailButton')}
-        </Button>
+        <SubmitButton>{t('auth.sendEmailButton')}</SubmitButton>
         <LinksContainer>
           <Link to="/login">{t('auth.backToLoginLink')}</Link>
         </LinksContainer>

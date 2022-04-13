@@ -1,11 +1,11 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import Button from '@mui/material/Button';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
 
 import { TextInput } from '../../ui-components/Input';
+import { SubmitButton } from './common/Button';
 import { PageContainer } from './common/Container';
 import { Form } from './common/Form';
 import { Link, LinksContainer } from './common/Link';
@@ -50,9 +50,7 @@ const LoginPage = () => {
           placeholder="********"
           autoComplete="current-password"
         />
-        <Button type="submit" fullWidth variant="contained" sx={{ mt: 2 }}>
-          {t('auth.loginButton')}
-        </Button>
+        <SubmitButton>{t('auth.loginButton')}</SubmitButton>
         <LinksContainer>
           <Link to="/register">{t('auth.registerLink')}</Link>
           <Link to="/reset-password" sx={{ mt: 0.5 }}>

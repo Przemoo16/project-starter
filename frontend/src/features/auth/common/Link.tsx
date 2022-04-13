@@ -6,7 +6,6 @@ import { Link as BaseLink, LinkProps as BaseLinkProps } from '../../../ui-compon
 interface LinksContainerProps {
   children: ReactNode;
 }
-
 type LinkProps = Omit<BaseLinkProps, 'underline' | 'variant'>;
 
 export const LinksContainer = ({ children }: LinksContainerProps) => (
