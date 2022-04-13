@@ -3,6 +3,7 @@ import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 import createSagaMiddleware from 'redux-saga';
 
 import { authSaga, authSlice } from '../features/auth/store';
+import { uiSlice } from '../ui-components/store';
 
 export const createStore = () => {
   const saga = createSagaMiddleware();
@@ -10,6 +11,7 @@ export const createStore = () => {
   const store = configureStore({
     reducer: {
       [authSlice.name]: authSlice.reducer,
+      [uiSlice.name]: uiSlice.reducer,
     },
     middleware: getDefaultMiddleware => getDefaultMiddleware({ thunk: false }).concat(saga),
   });
