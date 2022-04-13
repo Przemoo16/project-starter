@@ -1,15 +1,14 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import LockResetOutlinedIcon from '@mui/icons-material/LockResetOutlined';
-import Avatar from '@mui/material/Avatar';
-import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
 import { backend } from '../../services/backend';
 import { TextInput } from '../../ui-components/Input';
-import { Link } from './common/Link';
+import { PageContainer } from './common/Container';
+import { Form } from './common/Form';
+import { Link, LinksContainer } from './common/Link';
 import { getResetPasswordSchema } from './validation';
 
 const ResetPasswordPage = () => {
@@ -23,26 +22,8 @@ const ResetPasswordPage = () => {
   });
 
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}
-    >
-      <Avatar sx={{ bgcolor: 'secondary.main' }}>
-        <LockResetOutlinedIcon />
-      </Avatar>
-      <Typography component="h1" variant="h4" align="center" sx={{ mt: 2 }}>
-        {t('auth.resetPasswordTitle')}
-      </Typography>
-      <Box
-        component="form"
-        noValidate
-        onSubmit={handleSubmit(async values => await backend.resetPassword(values))}
-        sx={{ width: '100%', maxWidth: 500, mt: 3 }}
-      >
+    <PageContainer icon={LockResetOutlinedIcon} title={t('auth.resetPasswordTitle')}>
+      <Form onSubmit={handleSubmit(async values => await backend.resetPassword(values))}>
         <TextInput
           name="email"
           control={control}
@@ -57,15 +38,11 @@ const ResetPasswordPage = () => {
         <Button type="submit" fullWidth variant="contained" sx={{ mt: 2 }}>
           {t('auth.sendEmailButton')}
         </Button>
-        <Box
-          sx={{
-            mt: 2,
-          }}
-        >
+        <LinksContainer>
           <Link to="/login">{t('auth.backToLoginLink')}</Link>
-        </Box>
-      </Box>
-    </Box>
+        </LinksContainer>
+      </Form>
+    </PageContainer>
   );
 };
 
