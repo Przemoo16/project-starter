@@ -3,14 +3,13 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import Link from '@mui/material/Link';
 import Typography from '@mui/material/Typography';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
-import { Link as RouterLink } from 'react-router-dom';
 
 import { TextInput } from '../../ui-components/Input';
+import { Link } from './common/Link';
 import { authActions } from './store';
 import { getLoginSchema } from './validation';
 
@@ -82,16 +81,8 @@ const LoginPage = () => {
             mt: 2,
           }}
         >
-          <Link to="/register" component={RouterLink} underline="hover" variant="body2">
-            {t('auth.registerLink')}
-          </Link>
-          <Link
-            to="/reset-password"
-            component={RouterLink}
-            underline="hover"
-            variant="body2"
-            sx={{ mt: 0.5 }}
-          >
+          <Link to="/register">{t('auth.registerLink')}</Link>
+          <Link to="/reset-password" sx={{ mt: 0.5 }}>
             {t('auth.forgotLink')}
           </Link>
         </Box>
