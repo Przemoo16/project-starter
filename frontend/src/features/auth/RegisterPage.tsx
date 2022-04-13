@@ -1,15 +1,14 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import AppRegistrationOutlinedIcon from '@mui/icons-material/AppRegistrationOutlined';
-import Avatar from '@mui/material/Avatar';
-import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
 import { backend } from '../../services/backend';
 import { TextInput } from '../../ui-components/Input';
-import { Link } from './common/Link';
+import { PageContainer } from './common/Container';
+import { Form } from './common/Form';
+import { Link, LinksContainer } from './common/Link';
 import { getRegisterSchema } from './validation';
 
 const RegisterPage = () => {
@@ -26,28 +25,17 @@ const RegisterPage = () => {
   });
 
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}
+    <PageContainer
+      icon={AppRegistrationOutlinedIcon}
+      title={
+        <>
+          {t('auth.getStarted')}
+          <br />
+          {t('auth.withFreeAccount')}
+        </>
+      }
     >
-      <Avatar sx={{ bgcolor: 'secondary.main' }}>
-        <AppRegistrationOutlinedIcon />
-      </Avatar>
-      <Typography component="h1" variant="h4" align="center" sx={{ mt: 2 }}>
-        {t('auth.getStarted')}
-        <br />
-        {t('auth.withFreeAccount')}
-      </Typography>
-      <Box
-        component="form"
-        noValidate
-        onSubmit={handleSubmit(async values => await backend.signUp(values))}
-        sx={{ width: '100%', maxWidth: 500, mt: 3 }}
-      >
+      <Form onSubmit={handleSubmit(async values => await backend.signUp(values))}>
         <TextInput
           name="name"
           control={control}
@@ -93,15 +81,11 @@ const RegisterPage = () => {
         <Button type="submit" fullWidth variant="contained" sx={{ mt: 2 }}>
           {t('auth.getStarted')}
         </Button>
-        <Box
-          sx={{
-            mt: 2,
-          }}
-        >
+        <LinksContainer>
           <Link to="/login">{t('auth.loginLink')}</Link>
-        </Box>
-      </Box>
-    </Box>
+        </LinksContainer>
+      </Form>
+    </PageContainer>
   );
 };
 

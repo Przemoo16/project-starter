@@ -1,15 +1,14 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import Avatar from '@mui/material/Avatar';
-import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
 
 import { TextInput } from '../../ui-components/Input';
-import { Link } from './common/Link';
+import { PageContainer } from './common/Container';
+import { Form } from './common/Form';
+import { Link, LinksContainer } from './common/Link';
 import { authActions } from './store';
 import { getLoginSchema } from './validation';
 
@@ -27,26 +26,8 @@ const LoginPage = () => {
   });
 
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}
-    >
-      <Avatar sx={{ bgcolor: 'secondary.main' }}>
-        <LockOutlinedIcon />
-      </Avatar>
-      <Typography component="h1" variant="h4" align="center" sx={{ mt: 2 }}>
-        {t('auth.loginTitle')}
-      </Typography>
-      <Box
-        component="form"
-        noValidate
-        onSubmit={handleSubmit(async values => dispatch(login(values)))}
-        sx={{ width: '100%', maxWidth: 500, mt: 3 }}
-      >
+    <PageContainer icon={LockOutlinedIcon} title={t('auth.loginTitle')}>
+      <Form onSubmit={handleSubmit(async values => dispatch(login(values)))}>
         <TextInput
           name="email"
           control={control}
@@ -72,22 +53,14 @@ const LoginPage = () => {
         <Button type="submit" fullWidth variant="contained" sx={{ mt: 2 }}>
           {t('auth.loginButton')}
         </Button>
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'flex-start',
-            justifyContent: 'center',
-            mt: 2,
-          }}
-        >
+        <LinksContainer>
           <Link to="/register">{t('auth.registerLink')}</Link>
           <Link to="/reset-password" sx={{ mt: 0.5 }}>
             {t('auth.forgotLink')}
           </Link>
-        </Box>
-      </Box>
-    </Box>
+        </LinksContainer>
+      </Form>
+    </PageContainer>
   );
 };
 
