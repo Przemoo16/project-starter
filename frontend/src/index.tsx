@@ -10,6 +10,7 @@ import { unstable_HistoryRouter as HistoryRouter } from 'react-router-dom';
 import App from './App';
 import { history } from './services/history';
 import { createStore } from './services/store';
+import { Snackbar, SnackbarProvider } from './ui-components/Snackbar';
 import { theme } from './ui-components/theme';
 
 const store = createStore();
@@ -20,7 +21,10 @@ ReactDOM.render(
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <HistoryRouter history={history}>
-          <App />
+          <SnackbarProvider>
+            <App />
+            <Snackbar />
+          </SnackbarProvider>
         </HistoryRouter>
       </ThemeProvider>
     </ReduxProvider>
