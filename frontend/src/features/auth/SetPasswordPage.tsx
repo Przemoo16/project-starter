@@ -1,12 +1,12 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import KeyOutlinedIcon from '@mui/icons-material/KeyOutlined';
-import Button from '@mui/material/Button';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 
 import { backend } from '../../services/backend';
 import { TextInput } from '../../ui-components/Input';
+import { SubmitButton } from './common/Button';
 import { PageContainer } from './common/Container';
 import { Form } from './common/Form';
 import { Link, LinksContainer } from './common/Link';
@@ -51,9 +51,7 @@ const SetPasswordPage = () => {
           type="password"
           placeholder="********"
         />
-        <Button type="submit" fullWidth variant="contained" sx={{ mt: 2 }}>
-          {t('auth.setPasswordButton')}
-        </Button>
+        <SubmitButton>{t('auth.setPasswordButton')}</SubmitButton>
         <LinksContainer>
           <Link to="/login">{t('auth.backToLoginLink')}</Link>
         </LinksContainer>

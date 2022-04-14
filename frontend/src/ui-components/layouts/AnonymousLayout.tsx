@@ -3,7 +3,7 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 import { ContainerWithHero } from './common/Container';
 
@@ -27,7 +27,7 @@ export const AnonymousLayout = ({ children }: AnonymousLayoutProps) => {
         }}
       >
         <Typography>{t('auth.loginTitle')}:</Typography>
-        <Button to="/login" component={RouterLink} fullWidth variant="contained" sx={{ mt: 2 }}>
+        <Button to="/login" component={Link} fullWidth variant="contained" sx={{ mt: 2 }}>
           {t('auth.loginButton')}
         </Button>
       </Box>

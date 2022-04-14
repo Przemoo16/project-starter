@@ -1,12 +1,11 @@
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
-import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link as RouterLink } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 
 import { backend } from '../../services/backend';
+import { ButtonWithLink } from './common/Button';
 import { PageContainer } from './common/Container';
 
 enum Status {
@@ -39,9 +38,7 @@ const ConfirmEmailPage = () => {
         {confirmationEmailStatus === Status.SUCCESS && t('auth.confirmEmailSuccess')}
         {confirmationEmailStatus === Status.ERROR && t('auth.confirmEmailError')}
       </Typography>
-      <Button to="/login" component={RouterLink} fullWidth variant="contained" sx={{ mt: 3 }}>
-        {t('auth.loginButton')}
-      </Button>
+      <ButtonWithLink to="/login">{t('auth.loginButton')}</ButtonWithLink>
     </PageContainer>
   );
 };
