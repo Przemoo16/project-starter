@@ -1,7 +1,7 @@
-import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useForm } from 'react-hook-form';
 
+import { render, screen } from '../tests/utils';
 import { TextInput } from './Input';
 
 describe('TextInput component', () => {
@@ -38,7 +38,6 @@ describe('TextInput component', () => {
 
       return <TextInput name="password" control={control} label="Password" type="password" />;
     };
-
     render(<Component />);
 
     expect(screen.getByLabelText('Password')).toHaveAttribute('type', 'password');

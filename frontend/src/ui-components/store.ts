@@ -4,6 +4,7 @@ import { VariantType } from 'notistack';
 export interface Notification {
   type: VariantType;
   message: string;
+  duration: number;
 }
 
 interface UIState {
@@ -13,6 +14,8 @@ interface UIState {
 const initialState: UIState = {
   notifications: [],
 };
+
+const NOTIFICATION_DURATION = 4000;
 
 export const uiSlice = createSlice({
   name: 'ui',
@@ -29,9 +32,9 @@ export const uiSlice = createSlice({
 
 export const uiActions = uiSlice.actions;
 
-export const notifyInfo = (message: string) =>
-  uiSlice.actions.addNotification({ message, type: 'info' });
-export const notifySuccess = (message: string) =>
-  uiSlice.actions.addNotification({ message, type: 'success' });
-export const notifyError = (message: string) =>
-  uiSlice.actions.addNotification({ message, type: 'error' });
+export const notifyInfo = (message: string, duration: number = NOTIFICATION_DURATION) =>
+  uiSlice.actions.addNotification({ message, type: 'info', duration });
+export const notifySuccess = (message: string, duration: number = NOTIFICATION_DURATION) =>
+  uiSlice.actions.addNotification({ message, type: 'success', duration });
+export const notifyError = (message: string, duration: number = NOTIFICATION_DURATION) =>
+  uiSlice.actions.addNotification({ message, type: 'error', duration });
