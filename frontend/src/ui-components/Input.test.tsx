@@ -31,7 +31,8 @@ describe('TextInput component', () => {
     expect(screen.getByLabelText('toggle password visibility')).toBeInTheDocument();
   });
 
-  it('toggles password visibility after clicking the icon', () => {
+  it('toggles password visibility after clicking the icon', async () => {
+    const user = userEvent.setup();
     const Component = () => {
       const { control } = useForm();
 
@@ -44,13 +45,13 @@ describe('TextInput component', () => {
     expect(screen.getByTestId('VisibilityIcon')).toBeInTheDocument();
     expect(screen.queryByTestId('VisibilityOffIcon')).not.toBeInTheDocument();
 
-    userEvent.click(screen.getByLabelText('toggle password visibility'));
+    await user.click(screen.getByLabelText('toggle password visibility'));
 
     expect(screen.getByLabelText('Password')).toHaveAttribute('type', 'text');
     expect(screen.getByTestId('VisibilityOffIcon')).toBeInTheDocument();
     expect(screen.queryByTestId('VisibilityIcon')).not.toBeInTheDocument();
 
-    userEvent.click(screen.getByLabelText('toggle password visibility'));
+    await user.click(screen.getByLabelText('toggle password visibility'));
 
     expect(screen.getByLabelText('Password')).toHaveAttribute('type', 'password');
     expect(screen.getByTestId('VisibilityIcon')).toBeInTheDocument();
