@@ -9,12 +9,13 @@ import { useAppSelector } from '../services/store';
 import { uiActions } from './store';
 
 interface SnackbarProviderProps {
+  maxSnacks?: number;
   children: ReactNode;
 }
 
 const MAX_SNACKS = 3;
 
-export const SnackbarProvider = ({ children }: SnackbarProviderProps) => {
+export const SnackbarProvider = ({ maxSnacks = MAX_SNACKS, children }: SnackbarProviderProps) => {
   const ref = useRef<NotistackProvider>(null);
 
   const onClickHandler = (key: SnackbarKey) => () => {
@@ -23,7 +24,7 @@ export const SnackbarProvider = ({ children }: SnackbarProviderProps) => {
 
   return (
     <NotistackProvider
-      maxSnack={MAX_SNACKS}
+      maxSnack={maxSnacks}
       ref={ref}
       action={key => (
         <IconButton
@@ -50,14 +51,14 @@ export const Snackbar = () => {
 
   useEffect(() => {
     if (notifications.length) {
-      notifications.forEach(({ type, message }) =>
+      notifications.forEach(({ type, message, duration }) =>
         enqueueSnackbar(message, {
           variant: type,
           anchorOrigin: {
             vertical: 'bottom',
             horizontal: 'right',
           },
-          autoHideDuration: 4000,
+          autoHideDuration: duration,
         })
       );
       dispatch(clearNotifications());
