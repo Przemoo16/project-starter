@@ -2,7 +2,9 @@ version: "3.9"
 
 services:
   e2e:
-    image: "cypress/included:9.5.3"
+    build:
+      context: .
+      dockerfile: config/cypress.Dockerfile
     volumes:
       - ./e2e/cypress:/cypress
       - ./e2e/cypress.json:/cypress.json

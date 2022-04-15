@@ -1,8 +1,11 @@
 COMPOSE_DEV=docker-compose -f docker-compose.yml -f docker-compose.dev.yml
-COMPOSE_CYPRESS=$(COMPOSE_DEV) -f docker-compose.cypress.yml
+COMPOSE_E2E=$(COMPOSE_DEV) -f docker-compose.e2e.yml
 
 build:
 	$(COMPOSE_DEV) build
+
+build-e2e:
+	$(COMPOSE_E2E) build
 
 compile-messages:
 	$(COMPOSE_DEV) run --rm  --no-deps backend pybabel compile -d locale
@@ -47,7 +50,7 @@ test-backend:
 	$(COMPOSE_DEV) run --rm backend pytest .
 
 test-e2e:
-	$(COMPOSE_CYPRESS) up --exit-code-from e2e
+	$(COMPOSE_E2E) up --exit-code-from e2e
 
 test-frontend:
 	$(COMPOSE_DEV) run --rm frontend sh -c "CI=true yarn test"
