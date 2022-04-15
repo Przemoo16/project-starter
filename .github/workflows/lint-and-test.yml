@@ -17,3 +17,14 @@ jobs:
         run: make lint
       - name: Test
         run: make test
+  e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+      - name: Copy .env file
+        run: cp .env.template .env
+      - name: Build
+        run: make build
+      - name: Test
+        run: make test-e2e
