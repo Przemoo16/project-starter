@@ -10,6 +10,12 @@ build-e2e:
 compile-messages:
 	$(COMPOSE_DEV) run --rm  --no-deps backend pybabel compile -d locale
 
+confirm-email:
+	$(COMPOSE_DEV) exec postgres psql --username=postgres postgres -c "UPDATE public.user SET confirmed_email = TRUE WHERE email = '${EMAIL}';"
+
+create-migration:
+	$(COMPOSE_DEV) run --rm backend alembic revision --autogenerate -m '$(m)'
+
 extract-messages:
 	$(COMPOSE_DEV) run --rm --no-deps backend pybabel extract -F babel.ini -k gettext_lazy -k _ -o locale/messages.pot .
 
@@ -27,9 +33,6 @@ lint-backend:
 
 lint-frontend:
 	$(COMPOSE_DEV) run --rm --no-deps frontend sh -c "yarn lint"
-
-create-migration:
-	$(COMPOSE_DEV) run --rm backend alembic revision --autogenerate -m '$(m)'
 
 migrate:
 	$(COMPOSE_DEV) run --rm backend alembic upgrade head
