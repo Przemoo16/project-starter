@@ -133,12 +133,11 @@ async def request_reset_password(
     responses={**user_exceptions.UserNotFoundError().doc},
 )
 async def reset_password(
-    key: user_models.UserResetPasswordKey = fastapi.Body(..., embed=True),
-    password: user_models.UserPassword = fastapi.Body(..., embed=True),
+    reset_password_model: user_models.UserResetPassword,
     session: db.AsyncSession = fastapi.Depends(db.get_session),
 ) -> typing.Any:
     user_service = user_services.UserService(session)
     user_db = await user_service.get_user(
-        user_models.UserFilters(reset_password_key=key)
+        user_models.UserFilters(reset_password_key=reset_password_model.key)
     )
-    await user_service.reset_password(user_db, password)
+    await user_service.reset_password(user_db, reset_password_model.password)
