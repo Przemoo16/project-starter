@@ -1,10 +1,11 @@
 #!/bin/bash
 
+WAIT_TIMEOUT_SECONDS=15
 HOST=0.0.0.0
 PORT=8000
 MESSAGE="Running backend on $HOST:$PORT"
 
-/scripts/wait-for-it.sh -t 15 $DATABASE_HOST:$DATABASE_PORT
+/scripts/wait-for-it.sh -t $WAIT_TIMEOUT_SECONDS $DATABASE_HOST:$DATABASE_PORT
 
 alembic upgrade head
 status=$?
