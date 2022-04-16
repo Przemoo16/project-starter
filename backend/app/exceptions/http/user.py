@@ -39,6 +39,15 @@ class UserAlreadyExistsError(base.HTTPException):
         super().__init__(status_code, detail, context)
 
 
+class InvalidPasswordError(base.HTTPException):
+    def __init__(
+        self, detail: base.Detail = None, context: base.Context = None
+    ) -> None:
+        detail = "The password is invalid"
+        status_code = status.HTTP_422_UNPROCESSABLE_ENTITY
+        super().__init__(status_code, detail, context)
+
+
 class ConfirmationEmailError(base.HTTPException):
     def __init__(
         self, detail: base.Detail = None, context: base.Context = None

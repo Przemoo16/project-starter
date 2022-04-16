@@ -19,7 +19,8 @@ class RevokedTokenError(base.HTTPException):
     ) -> None:
         detail = "Token has been revoked"
         status_code = status.HTTP_401_UNAUTHORIZED
-        super().__init__(status_code, detail, context)
+        headers = {"WWW-Authenticate": "Bearer"}
+        super().__init__(status_code, detail, context, headers)
 
 
 class InactiveUserError(base.HTTPException):
