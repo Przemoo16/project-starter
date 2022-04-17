@@ -34,6 +34,9 @@ def build_message(
 
 
 def send_email(message: str, receiver: str) -> None:
+    if settings.DEV_MODE:  # pragma: no cover
+        log.info("Email will not be send because development mode is active")
+        return
     context = ssl.create_default_context()
     with smtplib.SMTP_SSL(
         settings.SMTP_HOST, settings.SMTP_PORT, context=context

@@ -1,6 +1,6 @@
 # Project Starter
 
-# Rules to follow on the backend:
+## Rules to follow on the backend:
 
 -   All business logic should be put to a dedicated service and not directly to a router,
 -   Each additional response, like error, must also be reflected in the router documentation,
