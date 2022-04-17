@@ -99,12 +99,11 @@ async def test_tokens_flow(async_client: "conftest.TestClient") -> None:
     assert "refreshToken" in tokens
     assert "tokenType" in tokens
 
-    # Update the user password
+    # Retrieve the user info
     access_token = tokens["accessToken"]
-    response = await async_client.patch(
+    response = await async_client.get(
         f"{API_URL}/users/me",
         headers={"Authorization": f"Bearer {access_token}"},
-        json={"password": "new_password"},
     )
 
     assert response.status_code == 200
@@ -116,11 +115,10 @@ async def test_tokens_flow(async_client: "conftest.TestClient") -> None:
 
     assert response.status_code == 204
 
-    # Update the user password with revoked access token
-    response = await async_client.patch(
+    # Retrieve the user info with revoked access token
+    response = await async_client.get(
         f"{API_URL}/users/me",
         headers={"Authorization": f"Bearer {access_token}"},
-        json={"password": "another_new_password"},
     )
 
     assert response.status_code == 401
@@ -136,12 +134,11 @@ async def test_tokens_flow(async_client: "conftest.TestClient") -> None:
     assert "accessToken" in token
     assert token["tokenType"] == "bearer"
 
-    # Update the user password
+    # Retrieve the user info
     access_token = token["accessToken"]
-    response = await async_client.patch(
+    response = await async_client.get(
         f"{API_URL}/users/me",
         headers={"Authorization": f"Bearer {access_token}"},
-        json={"password": "another_new_password"},
     )
 
     assert response.status_code == 200

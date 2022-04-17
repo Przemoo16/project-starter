@@ -111,20 +111,20 @@ async def test_user_service_update_user(session: "conftest.AsyncSession") -> Non
 
 
 @pytest.mark.asyncio
-async def test_user_service_update_user_new_password(
+async def test_user_service_update_user_password(
     session: "conftest.AsyncSession",
 ) -> None:
-    old_password = "hashed_password"
-    user = await user_helpers.create_user(session=session, password=old_password)
-    new_plain_password = "plain_password"
-    user_update = user_models.UserUpdate(password=new_plain_password)
+    old_hashed_password = "hashed_password"
+    user = await user_helpers.create_user(session=session, password=old_hashed_password)
+    new_password = "new_password"
+    user_update = user_models.UserUpdate(password=new_password)
 
     updated_user = await user_services.UserService(session).update_user(
         user, user_update
     )
 
-    assert updated_user.password != new_plain_password
-    assert updated_user.password != old_password
+    assert updated_user.password != old_hashed_password
+    assert updated_user.password != new_password
 
 
 @pytest.mark.asyncio
@@ -155,6 +155,37 @@ async def test_user_service_confirm_email(session: "conftest.AsyncSession") -> N
     await user_services.UserService(session).confirm_email(user)
 
     assert user.confirmed_email is True
+
+
+@pytest.mark.asyncio
+async def test_user_service_change_password(
+    session: "conftest.AsyncSession",
+) -> None:
+    old_hashed_password = "$2b$12$q8JcpltDZkSLOdMuPyt/jORzExLKp9HsKgCoFJQ1IzzITc2/Pg42q"
+    user = await user_helpers.create_user(session=session, password=old_hashed_password)
+    new_password = "new_password"
+
+    await user_services.UserService(session).change_password(
+        user, "plain_password", new_password
+    )
+
+    assert user.password != old_hashed_password
+    assert user.password != new_password
+
+
+@pytest.mark.asyncio
+async def test_user_service_change_password_invalid_password(
+    session: "conftest.AsyncSession",
+) -> None:
+    user = await user_helpers.create_user(
+        session=session,
+        password="$2b$12$q8JcpltDZkSLOdMuPyt/jORzExLKp9HsKgCoFJQ1IzzITc2/Pg42q",
+    )
+
+    with pytest.raises(user_exceptions.InvalidPasswordError):
+        await user_services.UserService(session).change_password(
+            user, "invalid_password", "new_password"
+        )
 
 
 @pytest.mark.asyncio

@@ -216,6 +216,27 @@ async def test_confirm_email(
 
 
 @pytest.mark.asyncio
+async def test_change_password(
+    async_client: "conftest.TestClient",
+    session: "conftest.AsyncSession",
+    mock_common: None,  # pylint: disable=unused-argument
+) -> None:
+    user = await user_helpers.create_active_user(
+        session=session,
+        password="$2b$12$q8JcpltDZkSLOdMuPyt/jORzExLKp9HsKgCoFJQ1IzzITc2/Pg42q",
+    )
+    request_data = {"oldPassword": "plain_password", "newPassword": "new_password"}
+    token = jwt_auth.AuthJWT().create_access_token(str(user.id))
+    headers = {"Authorization": f"Bearer {token}"}
+
+    response = await async_client.post(
+        f"{API_URL}/users/password", json=request_data, headers=headers
+    )
+
+    assert response.status_code == status.HTTP_204_NO_CONTENT
+
+
+@pytest.mark.asyncio
 async def test_request_reset_password(
     async_client: "conftest.TestClient",
     session: "conftest.AsyncSession",

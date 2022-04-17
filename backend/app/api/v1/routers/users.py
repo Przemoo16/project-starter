@@ -107,6 +107,26 @@ async def confirm_email(
 
 
 @router.post(
+    "/password",
+    status_code=status.HTTP_204_NO_CONTENT,
+    responses={
+        **user_deps.INACTIVE_USER_RESPONSES,
+        **user_exceptions.InvalidPasswordError().doc,
+    },
+)
+async def change_password(
+    change_password_model: user_models.UserChangePassword,
+    current_user: user_models.User = fastapi.Depends(user_deps.get_current_active_user),
+    session: db.AsyncSession = fastapi.Depends(db.get_session),
+) -> typing.Any:
+    await user_services.UserService(session).change_password(
+        current_user,
+        change_password_model.old_password,
+        change_password_model.new_password,
+    )
+
+
+@router.post(
     "/password/reset-request",
     status_code=status.HTTP_202_ACCEPTED,
     response_model=message.Message,

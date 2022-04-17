@@ -69,6 +69,17 @@ class UserService(base.AppService):
         user_update = user_models.UserUpdate(confirmed_email=True)
         await UserCRUD(self.session).update(user, user_update)
 
+    async def change_password(
+        self,
+        user: user_models.User,
+        old_password: user_models.UserPassword,
+        new_password: user_models.UserPassword,
+    ) -> None:
+        if not auth.verify_password(old_password, user.password):
+            raise user_exceptions.InvalidPasswordError()
+        user_update = user_models.UserUpdate(password=auth.hash_password(new_password))
+        await UserCRUD(self.session).update(user, user_update)
+
     @staticmethod
     def request_reset_password(user: user_models.User) -> None:
         user_tasks.send_email_to_reset_password.delay(

@@ -75,11 +75,6 @@ class UserFilters(base.PydanticBaseModel):
 
 
 class UserUpdateAPI(base.PydanticBaseModel):
-    password: UserPassword | None = sqlmodel.Field(
-        default=None,
-        min_length=settings.USER_PASSWORD_MIN_LENGTH,
-        max_length=settings.USER_PASSWORD_MAX_LENGTH,
-    )
     name: UserName | None = sqlmodel.Field(
         default=None, max_length=USER_NAME_MAX_LENGTH
     )
@@ -95,6 +90,14 @@ class UserUpdate(UserUpdateAPI):
 class UserRead(base.BaseModel):
     id: UserID
     name: UserName
+
+
+class UserChangePassword(base.BaseModel):
+    old_password: UserPassword
+    new_password: UserPassword = sqlmodel.Field(
+        min_length=settings.USER_PASSWORD_MIN_LENGTH,
+        max_length=settings.USER_PASSWORD_MAX_LENGTH,
+    )
 
 
 class UserResetPassword(base.BaseModel):
