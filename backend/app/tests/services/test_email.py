@@ -79,6 +79,7 @@ def test_build_message(_: mock.MagicMock) -> None:
     assert message.strip() == BUILT_MESSAGE.strip()
 
 
+@mock.patch("app.services.email.settings.DEV_MODE", new=False)
 @mock.patch("smtplib.SMTP.connect", return_value=(220, b"dummy response"))
 @mock.patch("smtplib.SMTP.login", return_value=(235, b"dummy response"))
 @mock.patch("smtplib.SMTP.sendmail")
@@ -91,6 +92,7 @@ def test_send_email(mock_sendmail: mock.MagicMock, *_: mock.MagicMock) -> None:
     mock_sendmail.assert_called_once_with("test@email.com", receiver, BUILT_MESSAGE)
 
 
+@mock.patch("app.services.email.settings.DEV_MODE", new=False)
 @mock.patch("smtplib.SMTP.connect", return_value=(220, b"dummy response"))
 @mock.patch("smtplib.SMTP.login", return_value=(235, b"dummy response"))
 @mock.patch("smtplib.SMTP.sendmail", side_effect=smtplib.SMTPException)
