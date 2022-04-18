@@ -2,6 +2,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 import createSagaMiddleware from 'redux-saga';
 
+import { configSaga, configSlice } from '../config/store';
 import { authSaga, authSlice } from '../features/auth/store';
 import { uiSlice } from '../ui-components/store';
 
@@ -12,11 +13,13 @@ export const createStore = () => {
     reducer: {
       [authSlice.name]: authSlice.reducer,
       [uiSlice.name]: uiSlice.reducer,
+      [configSlice.name]: configSlice.reducer,
     },
     middleware: getDefaultMiddleware => getDefaultMiddleware({ thunk: false }).concat(saga),
   });
 
   saga.run(authSaga);
+  saga.run(configSaga);
 
   return store;
 };

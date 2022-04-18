@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 
 import { backend } from '../../services/backend';
+import { useAppSelector } from '../../services/store';
 import { TextInput } from '../../ui-components/Input';
 import { SubmitButton } from './common/Button';
 import { PageContainer } from './common/Container';
@@ -15,13 +16,14 @@ import { getSetPasswordSchema } from './validation';
 const SetPasswordPage = () => {
   const { t } = useTranslation();
   const { key } = useParams();
+  const { userPasswordMinLength, userPasswordMaxLength } = useAppSelector(state => state.config);
   const { control, handleSubmit } = useForm({
     mode: 'onTouched',
     defaultValues: {
       password: '',
       repeatPassword: '',
     },
-    resolver: yupResolver(getSetPasswordSchema()),
+    resolver: yupResolver(getSetPasswordSchema(userPasswordMinLength, userPasswordMaxLength)),
   });
 
   return (

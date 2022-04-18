@@ -26,3 +26,9 @@ export interface SetPasswordData {
   key: string;
   password: string;
 }
+
+export interface Config {
+  userNameMaxLength: number;
+  userPasswordMinLength: number;
+  userPasswordMaxLength: number;
+}

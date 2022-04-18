@@ -8,14 +8,16 @@ export const getLoginSchema = () =>
     password: yup.string().required(t('validation.required')),
   });
 
-export const getRegisterSchema = () => {
-  const passwordMinLength = +(process.env.REACT_APP_USER_PASSWORD_MIN_LENGTH || 8);
-  const passwordMaxLength = +(process.env.REACT_APP_USER_PASSWORD_MAX_LENGTH || 32);
+export const getRegisterSchema = (
+  nameMaxLength: number,
+  passwordMinLength: number,
+  passwordMaxLength: number
+) => {
   return yup.object().shape({
     name: yup
       .string()
       .required(t('validation.required'))
-      .max(64, t('validation.maxName', { max: '64' })),
+      .max(nameMaxLength, t('validation.maxName', { max: nameMaxLength })),
     email: yup.string().email(t('validation.invalidEmail')).required(t('validation.required')),
     password: yup
       .string()
@@ -31,9 +33,7 @@ export const getResetPasswordSchema = () =>
     email: yup.string().email(t('validation.invalidEmail')).required(t('validation.required')),
   });
 
-export const getSetPasswordSchema = () => {
-  const passwordMinLength = +(process.env.REACT_APP_USER_PASSWORD_MIN_LENGTH || 8);
-  const passwordMaxLength = +(process.env.REACT_APP_USER_PASSWORD_MAX_LENGTH || 32);
+export const getSetPasswordSchema = (passwordMinLength: number, passwordMaxLength: number) => {
   return yup.object().shape({
     password: yup
       .string()

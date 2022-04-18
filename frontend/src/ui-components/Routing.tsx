@@ -1,12 +1,12 @@
-import { Suspense } from 'react';
+import { ComponentType, ReactNode, Suspense } from 'react';
 
 import { AppLoader } from './AppLoader';
 
 export interface RouteDefinition {
   path: string;
   requiresAuth: boolean;
-  layout: React.ComponentType<{ children: React.ReactNode }>;
-  content: React.ComponentType;
+  layout: ComponentType<{ children: ReactNode }>;
+  content: ComponentType;
 }
 
 interface EnhancedRouteProps {
