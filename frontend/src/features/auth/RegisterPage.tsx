@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
 import { backend } from '../../services/backend';
+import { useAppSelector } from '../../services/store';
 import { TextInput } from '../../ui-components/Input';
 import { SubmitButton } from './common/Button';
 import { PageContainer } from './common/Container';
@@ -13,6 +14,9 @@ import { getRegisterSchema } from './validation';
 
 const RegisterPage = () => {
   const { t } = useTranslation();
+  const { userNameMaxLength, userPasswordMinLength, userPasswordMaxLength } = useAppSelector(
+    state => state.config
+  );
   const { control, handleSubmit } = useForm({
     mode: 'onTouched',
     defaultValues: {
@@ -21,7 +25,9 @@ const RegisterPage = () => {
       password: '',
       repeatPassword: '',
     },
-    resolver: yupResolver(getRegisterSchema()),
+    resolver: yupResolver(
+      getRegisterSchema(userNameMaxLength, userPasswordMinLength, userPasswordMaxLength)
+    ),
   });
 
   return (

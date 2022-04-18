@@ -1,4 +1,5 @@
 import {
+  Config,
   ConfirmEmailData,
   LoginData,
   ResetPasswordData,
@@ -130,6 +131,11 @@ class Backend {
       method: 'POST',
       data,
     });
+  }
+
+  async getConfig(): Promise<Config> {
+    const { data } = await this.client.request('/config/');
+    return data;
   }
 }
 
