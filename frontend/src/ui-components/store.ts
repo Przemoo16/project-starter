@@ -33,8 +33,8 @@ export const uiSlice = createSlice({
 export const uiActions = uiSlice.actions;
 
 export const notifyInfo = (message: string, duration: number = NOTIFICATION_DURATION) =>
-  uiSlice.actions.addNotification({ message, type: 'info', duration });
+  uiActions.addNotification({ message, type: 'info', duration });
 export const notifySuccess = (message: string, duration: number = NOTIFICATION_DURATION) =>
-  uiSlice.actions.addNotification({ message, type: 'success', duration });
+  uiActions.addNotification({ message, type: 'success', duration });
 export const notifyError = (message: string, duration: number = NOTIFICATION_DURATION) =>
-  uiSlice.actions.addNotification({ message, type: 'error', duration });
+  uiActions.addNotification({ message, type: 'error', duration });
