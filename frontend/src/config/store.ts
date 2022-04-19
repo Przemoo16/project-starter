@@ -25,8 +25,12 @@ export const configSlice = createSlice({
 export const configActions = configSlice.actions;
 
 function* loadConfigSaga() {
-  const { ...data } = yield backend.getConfig();
-  yield put(configActions.loadConfig(data));
+  try {
+    const { ...data } = yield backend.getConfig();
+    yield put(configActions.loadConfig(data));
+  } catch (e) {
+    console.error('Loading config failed:', e);
+  }
 }
 
 export function* configSaga() {
