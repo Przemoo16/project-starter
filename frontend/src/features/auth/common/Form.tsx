@@ -1,7 +1,8 @@
-import { Form as BaseForm, FormProps as BaseFormProps } from '../../../ui-components/Form';
-
-type FormProps = Omit<BaseFormProps, 'sx'>;
+import { Form as BaseForm, FormProps } from '../../../ui-components/Form';
+import { ContentContainer } from './Container';
 
 export const Form = (props: FormProps) => (
-  <BaseForm sx={{ width: '100%', maxWidth: 500, mt: 3 }} {...props} />
+  <ContentContainer>
+    <BaseForm {...props} />
+  </ContentContainer>
 );

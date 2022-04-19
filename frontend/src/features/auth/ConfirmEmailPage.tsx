@@ -6,7 +6,7 @@ import { useParams } from 'react-router-dom';
 
 import { backend } from '../../services/backend';
 import { ButtonWithLink } from './common/Button';
-import { PageContainer } from './common/Container';
+import { ContentContainer, PageContainer } from './common/Container';
 
 enum Status {
   PENDING,
@@ -33,12 +33,14 @@ const ConfirmEmailPage = () => {
 
   return (
     <PageContainer icon={EmailOutlinedIcon} title={t('auth.confirmEmailTitle')}>
-      <Typography align="center" sx={{ mt: 2 }}>
-        {confirmationEmailStatus === Status.PENDING && t('auth.confirmEmailPending')}
-        {confirmationEmailStatus === Status.SUCCESS && t('auth.confirmEmailSuccess')}
-        {confirmationEmailStatus === Status.ERROR && t('auth.confirmEmailError')}
-      </Typography>
-      <ButtonWithLink to="/login">{t('auth.loginButton')}</ButtonWithLink>
+      <ContentContainer>
+        <Typography align="center" sx={{ mt: 2 }}>
+          {confirmationEmailStatus === Status.PENDING && t('auth.confirmEmailPending')}
+          {confirmationEmailStatus === Status.SUCCESS && t('auth.confirmEmailSuccess')}
+          {confirmationEmailStatus === Status.ERROR && t('auth.confirmEmailError')}
+        </Typography>
+        <ButtonWithLink to="/login">{t('auth.loginButton')}</ButtonWithLink>
+      </ContentContainer>
     </PageContainer>
   );
 };
