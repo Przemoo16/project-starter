@@ -18,7 +18,10 @@ router = fastapi.APIRouter()
 @router.post(
     "/",
     response_model=token_models.Tokens,
-    responses={**token_exceptions.InvalidCredentials().doc},
+    responses={
+        **token_exceptions.InvalidCredentials().doc,
+        **token_exceptions.InactiveUserError().doc,
+    },
 )
 async def obtain_tokens(
     username: user_models.UserEmail = fastapi.Form(...),
@@ -32,6 +35,7 @@ async def obtain_tokens(
     "/refresh",
     response_model=token_models.AccessToken,
     responses={
+        **token_exceptions.InactiveUserError().doc,
         **user_exceptions.UserNotFoundError().doc,
         **token_exceptions.InvalidTokenError().doc,
         **token_exceptions.RefreshTokenRequiredError().doc,
@@ -48,7 +52,10 @@ async def refresh_token(
 @router.post(
     "/revoke",
     status_code=status.HTTP_204_NO_CONTENT,
-    responses={**token_exceptions.InvalidTokenError().doc},
+    responses={
+        **token_exceptions.RevokedTokenError().doc,
+        **token_exceptions.InvalidTokenError().doc,
+    },
 )
 async def revoke_token(
     token: token_models.Token = fastapi.Body(..., embed=True),

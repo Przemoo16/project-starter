@@ -1,5 +1,6 @@
 {
   "auth": {
+    "accountAlreadyExists": "The account with provided email already exists",
     "backToLoginLink": "Back to login",
     "confirmEmailError": "We couldn't confirm your email. Please check if the provided link is correct.",
     "confirmEmailPending": "We're trying to confirm your email.",
@@ -8,13 +9,16 @@
     "email": "Email",
     "forgotLink": "Forgot your password?",
     "getStarted": "Get started",
+    "inactiveAccount": "The account is inactive. Please activate your account to continue.",
     "loginButton": "Log in",
     "loginError": "Incorrect email or password",
     "loginLink": "Do you already have an account?",
     "loginTitle": "Log in to your account",
     "name": "Name",
     "password": "Password",
+    "registerError": "We couldn't create your account",
     "registerLink": "Don't have an account yet?",
+    "registerSuccess": "You account has been created. Please check your email and follow the instructions to activate your account.",
     "repeatPassword": "Repeat password",
     "resetPasswordTitle": "Reset your password",
     "sendEmailButton": "Send email",

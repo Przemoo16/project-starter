@@ -1,5 +1,6 @@
 {
   "auth": {
+    "accountAlreadyExists": "Konto z podanym adresem e-mail już istnieje",
     "backToLoginLink": "Wróć do logowania",
     "confirmEmailError": "Nie mogliśmy potwierdzić Twojego adresu e-mail. Sprawdź, czy podany link jest poprawny.",
     "confirmEmailPending": "Próbujemy potwierdzić Twój adres e-mail.",
@@ -8,13 +9,16 @@
     "email": "E-mail",
     "forgotLink": "Zapomniałeś hasła?",
     "getStarted": "Zacznij korzystać",
+    "inactiveAccount": "Konto jest nieaktywne. Aktywuj swoje konto, aby kontynuować.",
     "loginButton": "Zaloguj sie",
     "loginError": "Nieprawidłowy e-mail lub hasło",
     "loginLink": "Masz już konto?",
     "loginTitle": "Zaloguj się na swoje konto",
     "name": "Nazwa",
     "password": "Hasło",
+    "registerError": "Nie mogliśmy utworzyć Twojego konta",
     "registerLink": "Nie masz jeszcze konta?",
+    "registerSuccess": "Twoje konto zostało utworzone. Sprawdź e-mail i postępuj zgodnie z instrukcjami, aby aktywować konto",
     "repeatPassword": "Powtórz hasło",
     "resetPasswordTitle": "Zresetuj swoje hasło",
     "sendEmailButton": "Wyślij e-mail",

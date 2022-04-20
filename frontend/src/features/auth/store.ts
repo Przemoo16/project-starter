@@ -1,12 +1,13 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { AxiosError } from 'axios';
 import { channel } from 'redux-saga';
 import { fork, put, takeEvery, takeLeading } from 'redux-saga/effects';
 
-import { LoginData, User } from '../../backendTypes';
+import { LoginData, RegisterData, User } from '../../backendTypes';
 import { t } from '../../i18n';
 import { backend } from '../../services/backend';
 import { history } from '../../services/history';
-import { notifyError } from '../../ui-components/store';
+import { notifyError, notifySuccess } from '../../ui-components/store';
 
 interface AuthState {
   user: User | null;
@@ -37,6 +38,7 @@ export const authSlice = createSlice({
       state.pending = false;
       state.user = null;
     },
+    register(state, action: PayloadAction<RegisterData>) {},
     logout(state) {
       state.user = null;
     },
@@ -58,10 +60,32 @@ function* loginSaga() {
       yield backend.login(payload);
       const { ...data } = yield backend.getCurrentUser();
       yield put(authActions.loginSuccess({ user: data }));
-      yield put(history.push('/authenticated') as any);
+      history.push('/authenticated');
     } catch (e) {
+      const error = e as AxiosError;
+      if (error.response?.status === 403) {
+        yield put(notifyError(t('auth.inactiveAccount')));
+      } else {
+        yield put(notifyError(t('auth.loginError')));
+      }
       yield put(authActions.loginFailure());
-      yield put(notifyError(t('auth.loginError')));
+    }
+  });
+}
+
+function* registerSaga() {
+  yield takeLeading(authActions.register, function* ({ payload }) {
+    try {
+      yield backend.register(payload);
+      yield put(notifySuccess(t('auth.registerSuccess')));
+      history.push('/login');
+    } catch (e) {
+      const error = e as AxiosError;
+      if (error.response?.status === 409) {
+        yield put(notifyError(t('auth.accountAlreadyExists')));
+      } else {
+        yield put(notifyError(t('auth.registerError')));
+      }
     }
   });
 }
@@ -81,5 +105,6 @@ function* logoutSaga() {
 
 export function* authSaga() {
   yield fork(loginSaga);
+  yield fork(registerSaga);
   yield fork(logoutSaga);
 }
