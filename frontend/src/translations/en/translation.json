@@ -9,6 +9,7 @@
     "forgotLink": "Forgot your password?",
     "getStarted": "Get started",
     "loginButton": "Log in",
+    "loginError": "Incorrect email or password",
     "loginLink": "Do you already have an account?",
     "loginTitle": "Log in to your account",
     "name": "Name",
