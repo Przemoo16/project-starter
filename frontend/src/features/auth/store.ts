@@ -3,7 +3,13 @@ import { AxiosError } from 'axios';
 import { channel } from 'redux-saga';
 import { fork, put, takeEvery, takeLeading } from 'redux-saga/effects';
 
-import { LoginData, RegisterData, User } from '../../backendTypes';
+import {
+  LoginData,
+  RegisterData,
+  ResetPasswordData,
+  SetPasswordData,
+  User,
+} from '../../backendTypes';
 import { t } from '../../i18n';
 import { backend } from '../../services/backend';
 import { history } from '../../services/history';
@@ -42,6 +48,8 @@ export const authSlice = createSlice({
     logout(state) {
       state.user = null;
     },
+    resetPassword(state, action: PayloadAction<ResetPasswordData>) {},
+    setPassword(state, action: PayloadAction<SetPasswordData>) {},
   },
 });
 
@@ -103,8 +111,34 @@ function* logoutSaga() {
   });
 }
 
+function* resetPasswordSaga() {
+  yield takeLeading(authActions.resetPassword, function* ({ payload }) {
+    try {
+      yield backend.resetPassword(payload);
+      yield put(notifySuccess(t('auth.resetPasswordSuccess')));
+      history.push('/login');
+    } catch (e) {
+      yield put(notifyError(t('auth.resetPasswordError')));
+    }
+  });
+}
+
+function* setPasswordSaga() {
+  yield takeLeading(authActions.setPassword, function* ({ payload }) {
+    try {
+      yield backend.setPassword(payload);
+      yield put(notifySuccess(t('auth.setPasswordSuccess')));
+      history.push('/login');
+    } catch (e) {
+      yield put(notifyError(t('auth.setPasswordError')));
+    }
+  });
+}
+
 export function* authSaga() {
   yield fork(loginSaga);
   yield fork(registerSaga);
   yield fork(logoutSaga);
+  yield fork(resetPasswordSaga);
+  yield fork(setPasswordSaga);
 }
