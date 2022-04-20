@@ -2,17 +2,20 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import LockResetOutlinedIcon from '@mui/icons-material/LockResetOutlined';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
+import { useDispatch } from 'react-redux';
 
-import { backend } from '../../services/backend';
 import { TextInput } from '../../ui-components/Input';
 import { SubmitButton } from './common/Button';
 import { PageContainer } from './common/Container';
 import { Form } from './common/Form';
 import { Link, LinksContainer } from './common/Link';
+import { authActions } from './store';
 import { getResetPasswordSchema } from './validation';
 
 const ResetPasswordPage = () => {
   const { t } = useTranslation();
+  const dispatch = useDispatch();
+  const { resetPassword } = authActions;
   const { control, handleSubmit } = useForm({
     mode: 'onTouched',
     defaultValues: {
@@ -23,7 +26,7 @@ const ResetPasswordPage = () => {
 
   return (
     <PageContainer icon={LockResetOutlinedIcon} title={t('auth.resetPasswordTitle')}>
-      <Form onSubmit={handleSubmit(async values => await backend.resetPassword(values))}>
+      <Form onSubmit={handleSubmit(async values => dispatch(resetPassword(values)))}>
         <TextInput
           name="email"
           control={control}
