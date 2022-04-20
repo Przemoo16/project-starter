@@ -26,7 +26,7 @@ export const AnonymousLayout = ({ children }: AnonymousLayoutProps) => {
           justifyContent: 'center',
         }}
       >
-        <Typography>{t('auth.loginTitle')}:</Typography>
+        <Typography align="center">{t('auth.loginTitle')}:</Typography>
         <Button to="/login" component={Link} fullWidth variant="contained" sx={{ mt: 2 }}>
           {t('auth.loginButton')}
         </Button>

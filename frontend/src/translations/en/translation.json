@@ -3,7 +3,6 @@
     "accountAlreadyExists": "The account with provided email already exists",
     "backToLoginLink": "Back to login",
     "confirmEmailError": "We couldn't confirm your email. Please check if the provided link is correct.",
-    "confirmEmailPending": "We're trying to confirm your email.",
     "confirmEmailSuccess": "Your email has been confirmed. You can now log in to your account.",
     "confirmEmailTitle": "Confirm email",
     "email": "Email",
