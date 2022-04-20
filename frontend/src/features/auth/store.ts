@@ -4,6 +4,7 @@ import { channel } from 'redux-saga';
 import { fork, put, takeEvery, takeLeading } from 'redux-saga/effects';
 
 import {
+  ConfirmEmailData,
   LoginData,
   RegisterData,
   ResetPasswordData,
@@ -17,12 +18,16 @@ import { notifyError, notifySuccess } from '../../ui-components/store';
 
 interface AuthState {
   user: User | null;
-  pending: boolean;
+  loginPending: boolean;
+  confirmEmailPending: boolean;
+  confirmEmailSuccess: boolean;
 }
 
 const initialState: AuthState = {
   user: null,
-  pending: true,
+  loginPending: true,
+  confirmEmailPending: false,
+  confirmEmailSuccess: false,
 };
 
 export const authSlice = createSlice({
@@ -30,18 +35,18 @@ export const authSlice = createSlice({
   initialState,
   reducers: {
     loadUser(state, { payload }: PayloadAction<{ user: User | null }>) {
-      state.pending = false;
+      state.loginPending = false;
       state.user = payload.user;
     },
     login(state, action: PayloadAction<LoginData>) {
-      state.pending = true;
+      state.loginPending = true;
     },
     loginSuccess(state, { payload }: PayloadAction<{ user: User }>) {
-      state.pending = false;
+      state.loginPending = false;
       state.user = payload.user;
     },
     loginFailure(state) {
-      state.pending = false;
+      state.loginPending = false;
       state.user = null;
     },
     register(state, action: PayloadAction<RegisterData>) {},
@@ -50,6 +55,17 @@ export const authSlice = createSlice({
     },
     resetPassword(state, action: PayloadAction<ResetPasswordData>) {},
     setPassword(state, action: PayloadAction<SetPasswordData>) {},
+    confirmEmail(state, action: PayloadAction<ConfirmEmailData>) {
+      state.confirmEmailPending = true;
+    },
+    confirmEmailSuccess(state) {
+      state.confirmEmailPending = false;
+      state.confirmEmailSuccess = true;
+    },
+    confirmEmailError(state) {
+      state.confirmEmailPending = false;
+      state.confirmEmailSuccess = false;
+    },
   },
 });
 
@@ -135,10 +151,22 @@ function* setPasswordSaga() {
   });
 }
 
+function* confirmEmailSaga() {
+  yield takeLeading(authActions.confirmEmail, function* ({ payload }) {
+    try {
+      yield backend.confirmEmail(payload);
+      yield put(authActions.confirmEmailSuccess());
+    } catch (e) {
+      yield put(authActions.confirmEmailError());
+    }
+  });
+}
+
 export function* authSaga() {
   yield fork(loginSaga);
   yield fork(registerSaga);
   yield fork(logoutSaga);
   yield fork(resetPasswordSaga);
   yield fork(setPasswordSaga);
+  yield fork(confirmEmailSaga);
 }

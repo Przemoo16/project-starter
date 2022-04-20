@@ -3,7 +3,6 @@
     "accountAlreadyExists": "Konto z podanym adresem e-mail już istnieje",
     "backToLoginLink": "Wróć do logowania",
     "confirmEmailError": "Nie mogliśmy potwierdzić Twojego adresu e-mail. Sprawdź, czy podany link jest poprawny.",
-    "confirmEmailPending": "Próbujemy potwierdzić Twój adres e-mail.",
     "confirmEmailSuccess": "Twój e-mail został potwierdzony. Możesz teraz zalogować się na swoje konto.",
     "confirmEmailTitle": "Potwierdź e-mail",
     "email": "E-mail",
