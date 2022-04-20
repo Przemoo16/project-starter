@@ -13,6 +13,7 @@
     "loginError": "Nieprawidłowy e-mail lub hasło",
     "loginLink": "Masz już konto?",
     "loginTitle": "Zaloguj się na swoje konto",
+    "logout": "Wyloguj się",
     "name": "Nazwa",
     "password": "Hasło",
     "registerError": "Nie mogliśmy utworzyć Twojego konta",
@@ -29,8 +30,9 @@
     "setPasswordTitle": "Ustaw hasło",
     "withFreeAccount": "z bezpłatnym kontem"
   },
-  "common": {
-    "copyright": "Copyright"
+  "ui": {
+    "copyright": "Copyright",
+    "settings": "Ustawienia"
   },
   "validation": {
     "invalidEmail": "Nieprawidłowy e-mail",

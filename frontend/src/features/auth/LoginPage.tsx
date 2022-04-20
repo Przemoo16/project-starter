@@ -1,9 +1,10 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import { useForm } from 'react-hook-form';
+import { SubmitHandler, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
 
+import { LoginData } from '../../backendTypes';
 import { TextInput } from '../../ui-components/Input';
 import { SubmitButton } from './common/Button';
 import { PageContainer } from './common/Container';
@@ -25,9 +26,13 @@ const LoginPage = () => {
     resolver: yupResolver(getLoginSchema()),
   });
 
+  const onSubmit: SubmitHandler<LoginData> = async values => {
+    dispatch(login(values));
+  };
+
   return (
     <PageContainer icon={LockOutlinedIcon} title={t('auth.loginTitle')}>
-      <Form onSubmit={handleSubmit(async values => dispatch(login(values)))}>
+      <Form onSubmit={handleSubmit(onSubmit)}>
         <TextInput
           name="email"
           control={control}

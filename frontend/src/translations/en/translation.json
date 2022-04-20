@@ -13,6 +13,7 @@
     "loginError": "Incorrect email or password",
     "loginLink": "Do you already have an account?",
     "loginTitle": "Log in to your account",
+    "logout": "Logout",
     "name": "Name",
     "password": "Password",
     "registerError": "We couldn't create your account",
@@ -29,8 +30,9 @@
     "setPasswordTitle": "Set new password",
     "withFreeAccount": "with a free account"
   },
-  "common": {
-    "copyright": "Copyright"
+  "ui": {
+    "copyright": "Copyright",
+    "settings": "Settings"
   },
   "validation": {
     "invalidEmail": "Invalid email",

@@ -1,9 +1,10 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import LockResetOutlinedIcon from '@mui/icons-material/LockResetOutlined';
-import { useForm } from 'react-hook-form';
+import { SubmitHandler, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
 
+import { ResetPasswordData } from '../../backendTypes';
 import { TextInput } from '../../ui-components/Input';
 import { SubmitButton } from './common/Button';
 import { PageContainer } from './common/Container';
@@ -24,9 +25,13 @@ const ResetPasswordPage = () => {
     resolver: yupResolver(getResetPasswordSchema()),
   });
 
+  const onSubmit: SubmitHandler<ResetPasswordData> = async values => {
+    dispatch(resetPassword(values));
+  };
+
   return (
     <PageContainer icon={LockResetOutlinedIcon} title={t('auth.resetPasswordTitle')}>
-      <Form onSubmit={handleSubmit(async values => dispatch(resetPassword(values)))}>
+      <Form onSubmit={handleSubmit(onSubmit)}>
         <TextInput
           name="email"
           control={control}

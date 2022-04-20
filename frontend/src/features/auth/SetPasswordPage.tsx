@@ -1,10 +1,11 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import KeyOutlinedIcon from '@mui/icons-material/KeyOutlined';
-import { useForm } from 'react-hook-form';
+import { SubmitHandler, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
+import { SetPasswordData } from '../../backendTypes';
 import { useAppSelector } from '../../services/store';
 import { TextInput } from '../../ui-components/Input';
 import { SubmitButton } from './common/Button';
@@ -29,13 +30,13 @@ const SetPasswordPage = () => {
     resolver: yupResolver(getSetPasswordSchema(userPasswordMinLength, userPasswordMaxLength)),
   });
 
+  const onSubmit: SubmitHandler<Omit<SetPasswordData, 'key'>> = async values => {
+    dispatch(setPassword({ ...values, key: key || '' }));
+  };
+
   return (
     <PageContainer icon={KeyOutlinedIcon} title={t('auth.setPasswordTitle')}>
-      <Form
-        onSubmit={handleSubmit(async values =>
-          dispatch(setPassword({ ...values, key: key || '' }))
-        )}
-      >
+      <Form onSubmit={handleSubmit(onSubmit)}>
         <TextInput
           name="password"
           control={control}

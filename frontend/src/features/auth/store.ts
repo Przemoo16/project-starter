@@ -84,7 +84,7 @@ function* loginSaga() {
       yield backend.login(payload);
       const { ...data } = yield backend.getCurrentUser();
       yield put(authActions.loginSuccess({ user: data }));
-      history.push('/authenticated');
+      history.push('/dashboard');
     } catch (e) {
       const error = e as AxiosError;
       if (error.response?.status === 403) {
