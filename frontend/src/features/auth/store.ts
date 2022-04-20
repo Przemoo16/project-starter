@@ -1,19 +1,20 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { AxiosError } from 'axios';
 import { channel } from 'redux-saga';
 import { fork, put, takeEvery, takeLeading } from 'redux-saga/effects';
 
 import { LoginData, User } from '../../backendTypes';
+import { t } from '../../i18n';
 import { backend } from '../../services/backend';
 import { history } from '../../services/history';
+import { notifyError } from '../../ui-components/store';
 
 interface AuthState {
+  user: User | null;
   pending: boolean;
-  errors?: Record<string, string>;
-  user?: User;
 }
 
 const initialState: AuthState = {
+  user: null,
   pending: true,
 };
 
@@ -21,7 +22,7 @@ export const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    loadUser(state, { payload }: PayloadAction<{ user?: User }>) {
+    loadUser(state, { payload }: PayloadAction<{ user: User | null }>) {
       state.pending = false;
       state.user = payload.user;
     },
@@ -32,12 +33,12 @@ export const authSlice = createSlice({
       state.pending = false;
       state.user = payload.user;
     },
-    loginFailure(state, { payload }: PayloadAction<{ errors: Record<string, string> }>) {
+    loginFailure(state) {
       state.pending = false;
-      state.errors = payload.errors;
+      state.user = null;
     },
     logout(state) {
-      state.user = undefined;
+      state.user = null;
     },
   },
 });
@@ -46,27 +47,26 @@ export const authActions = authSlice.actions;
 
 function* loginSaga() {
   try {
-    const { user } = yield backend.getCurrentUser();
-    yield put(authActions.loadUser({ user }));
+    const { ...data } = yield backend.getCurrentUser();
+    yield put(authActions.loadUser({ user: data }));
   } catch {
-    yield put(authActions.loadUser({ user: undefined }));
+    yield put(authActions.loadUser({ user: null }));
   }
 
   yield takeLeading(authActions.login, function* ({ payload }) {
     try {
       yield backend.login(payload);
-      const { user } = yield backend.getCurrentUser();
-      yield put(authActions.loginSuccess({ user }));
+      const { ...data } = yield backend.getCurrentUser();
+      yield put(authActions.loginSuccess({ user: data }));
       yield put(history.push('/authenticated') as any);
     } catch (e) {
-      const error = e as AxiosError;
-      const errors = error.response?.data;
-      yield put(authActions.loginFailure({ errors }));
+      yield put(authActions.loginFailure());
+      yield put(notifyError(t('auth.loginError')));
     }
   });
 }
 
-export function* logoutSaga() {
+function* logoutSaga() {
   const badTokenChannel = channel<any>();
   backend.listenOnInvalidTokens(async () => badTokenChannel.put(''));
   yield takeEvery(badTokenChannel, function* () {
