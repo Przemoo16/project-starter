@@ -2,9 +2,9 @@ import {
   Config,
   ConfirmEmailData,
   LoginData,
+  RegisterData,
   ResetPasswordData,
   SetPasswordData,
-  SignUpData,
   User,
 } from '../backendTypes';
 import { RestClient } from './client/restClient';
@@ -50,7 +50,7 @@ class Backend {
       .then(({ data }) => this.setTokens(data));
   }
 
-  async signUp(data: SignUpData) {
+  async register(data: RegisterData) {
     return this.client.request('/users/', {
       method: 'POST',
       data,

@@ -2,18 +2,21 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import AppRegistrationOutlinedIcon from '@mui/icons-material/AppRegistrationOutlined';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
+import { useDispatch } from 'react-redux';
 
-import { backend } from '../../services/backend';
 import { useAppSelector } from '../../services/store';
 import { TextInput } from '../../ui-components/Input';
 import { SubmitButton } from './common/Button';
 import { PageContainer } from './common/Container';
 import { Form } from './common/Form';
 import { Link, LinksContainer } from './common/Link';
+import { authActions } from './store';
 import { getRegisterSchema } from './validation';
 
 const RegisterPage = () => {
   const { t } = useTranslation();
+  const dispatch = useDispatch();
+  const { register } = authActions;
   const { userNameMaxLength, userPasswordMinLength, userPasswordMaxLength } = useAppSelector(
     state => state.config
   );
@@ -41,7 +44,7 @@ const RegisterPage = () => {
         </>
       }
     >
-      <Form onSubmit={handleSubmit(async values => await backend.signUp(values))}>
+      <Form onSubmit={handleSubmit(async values => dispatch(register(values)))}>
         <TextInput
           name="name"
           control={control}
