@@ -8,4 +8,5 @@ export const LazyPages = {
   ConfirmEmailPage: lazy(() => import('./auth/ConfirmEmailPage')),
   ResetPasswordPage: lazy(() => import('./auth/ResetPasswordPage')),
   SetPasswordPage: lazy(() => import('./auth/SetPasswordPage')),
+  DashboardPage: lazy(() => import('./dashboard/DashboardPage')),
 };

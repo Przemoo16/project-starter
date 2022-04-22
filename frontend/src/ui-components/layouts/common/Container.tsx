@@ -4,8 +4,8 @@ import Paper from '@mui/material/Paper';
 import { ReactNode } from 'react';
 
 import heroIcon from '../../../assets/icons/hero.svg';
-import { Copyright } from '../../Copyright';
 import { Logo } from '../../Icons';
+import { Copyright } from './Copyright';
 
 interface ContainerWithHeroProps {
   children: ReactNode;

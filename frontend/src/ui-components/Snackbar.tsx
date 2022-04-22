@@ -18,7 +18,7 @@ const MAX_SNACKS = 3;
 export const SnackbarProvider = ({ maxSnacks = MAX_SNACKS, children }: SnackbarProviderProps) => {
   const ref = useRef<NotistackProvider>(null);
 
-  const onClickHandler = (key: SnackbarKey) => () => {
+  const handleClick = (key: SnackbarKey) => () => {
     ref?.current?.closeSnackbar(key);
   };
 
@@ -29,9 +29,9 @@ export const SnackbarProvider = ({ maxSnacks = MAX_SNACKS, children }: SnackbarP
       action={key => (
         <IconButton
           key={key}
-          onClick={onClickHandler(key)}
+          onClick={handleClick(key)}
           size="small"
-          aria-label="close"
+          aria-label="close notification"
           color="inherit"
         >
           <CloseIcon fontSize="small" />

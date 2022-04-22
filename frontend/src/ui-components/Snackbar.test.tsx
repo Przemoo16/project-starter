@@ -9,11 +9,11 @@ const Component = () => {
   const dispatch = useDispatch();
   const { addNotification } = uiActions;
 
-  const onClickHandler = () => {
+  const handleClick = () => {
     dispatch(addNotification({ message: 'Test message', type: 'error', duration: 4000 }));
   };
   return (
-    <button data-testid="snackbar-button" onClick={onClickHandler}>
+    <button data-testid="snackbar-button" onClick={handleClick}>
       Test button
     </button>
   );

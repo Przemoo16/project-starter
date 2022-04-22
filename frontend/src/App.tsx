@@ -6,23 +6,19 @@ import { LazyPages } from './features/lazy';
 import { useAppSelector } from './services/store';
 import { AnonymousLayout } from './ui-components/layouts/AnonymousLayout';
 import { AuthLayout } from './ui-components/layouts/AuthLayout';
+import { DashboardLayout } from './ui-components/layouts/DashboardLayout';
 import { EnhancedRoute, RouteDefinition } from './ui-components/Routing';
 
-const route404: RouteDefinition = {
-  path: '*',
+const loginRoute: RouteDefinition = {
+  path: '/login',
   requiresAuth: false,
-  layout: AnonymousLayout,
-  content: LazyPages.NotFoundPage,
+  layout: AuthLayout,
+  content: LazyPages.LoginPage,
 };
 
 const routes: RouteDefinition[] = [
   { path: '/', requiresAuth: false, layout: AnonymousLayout, content: LazyPages.HomePage },
-  {
-    path: '/login',
-    requiresAuth: false,
-    layout: AuthLayout,
-    content: LazyPages.LoginPage,
-  },
+  loginRoute,
   {
     path: '/register',
     requiresAuth: false,
@@ -47,7 +43,18 @@ const routes: RouteDefinition[] = [
     layout: AuthLayout,
     content: LazyPages.SetPasswordPage,
   },
-  route404,
+  {
+    path: '/dashboard',
+    requiresAuth: true,
+    layout: DashboardLayout,
+    content: LazyPages.DashboardPage,
+  },
+  {
+    path: '*',
+    requiresAuth: false,
+    layout: AnonymousLayout,
+    content: LazyPages.NotFoundPage,
+  },
 ];
 
 const App = () => {
@@ -65,7 +72,7 @@ const App = () => {
               route={route}
               isAuthenticated={isAuthenticated}
               isAuthPending={isAuthPending}
-              authFallbackRoute={route404}
+              authFallbackRoute={loginRoute}
             />
           }
         />

@@ -1,9 +1,10 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import AppRegistrationOutlinedIcon from '@mui/icons-material/AppRegistrationOutlined';
-import { useForm } from 'react-hook-form';
+import { SubmitHandler, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
 
+import { RegisterData } from '../../backendTypes';
 import { useAppSelector } from '../../services/store';
 import { TextInput } from '../../ui-components/Input';
 import { SubmitButton } from './common/Button';
@@ -33,6 +34,10 @@ const RegisterPage = () => {
     ),
   });
 
+  const onSubmit: SubmitHandler<RegisterData> = async values => {
+    dispatch(register(values));
+  };
+
   return (
     <PageContainer
       icon={AppRegistrationOutlinedIcon}
@@ -44,7 +49,7 @@ const RegisterPage = () => {
         </>
       }
     >
-      <Form onSubmit={handleSubmit(async values => dispatch(register(values)))}>
+      <Form onSubmit={handleSubmit(onSubmit)}>
         <TextInput
           name="name"
           control={control}
