@@ -48,7 +48,7 @@ export const Drawer = ({ open, onClose, width }: DrawerProps) => {
       {...drawerConditionalProps}
     >
       <Toolbar>
-        <Logo />
+        <Logo size={40} />
       </Toolbar>
       <Divider />
       <List component="nav">
