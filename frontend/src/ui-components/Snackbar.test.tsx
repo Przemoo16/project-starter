@@ -51,7 +51,7 @@ describe('Snackbar component', () => {
 
     expect(screen.getByRole('alert')).toBeInTheDocument();
 
-    await user.click(screen.getByLabelText('close'));
+    await user.click(screen.getByLabelText('close notification'));
 
     await waitFor(() => expect(screen.queryByRole('alert')).not.toBeInTheDocument());
   });
