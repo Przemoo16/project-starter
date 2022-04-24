@@ -14,6 +14,7 @@ class Backend {
 
   async getConfig(): Promise<Config> {
     return {
+      appName: 'Project Starter',
       userNameMaxLength: 64,
       userPasswordMinLength: 8,
       userPasswordMaxLength: 32,

@@ -28,6 +28,7 @@ export interface SetPasswordData {
 }
 
 export interface Config {
+  appName: string;
   userNameMaxLength: number;
   userPasswordMinLength: number;
   userPasswordMaxLength: number;
