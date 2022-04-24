@@ -45,6 +45,7 @@ export const Drawer = ({ open, onClose, width }: DrawerProps) => {
           boxSizing: 'border-box',
         },
       }}
+      data-testid="drawer"
       {...drawerConditionalProps}
     >
       <Toolbar>

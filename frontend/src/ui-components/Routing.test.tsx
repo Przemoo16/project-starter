@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { MemoryRouter, Route, Routes } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 
 import { render, screen } from '../tests/utils';
 import { EnhancedRoute } from './Routing';
@@ -9,13 +9,11 @@ interface TestRouterProps {
 }
 
 const TestRouter = ({ element }: TestRouterProps) => (
-  <MemoryRouter>
-    <Routes>
-      <Route path="/" element={element} />
-      <Route path="/login" element={<>Authentication Route</>} />
-      <Route path="/dashboard" element={<>Authenticated Route</>} />
-    </Routes>
-  </MemoryRouter>
+  <Routes>
+    <Route path="/" element={element} />
+    <Route path="/login" element={<>Authentication Route</>} />
+    <Route path="/dashboard" element={<>Authenticated Route</>} />
+  </Routes>
 );
 
 describe('EnhancedRoute component', () => {
