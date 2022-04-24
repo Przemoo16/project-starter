@@ -16,7 +16,7 @@ interface EnhancedRouteProps {
   isAuthenticated: boolean;
   isAuthPending: boolean;
   authenticationFallback: string;
-  authorizedFallback: string;
+  authenticatedFallback: string;
 }
 
 export const EnhancedRoute = ({
@@ -24,7 +24,7 @@ export const EnhancedRoute = ({
   isAuthPending,
   isAuthenticated,
   authenticationFallback,
-  authorizedFallback,
+  authenticatedFallback,
 }: EnhancedRouteProps) => {
   let { layout: Layout, content: Content, requiresAuth, anonymousOnly } = route;
 
@@ -37,7 +37,7 @@ export const EnhancedRoute = ({
   }
 
   if (anonymousOnly && isAuthenticated) {
-    return <Navigate to={authorizedFallback} />;
+    return <Navigate to={authenticatedFallback} />;
   }
 
   return (

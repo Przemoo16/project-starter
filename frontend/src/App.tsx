@@ -88,7 +88,7 @@ const App = () => {
               isAuthenticated={isAuthenticated}
               isAuthPending={isAuthPending}
               authenticationFallback={loginRoute.path}
-              authorizedFallback={dashboardRoute.path}
+              authenticatedFallback={dashboardRoute.path}
             />
           }
         />
