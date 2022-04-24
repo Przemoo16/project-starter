@@ -61,14 +61,6 @@ class UserService(base.AppService):
     ) -> pagination_models.TotalResults:
         return await UserCRUD(self.session).count(filters)
 
-    async def confirm_email(self, user: user_models.User) -> None:
-        if not _can_confirm_email(user):
-            raise user_exceptions.ConfirmationEmailError(
-                context={"confirmation_email_key": user.confirmation_email_key}
-            )
-        user_update = user_models.UserUpdate(confirmed_email=True)
-        await UserCRUD(self.session).update(user, user_update)
-
     async def change_password(
         self,
         user: user_models.User,
@@ -78,6 +70,14 @@ class UserService(base.AppService):
         if not auth.verify_password(old_password, user.password):
             raise user_exceptions.InvalidPasswordError()
         user_update = user_models.UserUpdate(password=auth.hash_password(new_password))
+        await UserCRUD(self.session).update(user, user_update)
+
+    async def confirm_email(self, user: user_models.User) -> None:
+        if not _can_confirm_email(user):
+            raise user_exceptions.ConfirmationEmailError(
+                context={"confirmation_email_key": user.confirmation_email_key}
+            )
+        user_update = user_models.UserUpdate(confirmed_email=True)
         await UserCRUD(self.session).update(user, user_update)
 
     @staticmethod

@@ -149,15 +149,6 @@ async def test_user_service_count_users(
 
 
 @pytest.mark.asyncio
-async def test_user_service_confirm_email(session: "conftest.AsyncSession") -> None:
-    user = await user_helpers.create_user(session=session)
-
-    await user_services.UserService(session).confirm_email(user)
-
-    assert user.confirmed_email is True
-
-
-@pytest.mark.asyncio
 async def test_user_service_change_password(
     session: "conftest.AsyncSession",
 ) -> None:
@@ -186,6 +177,15 @@ async def test_user_service_change_password_invalid_password(
         await user_services.UserService(session).change_password(
             user, "invalid_password", "new_password"
         )
+
+
+@pytest.mark.asyncio
+async def test_user_service_confirm_email(session: "conftest.AsyncSession") -> None:
+    user = await user_helpers.create_user(session=session)
+
+    await user_services.UserService(session).confirm_email(user)
+
+    assert user.confirmed_email is True
 
 
 @pytest.mark.asyncio
