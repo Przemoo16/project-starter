@@ -1,6 +1,6 @@
-import AccountCircle from '@mui/icons-material/AccountCircle';
-import Logout from '@mui/icons-material/Logout';
-import Settings from '@mui/icons-material/Settings';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import LogoutIcon from '@mui/icons-material/Logout';
+import SettingsIcon from '@mui/icons-material/Settings';
 import IconButton from '@mui/material/IconButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import Menu from '@mui/material/Menu';
@@ -31,7 +31,7 @@ export const AccountMenu = () => {
   return (
     <>
       <IconButton color="inherit" onClick={handleOpenMenu} aria-label="my account">
-        <AccountCircle fontSize="large" />
+        <AccountCircleIcon fontSize="large" />
       </IconButton>
       <Menu
         anchorEl={anchorEl}
@@ -40,16 +40,17 @@ export const AccountMenu = () => {
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
         open={!!anchorEl}
         onClose={handleCloseMenu}
+        data-testid="accountMenu"
       >
         <MenuItem>
           <ListItemIcon>
-            <Settings />
+            <SettingsIcon />
           </ListItemIcon>
           {t('ui.settings')}
         </MenuItem>
         <MenuItem onClick={handleLogout}>
           <ListItemIcon>
-            <Logout />
+            <LogoutIcon />
           </ListItemIcon>
           {t('auth.logout')}
         </MenuItem>

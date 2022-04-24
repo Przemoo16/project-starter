@@ -1,5 +1,5 @@
-import Visibility from '@mui/icons-material/Visibility';
-import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import IconButton from '@mui/material/IconButton';
 import InputAdornment from '@mui/material/InputAdornment';
 import TextField, { TextFieldProps } from '@mui/material/TextField';
@@ -36,7 +36,7 @@ export const TextInput = ({ name, control, type, ...rest }: TextInputProps) => {
                   onClick={handlePasswordVisibility}
                   edge="end"
                 >
-                  {passwordVisible ? <VisibilityOff /> : <Visibility />}
+                  {passwordVisible ? <VisibilityOffIcon /> : <VisibilityIcon />}
                 </IconButton>
               </InputAdornment>
             ),
