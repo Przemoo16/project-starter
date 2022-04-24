@@ -1,4 +1,5 @@
 import { ComponentType, ReactNode, Suspense } from 'react';
+import { Navigate } from 'react-router-dom';
 
 import { AppLoader } from './AppLoader';
 
@@ -7,30 +8,36 @@ export interface RouteDefinition {
   requiresAuth: boolean;
   layout: ComponentType<{ children: ReactNode }>;
   content: ComponentType;
+  anonymousOnly: boolean;
 }
 
 interface EnhancedRouteProps {
   route: RouteDefinition;
   isAuthenticated: boolean;
   isAuthPending: boolean;
-  authFallbackRoute: RouteDefinition;
+  authenticationFallback: string;
+  authorizedFallback: string;
 }
 
 export const EnhancedRoute = ({
   route,
   isAuthPending,
   isAuthenticated,
-  authFallbackRoute,
+  authenticationFallback,
+  authorizedFallback,
 }: EnhancedRouteProps) => {
-  let { layout: Layout, content: Content, requiresAuth } = route;
+  let { layout: Layout, content: Content, requiresAuth, anonymousOnly } = route;
 
   if (isAuthPending && requiresAuth) {
     return <AppLoader />;
   }
 
   if (requiresAuth && !isAuthenticated) {
-    Layout = authFallbackRoute.layout;
-    Content = authFallbackRoute.content;
+    return <Navigate to={authenticationFallback} />;
+  }
+
+  if (anonymousOnly && isAuthenticated) {
+    return <Navigate to={authorizedFallback} />;
   }
 
   return (

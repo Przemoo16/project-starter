@@ -14,46 +14,61 @@ const loginRoute: RouteDefinition = {
   requiresAuth: false,
   layout: AuthLayout,
   content: LazyPages.LoginPage,
+  anonymousOnly: true,
+};
+
+const dashboardRoute: RouteDefinition = {
+  path: '/dashboard',
+  requiresAuth: true,
+  layout: DashboardLayout,
+  content: LazyPages.DashboardPage,
+  anonymousOnly: false,
 };
 
 const routes: RouteDefinition[] = [
-  { path: '/', requiresAuth: false, layout: AnonymousLayout, content: LazyPages.HomePage },
+  {
+    path: '/',
+    requiresAuth: false,
+    layout: AnonymousLayout,
+    content: LazyPages.HomePage,
+    anonymousOnly: true,
+  },
+  dashboardRoute,
   loginRoute,
   {
     path: '/register',
     requiresAuth: false,
     layout: AuthLayout,
     content: LazyPages.RegisterPage,
+    anonymousOnly: true,
   },
   {
     path: '/confirm-email/:key',
     requiresAuth: false,
     layout: AuthLayout,
     content: LazyPages.ConfirmEmailPage,
+    anonymousOnly: false,
   },
   {
     path: '/reset-password',
     requiresAuth: false,
     layout: AuthLayout,
     content: LazyPages.ResetPasswordPage,
+    anonymousOnly: true,
   },
   {
     path: '/set-password/:key',
     requiresAuth: false,
     layout: AuthLayout,
     content: LazyPages.SetPasswordPage,
-  },
-  {
-    path: '/dashboard',
-    requiresAuth: true,
-    layout: DashboardLayout,
-    content: LazyPages.DashboardPage,
+    anonymousOnly: false,
   },
   {
     path: '*',
     requiresAuth: false,
     layout: AnonymousLayout,
     content: LazyPages.NotFoundPage,
+    anonymousOnly: false,
   },
 ];
 
@@ -72,7 +87,8 @@ const App = () => {
               route={route}
               isAuthenticated={isAuthenticated}
               isAuthPending={isAuthPending}
-              authFallbackRoute={loginRoute}
+              authenticationFallback={loginRoute.path}
+              authorizedFallback={dashboardRoute.path}
             />
           }
         />
