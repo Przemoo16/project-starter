@@ -72,6 +72,26 @@ async def delete_me(
     await user_services.UserService(session).delete_user(current_user)
 
 
+@router.post(
+    "/me/password",
+    status_code=status.HTTP_204_NO_CONTENT,
+    responses={
+        **user_deps.INACTIVE_USER_RESPONSES,
+        **user_exceptions.InvalidPasswordError().doc,
+    },
+)
+async def change_my_password(
+    change_password_model: user_models.UserChangePassword,
+    current_user: user_models.User = fastapi.Depends(user_deps.get_current_active_user),
+    session: db.AsyncSession = fastapi.Depends(db.get_session),
+) -> typing.Any:
+    await user_services.UserService(session).change_password(
+        current_user,
+        change_password_model.old_password,
+        change_password_model.new_password,
+    )
+
+
 @router.get(
     "/{user_id}",
     response_model=user_models.UserRead,
@@ -104,26 +124,6 @@ async def confirm_email(
         user_models.UserFilters(confirmation_email_key=key)
     )
     await user_service.confirm_email(user_db)
-
-
-@router.post(
-    "/password",
-    status_code=status.HTTP_204_NO_CONTENT,
-    responses={
-        **user_deps.INACTIVE_USER_RESPONSES,
-        **user_exceptions.InvalidPasswordError().doc,
-    },
-)
-async def change_password(
-    change_password_model: user_models.UserChangePassword,
-    current_user: user_models.User = fastapi.Depends(user_deps.get_current_active_user),
-    session: db.AsyncSession = fastapi.Depends(db.get_session),
-) -> typing.Any:
-    await user_services.UserService(session).change_password(
-        current_user,
-        change_password_model.old_password,
-        change_password_model.new_password,
-    )
 
 
 @router.post(
