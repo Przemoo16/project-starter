@@ -9,6 +9,6 @@ services:
       - ./e2e/cypress:/cypress
       - ./e2e/cypress.json:/cypress.json
     depends_on:
-      - frontend
+      - nginx
     environment:
-      - CYPRESS_baseUrl=http://frontend:3000
+      - CYPRESS_baseUrl=http://nginx
