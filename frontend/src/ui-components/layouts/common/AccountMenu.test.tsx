@@ -10,7 +10,7 @@ describe('AccountMenu component', () => {
 
     expect(screen.getByTestId('accountMenu')).toHaveStyle({ visibility: 'hidden' });
 
-    await user.click(screen.getByTestId('AccountCircleIcon'));
+    await user.click(screen.getByTestId('accountButton'));
 
     expect(screen.getByTestId('accountMenu')).toHaveStyle({ visibility: 'visible' });
   });

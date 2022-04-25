@@ -41,19 +41,19 @@ describe('TextInput component', () => {
     render(<Component />);
 
     expect(screen.getByLabelText('Password')).toHaveAttribute('type', 'password');
-    expect(screen.getByTestId('VisibilityIcon')).toBeInTheDocument();
-    expect(screen.queryByTestId('VisibilityOffIcon')).not.toBeInTheDocument();
+    expect(screen.getByTestId('visibilityIcon')).toBeInTheDocument();
+    expect(screen.queryByTestId('visibilityOffIcon')).not.toBeInTheDocument();
 
     await user.click(screen.getByLabelText('toggle password visibility'));
 
     expect(screen.getByLabelText('Password')).toHaveAttribute('type', 'text');
-    expect(screen.getByTestId('VisibilityOffIcon')).toBeInTheDocument();
-    expect(screen.queryByTestId('VisibilityIcon')).not.toBeInTheDocument();
+    expect(screen.getByTestId('visibilityOffIcon')).toBeInTheDocument();
+    expect(screen.queryByTestId('visibilityIcon')).not.toBeInTheDocument();
 
     await user.click(screen.getByLabelText('toggle password visibility'));
 
     expect(screen.getByLabelText('Password')).toHaveAttribute('type', 'password');
-    expect(screen.getByTestId('VisibilityIcon')).toBeInTheDocument();
-    expect(screen.queryByTestId('VisibilityOffIcon')).not.toBeInTheDocument();
+    expect(screen.getByTestId('visibilityIcon')).toBeInTheDocument();
+    expect(screen.queryByTestId('visibilityOffIcon')).not.toBeInTheDocument();
   });
 });
