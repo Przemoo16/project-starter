@@ -1,6 +1,11 @@
 COMPOSE_DEV=docker-compose -f docker-compose.yml -f docker-compose.dev.yml
 COMPOSE_E2E=$(COMPOSE_DEV) -f docker-compose.e2e.yml
 
+ADD_TEST_USERS_COMMAND=$(COMPOSE_DEV) exec -T postgres psql --username=postgres postgres -c "$(shell cat backend/sql/insert-test-users.sql)"
+
+add-test-users:
+	${ADD_TEST_USERS_COMMAND}
+
 build:
 	$(COMPOSE_DEV) build
 
@@ -8,10 +13,10 @@ build-e2e:
 	$(COMPOSE_E2E) build
 
 compile-messages:
-	$(COMPOSE_DEV) run --rm  --no-deps backend pybabel compile -d locale
+	$(COMPOSE_DEV) run --rm --no-deps backend pybabel compile -d locale
 
 confirm-email:
-	$(COMPOSE_DEV) exec postgres psql --username=postgres postgres -c "UPDATE public.user SET confirmed_email = TRUE WHERE email = '${EMAIL}';"
+	$(COMPOSE_DEV) exec -T postgres psql --username=postgres postgres -c "UPDATE public.user SET confirmed_email = TRUE WHERE email = '${EMAIL}';"
 
 create-migration:
 	$(COMPOSE_DEV) run --rm backend alembic revision --autogenerate -m '$(m)'
@@ -53,6 +58,9 @@ test-backend:
 	$(COMPOSE_DEV) run --rm backend pytest .
 
 test-e2e:
+	$(COMPOSE_DEV) up -d
+	sleep 5 # Wait for migration to complete, TODO: Make waiting smarter
+	${ADD_TEST_USERS_COMMAND}
 	$(COMPOSE_E2E) up --exit-code-from e2e
 
 test-frontend:

@@ -43,6 +43,7 @@ const LoginPage = () => {
           type="text"
           placeholder="joe@example.com"
           autoComplete="email"
+          data-testid="emailInput"
         />
         <TextInput
           name="password"
@@ -54,11 +55,14 @@ const LoginPage = () => {
           type="password"
           placeholder="********"
           autoComplete="current-password"
+          data-testid="passwordInput"
         />
         <SubmitButton>{t('auth.loginButton')}</SubmitButton>
         <LinksContainer>
-          <Link to="/register">{t('auth.registerLink')}</Link>
-          <Link to="/reset-password" sx={{ mt: 0.5 }}>
+          <Link to="/register" data-testid="registerLink">
+            {t('auth.registerLink')}
+          </Link>
+          <Link to="/reset-password" sx={{ mt: 0.5 }} data-testid="resetPasswordLink">
             {t('auth.forgotLink')}
           </Link>
         </LinksContainer>

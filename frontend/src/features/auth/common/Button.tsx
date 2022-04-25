@@ -6,7 +6,14 @@ type SubmitButtonProps = Omit<ButtonProps, 'type' | ButtonCommonProps>;
 type ButtonWithLinkProps = Omit<ButtonProps<typeof Link>, ButtonCommonProps>;
 
 export const SubmitButton = (props: SubmitButtonProps) => (
-  <MuiButton type="submit" variant="contained" fullWidth sx={{ mt: 2 }} {...props} />
+  <MuiButton
+    type="submit"
+    variant="contained"
+    fullWidth
+    sx={{ mt: 2 }}
+    {...props}
+    data-testid="submitButton"
+  />
 );
 
 export const ButtonWithLink = (props: ButtonWithLinkProps) => (

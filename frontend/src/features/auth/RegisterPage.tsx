@@ -60,6 +60,7 @@ const RegisterPage = () => {
           type="text"
           placeholder="Jon Doe"
           autoComplete="name"
+          data-testid="nameInput"
         />
         <TextInput
           name="email"
@@ -71,6 +72,7 @@ const RegisterPage = () => {
           type="text"
           placeholder="joe@example.com"
           autoComplete="email"
+          data-testid="emailInput"
         />
         <TextInput
           name="password"
@@ -81,6 +83,7 @@ const RegisterPage = () => {
           label={t('auth.password')}
           type="password"
           placeholder="********"
+          data-testid="passwordInput"
         />
         <TextInput
           name="repeatPassword"
@@ -91,6 +94,7 @@ const RegisterPage = () => {
           label={t('auth.repeatPassword')}
           type="password"
           placeholder="********"
+          data-testid="repeatPasswordInput"
         />
         <SubmitButton>{t('auth.getStarted')}</SubmitButton>
         <LinksContainer>
