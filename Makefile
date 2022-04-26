@@ -43,7 +43,7 @@ migrate:
 	$(COMPOSE_DEV) run --rm backend alembic upgrade head
 
 remove:
-	$(COMPOSE_DEV) down
+	$(COMPOSE_DEV) down --remove-orphans
 
 run:
 	$(COMPOSE_DEV) up

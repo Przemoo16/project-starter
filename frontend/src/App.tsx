@@ -31,7 +31,7 @@ const routes: RouteDefinition[] = [
     requiresAuth: false,
     layout: AnonymousLayout,
     content: LazyPages.HomePage,
-    anonymousOnly: true,
+    anonymousOnly: false,
   },
   dashboardRoute,
   loginRoute,

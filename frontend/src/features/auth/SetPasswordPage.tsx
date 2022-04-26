@@ -46,6 +46,7 @@ const SetPasswordPage = () => {
           label={t('auth.password')}
           type="password"
           placeholder="********"
+          data-testid="passwordInput"
         />
         <TextInput
           name="repeatPassword"
@@ -56,10 +57,13 @@ const SetPasswordPage = () => {
           label={t('auth.repeatPassword')}
           type="password"
           placeholder="********"
+          data-testid="repeatPasswordInput"
         />
         <SubmitButton>{t('auth.setPasswordButton')}</SubmitButton>
         <LinksContainer>
-          <Link to="/login">{t('auth.backToLoginLink')}</Link>
+          <Link to="/login" data-testid="loginLink">
+            {t('auth.backToLoginLink')}
+          </Link>
         </LinksContainer>
       </Form>
     </PageContainer>
