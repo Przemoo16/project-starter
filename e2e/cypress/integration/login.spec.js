@@ -3,7 +3,7 @@ describe("Login page", () => {
     cy.visit("/login");
   });
 
-  it("contains link to the /register route", () => {
+  it("contains link to the /register page", () => {
     cy.get("[data-testid=registerLink]").should(
       "have.attr",
       "href",
@@ -11,7 +11,7 @@ describe("Login page", () => {
     );
   });
 
-  it("contains link to the /reset-password route", () => {
+  it("contains link to the /reset-password page", () => {
     cy.get("[data-testid=resetPasswordLink]").should(
       "have.attr",
       "href",
@@ -19,7 +19,7 @@ describe("Login page", () => {
     );
   });
 
-  it("displays invalid email", () => {
+  it("displays that email is invalid", () => {
     cy.fixture("../fixtures/user.json")
       .as("userData")
       .then((data) => {

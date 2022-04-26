@@ -98,7 +98,9 @@ const RegisterPage = () => {
         />
         <SubmitButton>{t('auth.getStarted')}</SubmitButton>
         <LinksContainer>
-          <Link to="/login">{t('auth.loginLink')}</Link>
+          <Link to="/login" data-testid="loginLink">
+            {t('auth.loginLink')}
+          </Link>
         </LinksContainer>
       </Form>
     </PageContainer>
