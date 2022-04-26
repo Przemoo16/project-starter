@@ -2,5 +2,6 @@
   "name": "Test User",
   "email": "test@email.com",
   "password": "testPassword123",
+  "resetPasswordKey": "6ce7ff1d-94bd-49cb-8eef-bf2b69b183a4",
   "registerEmail": "testNew@email.com"
 }
