@@ -18,7 +18,7 @@
     "password": "Password",
     "registerError": "We couldn't create your account",
     "registerLink": "Don't have an account yet?",
-    "registerSuccess": "You account has been created. Please check your email and follow the instructions to activate your account",
+    "registerSuccess": "Your account has been created. Please check your email and follow the instructions to activate your account",
     "repeatPassword": "Repeat password",
     "resetPasswordError": "We couldn't reset your password",
     "resetPasswordSuccess": "We've sent you an e-mail with instructions on how to reset your password",
