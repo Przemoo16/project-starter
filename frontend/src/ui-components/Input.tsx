@@ -36,7 +36,11 @@ export const TextInput = ({ name, control, type, ...rest }: TextInputProps) => {
                   onClick={handlePasswordVisibility}
                   edge="end"
                 >
-                  {passwordVisible ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                  {passwordVisible ? (
+                    <VisibilityOffIcon data-testid="visibilityOffIcon" />
+                  ) : (
+                    <VisibilityIcon data-testid="visibilityIcon" />
+                  )}
                 </IconButton>
               </InputAdornment>
             ),

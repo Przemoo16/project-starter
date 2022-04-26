@@ -55,7 +55,7 @@ describe("Login page", () => {
       });
   });
 
-  it("log in inactive account", () => {
+  it("displays a proper message when log in with inactive account", () => {
     cy.fixture("../fixtures/inactive-user.json")
       .as("inactiveUserData")
       .then((data) => {
@@ -65,7 +65,7 @@ describe("Login page", () => {
       });
   });
 
-  it("log in with invalid credentials", () => {
+  it("displays a proper message when log in with invalid credentials", () => {
     cy.fixture("../fixtures/user.json")
       .as("userData")
       .then((data) => {
@@ -75,8 +75,17 @@ describe("Login page", () => {
       });
   });
 
-  it("log in", () => {
+  it("enables to log in", () => {
     cy.login();
+
+    cy.location("pathname").should("eq", "/dashboard");
+  });
+
+  it("redirects user who is already log in", () => {
+    cy.login();
+    cy.location("pathname").should("eq", "/dashboard");
+
+    cy.visit("/login");
 
     cy.location("pathname").should("eq", "/dashboard");
   });

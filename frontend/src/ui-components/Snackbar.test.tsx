@@ -13,7 +13,7 @@ const Component = () => {
     dispatch(addNotification({ message: 'Test message', type: 'error', duration: 4000 }));
   };
   return (
-    <button data-testid="snackbar-button" onClick={handleClick}>
+    <button data-testid="snackbarButton" onClick={handleClick}>
       Test button
     </button>
   );
@@ -30,7 +30,7 @@ describe('Snackbar component', () => {
       </SnackbarProvider>
     );
 
-    const button = screen.getByTestId('snackbar-button');
+    const button = screen.getByTestId('snackbarButton');
     await user.click(button);
     await user.click(button);
     await user.click(button);
@@ -47,7 +47,7 @@ describe('Snackbar component', () => {
       </SnackbarProvider>
     );
 
-    await user.click(screen.getByTestId('snackbar-button'));
+    await user.click(screen.getByTestId('snackbarButton'));
 
     expect(screen.getByRole('alert')).toBeInTheDocument();
 

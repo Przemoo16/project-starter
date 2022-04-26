@@ -30,7 +30,12 @@ export const AccountMenu = () => {
 
   return (
     <>
-      <IconButton color="inherit" onClick={handleOpenMenu} aria-label="my account">
+      <IconButton
+        color="inherit"
+        onClick={handleOpenMenu}
+        aria-label="my account"
+        data-testid="accountButton"
+      >
         <AccountCircleIcon fontSize="large" />
       </IconButton>
       <Menu
@@ -48,7 +53,7 @@ export const AccountMenu = () => {
           </ListItemIcon>
           {t('ui.settings')}
         </MenuItem>
-        <MenuItem onClick={handleLogout}>
+        <MenuItem onClick={handleLogout} data-testid="logoutItem">
           <ListItemIcon>
             <LogoutIcon />
           </ListItemIcon>
