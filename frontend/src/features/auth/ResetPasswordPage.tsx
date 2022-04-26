@@ -42,10 +42,13 @@ const ResetPasswordPage = () => {
           type="text"
           placeholder="joe@example.com"
           autoComplete="email"
+          data-testid="emailInput"
         />
         <SubmitButton>{t('auth.sendEmailButton')}</SubmitButton>
         <LinksContainer>
-          <Link to="/login">{t('auth.backToLoginLink')}</Link>
+          <Link to="/login" data-testid="loginLink">
+            {t('auth.backToLoginLink')}
+          </Link>
         </LinksContainer>
       </Form>
     </PageContainer>

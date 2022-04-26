@@ -61,7 +61,9 @@ describe("Login page", () => {
       .then((data) => {
         cy.login(data.email, data.password);
 
-        cy.get("[role=alert]").contains("The account is inactive");
+        cy.get("[role=alert]").contains(
+          "The account is inactive. Please activate your account to continue"
+        );
       });
   });
 

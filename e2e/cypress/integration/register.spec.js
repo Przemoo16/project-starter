@@ -154,7 +154,9 @@ describe("Register page", () => {
 
         cy.get("[data-testid=submitButton]").click();
 
-        cy.get("[role=alert]").contains("You account has been created");
+        cy.get("[role=alert]").contains(
+          "Your account has been created. Please check your email and follow the instructions to activate your account"
+        );
         cy.location("pathname").should("eq", "/login");
       });
   });
