@@ -35,7 +35,7 @@ describe('Snackbar component', () => {
     await user.click(button);
     await user.click(button);
 
-    expect(screen.getAllByRole('alert').length).toBe(maxSnacks);
+    await waitFor(() => expect(screen.getAllByRole('alert').length).toBe(maxSnacks));
   });
 
   it('closes after clicking the close button', async () => {
@@ -49,7 +49,7 @@ describe('Snackbar component', () => {
 
     await user.click(screen.getByTestId('snackbarButton'));
 
-    expect(screen.getByRole('alert')).toBeInTheDocument();
+    await screen.findByRole('alert');
 
     await user.click(screen.getByLabelText('close notification'));
 

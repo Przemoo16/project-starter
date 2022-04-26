@@ -1,6 +1,6 @@
 import userEvent from '@testing-library/user-event';
 
-import { createMatchMedia, render, screen, theme } from '../../tests/utils';
+import { createMatchMedia, render, screen, theme, waitFor } from '../../tests/utils';
 import { DashboardLayout } from './DashboardLayout';
 
 describe('DashboardLayout component', () => {
@@ -20,6 +20,8 @@ describe('DashboardLayout component', () => {
 
     await user.click(screen.getByLabelText('open menu'));
 
-    expect(screen.getByTestId('drawer')).toHaveStyle({ visibility: 'visible' });
+    await waitFor(() =>
+      expect(screen.getByTestId('drawer')).toHaveStyle({ visibility: 'visible' })
+    );
   });
 });
