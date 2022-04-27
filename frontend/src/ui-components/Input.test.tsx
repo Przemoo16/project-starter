@@ -1,7 +1,7 @@
 import userEvent from '@testing-library/user-event';
 import { useForm } from 'react-hook-form';
 
-import { render, screen } from '../tests/utils';
+import { render, screen, waitFor } from '../tests/utils';
 import { TextInput } from './Input';
 
 describe('TextInput component', () => {
@@ -46,14 +46,16 @@ describe('TextInput component', () => {
 
     await user.click(screen.getByLabelText('toggle password visibility'));
 
-    expect(screen.getByLabelText('Password')).toHaveAttribute('type', 'text');
-    expect(screen.getByTestId('visibilityOffIcon')).toBeInTheDocument();
-    expect(screen.queryByTestId('visibilityIcon')).not.toBeInTheDocument();
+    await waitFor(() => expect(screen.getByLabelText('Password')).toHaveAttribute('type', 'text'));
+    await screen.findByTestId('visibilityOffIcon');
+    await waitFor(() => expect(screen.queryByTestId('visibilityIcon')).not.toBeInTheDocument());
 
     await user.click(screen.getByLabelText('toggle password visibility'));
 
-    expect(screen.getByLabelText('Password')).toHaveAttribute('type', 'password');
-    expect(screen.getByTestId('visibilityIcon')).toBeInTheDocument();
-    expect(screen.queryByTestId('visibilityOffIcon')).not.toBeInTheDocument();
+    await waitFor(() =>
+      expect(screen.getByLabelText('Password')).toHaveAttribute('type', 'password')
+    );
+    await screen.findByTestId('visibilityIcon');
+    await waitFor(() => expect(screen.queryByTestId('visibilityOffIcon')).not.toBeInTheDocument());
   });
 });

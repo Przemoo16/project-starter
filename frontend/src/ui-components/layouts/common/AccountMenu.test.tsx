@@ -1,6 +1,6 @@
 import userEvent from '@testing-library/user-event';
 
-import { render, screen } from '../../../tests/utils';
+import { render, screen, waitFor } from '../../../tests/utils';
 import { AccountMenu } from './AccountMenu';
 
 describe('AccountMenu component', () => {
@@ -12,6 +12,8 @@ describe('AccountMenu component', () => {
 
     await user.click(screen.getByTestId('accountButton'));
 
-    expect(screen.getByTestId('accountMenu')).toHaveStyle({ visibility: 'visible' });
+    await waitFor(() =>
+      expect(screen.getByTestId('accountMenu')).toHaveStyle({ visibility: 'visible' })
+    );
   });
 });
