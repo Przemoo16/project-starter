@@ -27,7 +27,7 @@ describe("Login page", () => {
 
         cy.get("[data-testid=submitButton]").click();
 
-        cy.contains("p", "Invalid email");
+        cy.get("p").contains("Invalid email");
       });
   });
 
@@ -39,7 +39,7 @@ describe("Login page", () => {
 
         cy.get("[data-testid=submitButton]").click();
 
-        cy.contains("p", "This field is required");
+        cy.get("p").contains("This field is required");
       });
   });
 
@@ -51,13 +51,13 @@ describe("Login page", () => {
 
         cy.get("[data-testid=submitButton]").click();
 
-        cy.contains("p", "This field is required");
+        cy.get("p").contains("This field is required");
       });
   });
 
-  it("displays a proper message when log in with inactive account", () => {
-    cy.fixture("../fixtures/inactive-user.json")
-      .as("inactiveUserData")
+  it("displays proper message when log in with inactive account", () => {
+    cy.fixture("../fixtures/inactive-user-2.json")
+      .as("userData")
       .then((data) => {
         cy.login(data.email, data.password);
 
@@ -67,7 +67,7 @@ describe("Login page", () => {
       });
   });
 
-  it("displays a proper message when log in with invalid credentials", () => {
+  it("displays proper message when log in with invalid credentials", () => {
     cy.fixture("../fixtures/user.json")
       .as("userData")
       .then((data) => {

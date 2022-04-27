@@ -1,9 +1,6 @@
 import MuiButton, { ButtonProps } from '@mui/material/Button';
-import { Link } from 'react-router-dom';
 
-type ButtonCommonProps = 'variant' | 'fullWidth' | 'sx';
-type SubmitButtonProps = Omit<ButtonProps, 'type' | ButtonCommonProps>;
-type ButtonWithLinkProps = Omit<ButtonProps<typeof Link>, ButtonCommonProps>;
+type SubmitButtonProps = Omit<ButtonProps, 'type' | 'variant' | 'fullWidth' | 'sx'>;
 
 export const SubmitButton = (props: SubmitButtonProps) => (
   <MuiButton
@@ -14,8 +11,4 @@ export const SubmitButton = (props: SubmitButtonProps) => (
     {...props}
     data-testid="submitButton"
   />
-);
-
-export const ButtonWithLink = (props: ButtonWithLinkProps) => (
-  <MuiButton component={Link} variant="contained" fullWidth sx={{ mt: 3 }} {...props} />
 );

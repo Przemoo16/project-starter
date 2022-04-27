@@ -15,7 +15,7 @@ describe("Reset password page", () => {
 
         cy.get("[data-testid=submitButton]").click();
 
-        cy.contains("p", "Invalid email");
+        cy.get("p").contains("Invalid email");
       });
   });
 
@@ -25,7 +25,7 @@ describe("Reset password page", () => {
       .then((data) => {
         cy.get("[data-testid=submitButton]").click();
 
-        cy.contains("p", "This field is required");
+        cy.get("p").contains("This field is required");
       });
   });
 

@@ -17,7 +17,7 @@ describe("Register page", () => {
 
         cy.get("[data-testid=submitButton]").click();
 
-        cy.contains("p", "This field is required");
+        cy.get("p").contains("This field is required");
       });
   });
 
@@ -32,7 +32,7 @@ describe("Register page", () => {
 
         cy.get("[data-testid=submitButton]").click();
 
-        cy.contains("p", "Name can be up to 64 characters");
+        cy.get("p").contains("Name can be up to 64 characters");
       });
   });
 
@@ -47,7 +47,7 @@ describe("Register page", () => {
 
         cy.get("[data-testid=submitButton]").click();
 
-        cy.contains("p", "Invalid email");
+        cy.get("p").contains("Invalid email");
       });
   });
 
@@ -61,7 +61,7 @@ describe("Register page", () => {
 
         cy.get("[data-testid=submitButton]").click();
 
-        cy.contains("p", "This field is required");
+        cy.get("p").contains("This field is required");
       });
   });
 
@@ -75,7 +75,7 @@ describe("Register page", () => {
 
         cy.get("[data-testid=submitButton]").click();
 
-        cy.contains("p", "This field is required");
+        cy.get("p").contains("This field is required");
       });
   });
 
@@ -90,7 +90,7 @@ describe("Register page", () => {
 
         cy.get("[data-testid=submitButton]").click();
 
-        cy.contains("p", "Password must be at least 8 characters");
+        cy.get("p").contains("Password must be at least 8 characters");
       });
   });
 
@@ -105,7 +105,7 @@ describe("Register page", () => {
 
         cy.get("[data-testid=submitButton]").click();
 
-        cy.contains("p", "Password can be up to 32 characters");
+        cy.get("p").contains("Password can be up to 32 characters");
       });
   });
 
@@ -122,11 +122,11 @@ describe("Register page", () => {
 
         cy.get("[data-testid=submitButton]").click();
 
-        cy.contains("p", "Password doesn't match");
+        cy.get("p").contains("Password doesn't match");
       });
   });
 
-  it("displays a proper message when register with already existing email", () => {
+  it("displays proper message when register with already existing email", () => {
     cy.fixture("../fixtures/user.json")
       .as("userData")
       .then((data) => {

@@ -7,8 +7,8 @@ import { useParams } from 'react-router-dom';
 
 import { useAppSelector } from '../../services/store';
 import { AppLoader } from '../../ui-components/AppLoader';
-import { ButtonWithLink } from './common/Button';
 import { ContentContainer, PageContainer } from './common/Container';
+import { Link, LinksContainer } from './common/Link';
 import { authActions } from './store';
 
 const ConfirmEmailPage = () => {
@@ -26,11 +26,15 @@ const ConfirmEmailPage = () => {
     <PageContainer icon={EmailOutlinedIcon} title={t('auth.confirmEmailTitle')}>
       <ContentContainer>
         {confirmEmailPending && <AppLoader />}
-        <Typography align="center" sx={{ mt: 2 }}>
+        <Typography align="center" sx={{ mt: 2 }} data-testid="confirmEmailMessage">
           {!confirmEmailPending && confirmEmailSuccess && t('auth.confirmEmailSuccess')}
           {!confirmEmailPending && !confirmEmailSuccess && t('auth.confirmEmailError')}
         </Typography>
-        <ButtonWithLink to="/login">{t('auth.loginButton')}</ButtonWithLink>
+        <LinksContainer>
+          <Link to="/login" data-testid="loginLink">
+            {t('auth.backToLoginLink')}
+          </Link>
+        </LinksContainer>
       </ContentContainer>
     </PageContainer>
   );
