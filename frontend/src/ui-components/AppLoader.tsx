@@ -8,6 +8,7 @@ export const AppLoader = () => (
       alignItems: 'center',
       justifyContent: 'center',
     }}
+    data-testid="appLoader"
   >
     <CircularProgress />
   </Box>

@@ -26,12 +26,24 @@ VALUES
     ),
     (
     '69426239-4798-4acb-9e7c-8a2b6a8697f4',
-    'Inactive Test User',
-    'testInactive@email.com',
+    'Inactive Test User 1',
+    'testInactive1@email.com',
     '\$2b\$12\$EkoW7QChZ7IlWhvi.BCkQuguYD6MBIV.erOeeSvD5QCUPamjGrRdC',
     FALSE,
     'c47b1371-53d9-49f6-a8ed-41794cd0d649',
     '22207208-e0c6-4969-9bda-a4adf9ac0525',
+    '2022-04-25T16:00:00.000Z',
+    '2022-04-25T16:00:00.000Z',
+    NULL
+    ),
+    (
+    'f3e8d3f0-1014-4418-827e-7c5f31ba1ccd',
+    'Inactive Test User 2',
+    'testInactive2@email.com',
+    '\$2b\$12\$EkoW7QChZ7IlWhvi.BCkQuguYD6MBIV.erOeeSvD5QCUPamjGrRdC',
+    FALSE,
+    'ad14eba5-80e8-43fa-aebc-86c8ff37e508',
+    'a40cfcef-4f56-4801-a2f9-df3bd98a464f',
     '2022-04-25T16:00:00.000Z',
     '2022-04-25T16:00:00.000Z',
     NULL

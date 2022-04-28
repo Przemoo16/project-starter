@@ -1,0 +1,7 @@
+{
+  "name": "Inactive Test User 1",
+  "email": "testInactive1@email.com",
+  "password": "testPassword123",
+  "confirmationEmailKey": "c47b1371-53d9-49f6-a8ed-41794cd0d649",
+  "resetPasswordKey": "22207208-e0c6-4969-9bda-a4adf9ac0525"
+}

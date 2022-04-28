@@ -19,7 +19,7 @@ describe("Set password page", () => {
 
         cy.get("[data-testid=submitButton]").click();
 
-        cy.contains("p", "This field is required");
+        cy.get("p").contains("This field is required");
       });
   });
 
@@ -32,7 +32,7 @@ describe("Set password page", () => {
 
         cy.get("[data-testid=submitButton]").click();
 
-        cy.contains("p", "Password must be at least 8 characters");
+        cy.get("p").contains("Password must be at least 8 characters");
       });
   });
 
@@ -45,7 +45,7 @@ describe("Set password page", () => {
 
         cy.get("[data-testid=submitButton]").click();
 
-        cy.contains("p", "Password can be up to 32 characters");
+        cy.get("p").contains("Password can be up to 32 characters");
       });
   });
 
@@ -60,11 +60,11 @@ describe("Set password page", () => {
 
         cy.get("[data-testid=submitButton]").click();
 
-        cy.contains("p", "Password doesn't match");
+        cy.get("p").contains("Password doesn't match");
       });
   });
 
-  it("displays a proper message when reset password with invalid key", () => {
+  it("displays proper message when reset password with invalid key", () => {
     cy.visit("/set-password/invalid-key");
     cy.fixture("../fixtures/user.json")
       .as("userData")
