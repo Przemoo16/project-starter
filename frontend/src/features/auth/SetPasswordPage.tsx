@@ -2,11 +2,10 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import KeyOutlinedIcon from '@mui/icons-material/KeyOutlined';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
 import { SetPasswordData } from '../../backendTypes';
-import { useAppSelector } from '../../services/store';
+import { useAppDispatch, useAppSelector } from '../../services/store';
 import { TextInput } from '../../ui-components/Input';
 import { SubmitButton } from './common/Button';
 import { PageContainer } from './common/Container';
@@ -19,7 +18,7 @@ const SetPasswordPage = () => {
   const { t } = useTranslation();
   const { key } = useParams();
   const { userPasswordMinLength, userPasswordMaxLength } = useAppSelector(state => state.config);
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const { setPassword } = authActions;
   const { control, handleSubmit } = useForm({
     mode: 'onTouched',

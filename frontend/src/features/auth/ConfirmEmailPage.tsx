@@ -2,10 +2,9 @@ import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 import Typography from '@mui/material/Typography';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
-import { useAppSelector } from '../../services/store';
+import { useAppDispatch, useAppSelector } from '../../services/store';
 import { AppLoader } from '../../ui-components/AppLoader';
 import { ContentContainer, PageContainer } from './common/Container';
 import { Link, LinksContainer } from './common/Link';
@@ -14,7 +13,7 @@ import { authActions } from './store';
 const ConfirmEmailPage = () => {
   const { t } = useTranslation();
   const { key } = useParams();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const { confirmEmail } = authActions;
   const { confirmEmailPending, confirmEmailSuccess } = useAppSelector(state => state.auth);
 

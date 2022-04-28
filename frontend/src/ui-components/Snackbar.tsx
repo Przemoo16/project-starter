@@ -3,9 +3,8 @@ import IconButton from '@mui/material/IconButton';
 import { useSnackbar } from 'notistack';
 import { SnackbarKey, SnackbarProvider as NotistackProvider } from 'notistack';
 import { ReactNode, useEffect, useRef } from 'react';
-import { useDispatch } from 'react-redux';
 
-import { useAppSelector } from '../services/store';
+import { useAppDispatch, useAppSelector } from '../services/store';
 import { uiActions } from './store';
 
 interface SnackbarProviderProps {
@@ -46,7 +45,7 @@ export const SnackbarProvider = ({ maxSnacks = MAX_SNACKS, children }: SnackbarP
 export const Snackbar = () => {
   const notifications = useAppSelector(state => state.ui.notifications);
   const { clearNotifications } = uiActions;
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {

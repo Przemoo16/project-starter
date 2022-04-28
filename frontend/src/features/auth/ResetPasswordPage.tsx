@@ -2,9 +2,9 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import LockResetOutlinedIcon from '@mui/icons-material/LockResetOutlined';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { useDispatch } from 'react-redux';
 
 import { ResetPasswordData } from '../../backendTypes';
+import { useAppDispatch } from '../../services/store';
 import { TextInput } from '../../ui-components/Input';
 import { SubmitButton } from './common/Button';
 import { PageContainer } from './common/Container';
@@ -15,7 +15,7 @@ import { getResetPasswordSchema } from './validation';
 
 const ResetPasswordPage = () => {
   const { t } = useTranslation();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const { resetPassword } = authActions;
   const { control, handleSubmit } = useForm({
     mode: 'onTouched',

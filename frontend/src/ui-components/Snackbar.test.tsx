@@ -1,12 +1,12 @@
 import userEvent from '@testing-library/user-event';
-import { useDispatch } from 'react-redux';
 
+import { useAppDispatch } from '../services/store';
 import { render, screen, waitFor } from '../tests/utils';
 import { Snackbar, SnackbarProvider } from './Snackbar';
 import { uiActions } from './store';
 
 const Component = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const { addNotification } = uiActions;
 
   const handleClick = () => {
