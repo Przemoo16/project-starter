@@ -2,10 +2,9 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import AppRegistrationOutlinedIcon from '@mui/icons-material/AppRegistrationOutlined';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { useDispatch } from 'react-redux';
 
 import { RegisterData } from '../../backendTypes';
-import { useAppSelector } from '../../services/store';
+import { useAppDispatch, useAppSelector } from '../../services/store';
 import { TextInput } from '../../ui-components/Input';
 import { SubmitButton } from './common/Button';
 import { PageContainer } from './common/Container';
@@ -16,7 +15,7 @@ import { getRegisterSchema } from './validation';
 
 const RegisterPage = () => {
   const { t } = useTranslation();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const { register } = authActions;
   const { userNameMaxLength, userPasswordMinLength, userPasswordMaxLength } = useAppSelector(
     state => state.config

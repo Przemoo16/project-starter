@@ -7,13 +7,13 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import { MouseEvent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useDispatch } from 'react-redux';
 
 import { authActions } from '../../../features/auth/store';
+import { useAppDispatch } from '../../../services/store';
 
 export const AccountMenu = () => {
   const { t } = useTranslation();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
 
   const handleOpenMenu = (event: MouseEvent<HTMLElement>) => {

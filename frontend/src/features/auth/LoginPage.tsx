@@ -2,9 +2,9 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { useDispatch } from 'react-redux';
 
 import { LoginData } from '../../backendTypes';
+import { useAppDispatch } from '../../services/store';
 import { TextInput } from '../../ui-components/Input';
 import { SubmitButton } from './common/Button';
 import { PageContainer } from './common/Container';
@@ -15,7 +15,7 @@ import { getLoginSchema } from './validation';
 
 const LoginPage = () => {
   const { t } = useTranslation();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const { login } = authActions;
   const { control, handleSubmit } = useForm({
     mode: 'onTouched',
