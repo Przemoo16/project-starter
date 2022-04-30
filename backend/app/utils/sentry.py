@@ -5,6 +5,7 @@ from sentry_sdk.integrations import celery
 def init_sentry(dsn: str, dev_mode: bool) -> None:  # pragma: no cover
     if dev_mode:
         return
-    sentry_sdk.init(  # pylint: disable=abstract-class-instantiated
+
+    sentry_sdk.init(  # type: ignore # pylint: disable=abstract-class-instantiated
         dsn=dsn, integrations=[celery.CeleryIntegration()]
     )
