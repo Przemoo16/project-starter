@@ -20,8 +20,8 @@ VALUES
     TRUE,
     '324b6c77-00a5-45a2-a909-385260da67a0',
     '6ce7ff1d-94bd-49cb-8eef-bf2b69b183a4',
-    '2022-04-25T16:00:00.000Z',
-    '2022-04-25T16:00:00.000Z',
+    current_timestamp,
+    current_timestamp,
     NULL
     ),
     (
@@ -32,8 +32,8 @@ VALUES
     FALSE,
     'c47b1371-53d9-49f6-a8ed-41794cd0d649',
     '22207208-e0c6-4969-9bda-a4adf9ac0525',
-    '2022-04-25T16:00:00.000Z',
-    '2022-04-25T16:00:00.000Z',
+    current_timestamp,
+    current_timestamp,
     NULL
     ),
     (
@@ -44,8 +44,8 @@ VALUES
     FALSE,
     'ad14eba5-80e8-43fa-aebc-86c8ff37e508',
     'a40cfcef-4f56-4801-a2f9-df3bd98a464f',
-    '2022-04-25T16:00:00.000Z',
-    '2022-04-25T16:00:00.000Z',
+    current_timestamp,
+    current_timestamp,
     NULL
     )
 ON CONFLICT DO NOTHING;
