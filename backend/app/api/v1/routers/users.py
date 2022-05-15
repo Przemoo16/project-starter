@@ -116,7 +116,7 @@ async def get_user(
     },
 )
 async def confirm_email(
-    key: user_models.UserConfirmationEmailKey = fastapi.Body(..., embed=True),
+    key: user_models.UserConfirmationEmailKey = fastapi.Body(embed=True),
     session: db.AsyncSession = fastapi.Depends(db.get_session),
 ) -> typing.Any:
     user_service = user_services.UserService(session)
@@ -132,7 +132,7 @@ async def confirm_email(
     response_model=message.Message,
 )
 async def request_reset_password(
-    email: user_models.UserEmail = fastapi.Body(..., embed=True),
+    email: user_models.UserEmail = fastapi.Body(embed=True),
     session: db.AsyncSession = fastapi.Depends(db.get_session),
 ) -> typing.Any:
     user_service = user_services.UserService(session)

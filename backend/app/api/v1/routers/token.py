@@ -24,8 +24,8 @@ router = fastapi.APIRouter()
     },
 )
 async def obtain_tokens(
-    username: user_models.UserEmail = fastapi.Form(...),
-    password: user_models.UserPassword = fastapi.Form(...),
+    username: user_models.UserEmail = fastapi.Form(),
+    password: user_models.UserPassword = fastapi.Form(),
     session: db.AsyncSession = fastapi.Depends(db.get_session),
 ) -> typing.Any:
     return await token_services.TokenService(session).obtain_tokens(username, password)
@@ -43,7 +43,7 @@ async def obtain_tokens(
     },
 )
 async def refresh_token(
-    token: token_models.Token = fastapi.Body(..., embed=True),
+    token: token_models.Token = fastapi.Body(embed=True),
     session: db.AsyncSession = fastapi.Depends(db.get_session),
 ) -> typing.Any:
     return await token_services.TokenService(session).refresh_token(token)
@@ -58,7 +58,7 @@ async def refresh_token(
     },
 )
 async def revoke_token(
-    token: token_models.Token = fastapi.Body(..., embed=True),
+    token: token_models.Token = fastapi.Body(embed=True),
     session: db.AsyncSession = fastapi.Depends(db.get_session),
 ) -> typing.Any:
     await token_services.TokenService(session).revoke_token(token)
