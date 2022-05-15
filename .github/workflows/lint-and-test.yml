@@ -10,7 +10,7 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v3
       - name: Copy .env file
-        run: cp .env.template .env
+        run: cp config/compose/.env.template config/compose/.env
       - name: Build
         run: make build
       - name: Lint
@@ -23,7 +23,7 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v3
       - name: Copy .env file
-        run: cp .env.template .env
+        run: cp config/compose/.env.template config/compose/.env
       - name: Build
         run: make build-e2e
       - name: Test
