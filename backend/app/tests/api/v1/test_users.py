@@ -130,6 +130,7 @@ async def test_delete_me(
     response = await async_client.delete(f"{API_URL}/users/me", headers=headers)
 
     assert response.status_code == status.HTTP_204_NO_CONTENT
+    assert not response.content
 
 
 @pytest.mark.asyncio
@@ -181,6 +182,7 @@ async def test_change_my_password(
     )
 
     assert response.status_code == status.HTTP_204_NO_CONTENT
+    assert not response.content
 
 
 @pytest.mark.asyncio
@@ -255,6 +257,7 @@ async def test_confirm_email(
     )
 
     assert response.status_code == status.HTTP_204_NO_CONTENT
+    assert not response.content
 
 
 @pytest.mark.asyncio
@@ -317,3 +320,4 @@ async def test_reset_password(
     )
 
     assert response.status_code == status.HTTP_204_NO_CONTENT
+    assert not response.content
