@@ -68,3 +68,4 @@ async def test_revoke_token(
     response = await async_client.post(f"{API_URL}/token/revoke", json=request_data)
 
     assert response.status_code == status.HTTP_204_NO_CONTENT
+    assert not response.content

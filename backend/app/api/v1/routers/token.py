@@ -1,7 +1,7 @@
 import typing
 
 import fastapi
-from fastapi import status
+from fastapi import responses, status
 
 from app.config import db, general
 from app.exceptions.http import token as token_exceptions
@@ -51,6 +51,7 @@ async def refresh_token(
 
 @router.post(
     "/revoke",
+    response_class=responses.Response,
     status_code=status.HTTP_204_NO_CONTENT,
     responses={
         **token_exceptions.RevokedTokenError().doc,
