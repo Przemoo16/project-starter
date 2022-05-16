@@ -14,6 +14,7 @@ import { useAppDispatch } from '../../../services/store';
 export const AccountMenu = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
+  const { logout } = authActions;
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
 
   const handleOpenMenu = (event: MouseEvent<HTMLElement>) => {
@@ -25,7 +26,7 @@ export const AccountMenu = () => {
   };
 
   const handleLogout = () => {
-    dispatch(authActions.logout());
+    dispatch(logout());
   };
 
   return (
