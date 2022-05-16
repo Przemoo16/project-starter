@@ -1,12 +1,18 @@
 services:
+  nginx:
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:80"]
+      interval: 5s
+      timeout: 15s
+      retries: 12
+
   e2e:
-    build:
-      context: ../../
-      dockerfile: config/cypress/Dockerfile
+    image: cypress/included:9.6.1
     volumes:
       - $PWD/e2e/cypress:/cypress
       - $PWD/e2e/cypress.json:/cypress.json
     depends_on:
-      - nginx
+      nginx:
+        condition: service_healthy
     environment:
       - CYPRESS_baseUrl=http://nginx
