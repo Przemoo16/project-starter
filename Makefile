@@ -1,5 +1,5 @@
 COMPOSE_PATH=config/compose/
-COMPOSE_DEV=docker compose -f $(COMPOSE_PATH)docker-compose.yml
+COMPOSE_DEV=docker-compose -f $(COMPOSE_PATH)docker-compose.yml
 COMPOSE_E2E=$(COMPOSE_DEV) -f $(COMPOSE_PATH)docker-compose.e2e.yml
 
 ADD_TEST_USERS_COMMAND=$(COMPOSE_DEV) exec -T postgres psql --username=postgres postgres -c "$(shell cat backend/sql/insert-test-users.sql)"
