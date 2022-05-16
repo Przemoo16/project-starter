@@ -9,10 +9,12 @@ export interface Notification {
 
 interface UIState {
   notifications: Notification[];
+  drawerOpen: boolean;
 }
 
 const initialState: UIState = {
   notifications: [],
+  drawerOpen: false,
 };
 
 const NOTIFICATION_DURATION = 4000;
@@ -21,11 +23,17 @@ export const uiSlice = createSlice({
   name: 'ui',
   initialState,
   reducers: {
-    addNotification: (state, action: PayloadAction<Notification>) => {
-      state.notifications.push(action.payload);
+    addNotification: (state, { payload }: PayloadAction<Notification>) => {
+      state.notifications.push(payload);
     },
     clearNotifications: state => {
       state.notifications = [];
+    },
+    openDrawer: state => {
+      state.drawerOpen = true;
+    },
+    closeDrawer: state => {
+      state.drawerOpen = false;
     },
   },
 });

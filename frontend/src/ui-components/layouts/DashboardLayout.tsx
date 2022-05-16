@@ -1,8 +1,10 @@
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import Toolbar from '@mui/material/Toolbar';
-import { ReactNode, useState } from 'react';
+import { ReactNode } from 'react';
 
+import { useAppDispatch, useAppSelector } from '../../services/store';
+import { uiActions } from '../store';
 import { AppBar } from './common/AppBar';
 import { Copyright } from './common/Copyright';
 import { Drawer } from './common/Drawer';
@@ -14,14 +16,16 @@ interface DashboardLayoutProps {
 const drawerWidth = 240;
 
 export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
-  const [openDrawer, setOpenDrawer] = useState(false);
+  const dispatch = useAppDispatch();
+  const { closeDrawer, openDrawer } = uiActions;
+  const { drawerOpen } = useAppSelector(state => state.ui);
 
   const handleOpenDrawer = () => {
-    setOpenDrawer(true);
+    dispatch(openDrawer());
   };
 
   const handleCloseDrawer = () => {
-    setOpenDrawer(false);
+    dispatch(closeDrawer());
   };
 
   return (
@@ -31,7 +35,7 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
       }}
     >
       <AppBar onOpenMenu={handleOpenDrawer} drawerWidth={drawerWidth} />
-      <Drawer open={openDrawer} onClose={handleCloseDrawer} width={drawerWidth} />
+      <Drawer open={drawerOpen} onClose={handleCloseDrawer} width={drawerWidth} />
       <Container
         component="main"
         maxWidth="lg"

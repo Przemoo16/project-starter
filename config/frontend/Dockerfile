@@ -1,4 +1,4 @@
-FROM node:17-slim
+FROM node:18-slim
 
 COPY ./frontend/package.json ./frontend/yarn.lock ./frontend/tsconfig.json /frontend/
 WORKDIR /frontend
