@@ -46,9 +46,7 @@ cffi==1.15.0
     #   bcrypt
     #   cryptography
 charset-normalizer==2.0.12
-    # via
-    #   httpx
-    #   requests
+    # via requests
 click==8.1.3
     # via
     #   black
@@ -105,11 +103,11 @@ h11==0.12.0
     # via
     #   httpcore
     #   uvicorn
-httpcore==0.14.7
+httpcore==0.15.0
     # via httpx
 httptools==0.4.0
     # via uvicorn
-httpx==0.22.0
+httpx==0.23.0
     # via -r requirements.in
 idna==3.3
     # via
