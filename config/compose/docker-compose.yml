@@ -43,7 +43,7 @@ services:
   nginx:
     build:
       context: ../../
-      dockerfile: config/nginx/Dockerfile
+      dockerfile: config/nginx/Dockerfile.dev
     depends_on:
       - backend
       - frontend
@@ -83,7 +83,7 @@ services:
   flower:
     image: mher/flower
     ports:
-      - 8888:8888
+      - "8888:8888"
     env_file:
       - .env
 
@@ -91,4 +91,3 @@ services:
     image: redis:7.0.0
     ports:
       - "6379:6379"
-    command: redis-server --requirepass ${REDIS_PASSWORD}

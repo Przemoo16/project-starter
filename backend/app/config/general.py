@@ -8,11 +8,10 @@ class App(pydantic.BaseSettings):
     APP_NAME: str
     DEV_MODE: bool
     LOCALES: list[str] = ["en"]
-    API_URL: str
+    API_URL: str = "/api/v1"
 
 
 class Security(pydantic.BaseSettings):
-    SECRET_KEY: str
     TOKEN_URL: str = "/token"
     REFRESH_TOKEN_URL: str = f"/{TOKEN_URL}/refresh"
     AUTHJWT_SECRET_KEY: str
@@ -49,7 +48,7 @@ class Email(pydantic.BaseSettings):
     SMTP_PORT: int
     SMTP_USER: str
     SMTP_PASSWORD: str
-    EMAIL_SENDER_EMAIL: pydantic.EmailStr
+    EMAIL_SENDER: pydantic.EmailStr
 
 
 class Integration(pydantic.BaseSettings):

@@ -1,0 +1,68 @@
+{
+  "AWSEBDockerrunVersion": 2,
+  "containerDefinitions": [
+    {
+      "name": "%(PROXY_CONTAINER_NAME)s",
+      "image": "%(DOCKER_REPO)s/%(PROXY_DOCKER_IMAGE)s:%(DOCKER_TAG)s",
+      "essential": true,
+      "memoryReservation": 200,
+      "links": ["%(BACKEND_CONTAINER_NAME)s"],
+      "portMappings": [
+        {
+          "hostPort": 80,
+          "containerPort": 80
+        },
+        {
+          "hostPort": 443,
+          "containerPort": 443
+        }
+      ],
+      "mountPoints": [
+        {
+          "sourceVolume": "awseb-logs-%(PROXY_CONTAINER_NAME)s",
+          "containerPath": "/var/log/%(PROXY_CONTAINER_NAME)s"
+        }
+      ]
+    },
+    {
+      "name": "%(BACKEND_CONTAINER_NAME)s",
+      "image": "%(DOCKER_REPO)s/%(BACKEND_DOCKER_IMAGE)s:%(DOCKER_TAG)s",
+      "essential": true,
+      "memoryReservation": 500,
+      "mountPoints": [
+        {
+          "sourceVolume": "awseb-logs-%(BACKEND_CONTAINER_NAME)s",
+          "containerPath": "/var/log/%(BACKEND_CONTAINER_NAME)s"
+        }
+      ]
+    },
+    {
+      "name": "%(CELERY_CONTAINER_NAME)s",
+      "image": "%(DOCKER_REPO)s/%(BACKEND_DOCKER_IMAGE)s:%(DOCKER_TAG)s",
+      "essential": true,
+      "memoryReservation": 100,
+      "links": ["%(BACKEND_CONTAINER_NAME)s"],
+      "command": ["celery", "-A", "app.celery", "worker", "-l", "INFO"],
+      "mountPoints": [
+        {
+          "sourceVolume": "awseb-logs-%(CELERY_CONTAINER_NAME)s",
+          "containerPath": "/var/log/%(CELERY_CONTAINER_NAME)s"
+        }
+      ]
+    },
+    {
+      "name": "%(CELERY_BEAT_CONTAINER_NAME)s",
+      "image": "%(DOCKER_REPO)s/%(BACKEND_DOCKER_IMAGE)s:%(DOCKER_TAG)s",
+      "essential": true,
+      "memoryReservation": 100,
+      "links": ["%(BACKEND_CONTAINER_NAME)s"],
+      "command": ["celery", "-A", "app.celery", "beat", "-l", "INFO"],
+      "mountPoints": [
+        {
+          "sourceVolume": "awseb-logs-%(CELERY_BEAT_CONTAINER_NAME)s",
+          "containerPath": "/var/log/%(CELERY_BEAT_CONTAINER_NAME)s"
+        }
+      ]
+    }
+  ]
+}

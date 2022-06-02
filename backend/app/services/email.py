@@ -26,7 +26,7 @@ def build_message(
 ) -> str:
     message = multipart.MIMEMultipart("alternative")
     message["Subject"] = str(subject)
-    message["From"] = settings.EMAIL_SENDER_EMAIL
+    message["From"] = settings.EMAIL_SENDER
     message["To"] = receiver
     message.attach(text.MIMEText(str(message_text), "plain"))
     message.attach(text.MIMEText(message_html, "html"))
@@ -43,7 +43,7 @@ def send_email(message: str, receiver: str) -> None:
     ) as server:
         server.login(settings.SMTP_USER, settings.SMTP_PASSWORD)
         try:
-            response = server.sendmail(settings.EMAIL_SENDER_EMAIL, receiver, message)
+            response = server.sendmail(settings.EMAIL_SENDER, receiver, message)
         except smtplib.SMTPException as e:
             log.exception("Exception occurred when sending an email")
             raise email_exceptions.SendingEmailError() from e

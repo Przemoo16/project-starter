@@ -1,8 +1,14 @@
 COMPOSE_PATH=config/compose/
 COMPOSE_DEV=docker compose -f $(COMPOSE_PATH)docker-compose.yml
 COMPOSE_E2E=$(COMPOSE_DEV) -f $(COMPOSE_PATH)docker-compose.e2e.yml
+COMPOSE_PROD=docker compose -f $(COMPOSE_PATH)docker-compose.prod.yml
 
 ADD_TEST_USERS_COMMAND=$(COMPOSE_DEV) exec -T postgres psql --username=postgres postgres -c "$(shell cat backend/sql/insert-test-users.sql)"
+
+DOCKER_REPO=059132655198.dkr.ecr.eu-central-1.amazonaws.com/project-starter
+DOCKER_TAG=$(shell python config/deploy/scripts/generate_tag.py)
+AWS_PROFILE=default
+AWS_REGION=eu-central-1
 
 add-test-users:
 	${ADD_TEST_USERS_COMMAND}
@@ -12,6 +18,11 @@ build:
 
 build-e2e:
 	$(COMPOSE_E2E) build
+
+build-prod:
+	DOCKER_REPO=$(DOCKER_REPO) \
+	DOCKER_TAG=$(DOCKER_TAG) \
+	$(COMPOSE_PROD) build
 
 compile-messages:
 	$(COMPOSE_DEV) run --rm --no-deps backend pybabel compile -d locale
@@ -42,6 +53,12 @@ lint-frontend:
 
 migrate:
 	$(COMPOSE_DEV) run --rm backend alembic upgrade head
+
+push:
+	aws ecr get-login-password --region $(AWS_REGION) --profile $(AWS_PROFILE) | docker login --username AWS --password-stdin $(DOCKER_REPO)
+	DOCKER_REPO=$(DOCKER_REPO) \
+	DOCKER_TAG=$(DOCKER_TAG) \
+	$(COMPOSE_PROD) push
 
 remove:
 	$(COMPOSE_DEV) down --remove-orphans
