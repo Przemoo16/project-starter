@@ -1,0 +1,12 @@
+services:
+  backend:
+    image: ${DOCKER_REPO}/backend:${DOCKER_TAG}
+    build:
+      context: ../../
+      dockerfile: config/backend/Dockerfile
+
+  proxy:
+    image: ${DOCKER_REPO}/proxy:${DOCKER_TAG}
+    build:
+      context: ../../
+      dockerfile: config/nginx/Dockerfile.prod

@@ -83,7 +83,7 @@ def test_build_message(_: mock.MagicMock) -> None:
 @mock.patch("smtplib.SMTP.connect", return_value=(220, b"dummy response"))
 @mock.patch("smtplib.SMTP.login", return_value=(235, b"dummy response"))
 @mock.patch("smtplib.SMTP.sendmail")
-@mock.patch("app.services.email.settings.EMAIL_SENDER_EMAIL", new="test@email.com")
+@mock.patch("app.services.email.settings.EMAIL_SENDER", new="test@email.com")
 def test_send_email(mock_sendmail: mock.MagicMock, *_: mock.MagicMock) -> None:
     receiver = "receiver@email.com"
 

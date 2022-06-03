@@ -13,8 +13,10 @@ config.fileConfig("logging.conf", disable_existing_loggers=False)
 
 app = fastapi.FastAPI(
     title=settings.APP_NAME,
-    openapi_url=f"{settings.API_URL}/openapi.json",
     default_response_class=responses.ORJSONResponse,
+    openapi_url="/openapi.json" if settings.DEV_MODE else None,
+    docs_url="/docs" if settings.DEV_MODE else None,
+    redoc_url="/redoc" if settings.DEV_MODE else None,
 )
 
 sentry.init_sentry(settings.SENTRY_DSN, settings.DEV_MODE)

@@ -27,3 +27,6 @@ indent_size = 2
 
 [{Makefile,makefile,**.mk}]
 indent_style = tab
+
+[*.{tf,tfvars,hcl}]
+indent_size = 2
