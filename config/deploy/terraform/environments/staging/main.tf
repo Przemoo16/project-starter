@@ -15,7 +15,6 @@ module "application" {
   domain_name             = var.domain_name
   db_password             = var.db_password
   secret_key              = var.secret_key
-  app_name                = var.app_name
   smtp_host               = var.smtp_host
   smtp_port               = var.smtp_port
   smtp_user               = var.smtp_user

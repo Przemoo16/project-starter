@@ -11,7 +11,6 @@ if typing.TYPE_CHECKING:
 
 
 @pytest.mark.asyncio
-@mock.patch("app.services.config.settings.APP_NAME", new="Project Starter")
 @mock.patch("app.models.user.USER_NAME_MAX_LENGTH", new=64)
 @mock.patch("app.services.config.settings.USER_PASSWORD_MIN_LENGTH", new=8)
 @mock.patch("app.services.config.settings.USER_PASSWORD_MAX_LENGTH", new=32)
@@ -19,7 +18,6 @@ async def test_config_service_get_config(session: "conftest.AsyncSession") -> No
     config = config_services.ConfigService(session).get_config()
 
     assert config == config_models.Config(
-        app_name="Project Starter",
         user_name_max_length=64,
         user_password_min_length=8,
         user_password_max_length=32,

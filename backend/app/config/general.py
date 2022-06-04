@@ -5,7 +5,7 @@ import pydantic
 
 
 class App(pydantic.BaseSettings):
-    APP_NAME: str
+    APP_NAME: str = "Project Starter"
     DEV_MODE: bool = False
     LOCALES: list[str] = ["en"]
     API_URL: str = "/api/v1"

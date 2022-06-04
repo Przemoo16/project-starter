@@ -4,7 +4,6 @@ variable "key_pair_name" {}
 variable "domain_name" {}
 variable "db_password" {}
 variable "secret_key" {}
-variable "app_name" {}
 variable "smtp_host" {}
 variable "smtp_port" {}
 variable "smtp_user" {}
