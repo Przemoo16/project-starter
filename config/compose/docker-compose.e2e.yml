@@ -4,6 +4,9 @@ services:
       - DEV_MODE=off
 
   proxy:
+    build:
+      context: ../../
+      dockerfile: config/nginx/Dockerfile.prod
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:80"]
       interval: 5s

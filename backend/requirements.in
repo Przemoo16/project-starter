@@ -6,6 +6,7 @@ babel
 celery
 fastapi
 fastapi-jwt-auth
+gunicorn
 jinja2
 orjson
 passlib[bcrypt]
