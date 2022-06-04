@@ -25,35 +25,6 @@ services:
     env_file:
       - .env
 
-  frontend:
-    build:
-      context: ../../
-      dockerfile: config/frontend/Dockerfile
-    depends_on:
-      - backend
-    volumes:
-      - $PWD/frontend/src:/frontend/src
-      - $PWD/frontend/public:/frontend/public
-    environment:
-      - BROWSER=none
-      - CI=true
-    env_file:
-      - .env
-
-  nginx:
-    build:
-      context: ../../
-      dockerfile: config/nginx/Dockerfile.dev
-    depends_on:
-      - backend
-      - frontend
-    ports:
-      - "3000:80"
-    volumes:
-      - $PWD/config/nginx/nginx.conf:/var/nginx.conf
-    env_file:
-      - .env
-
   celery:
     build:
       context: ../../
@@ -79,13 +50,6 @@ services:
     env_file:
       - .env
     command: "celery -A app.celery beat -l INFO"
-
-  flower:
-    image: mher/flower
-    ports:
-      - "8888:8888"
-    env_file:
-      - .env
 
   redis:
     image: redis:7.0.0
