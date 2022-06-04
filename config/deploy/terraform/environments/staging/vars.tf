@@ -14,10 +14,6 @@ variable "domain_name" {
   description = "Domain to be used by application"
 }
 
-variable "app_name" {
-  description = "Name of the application"
-}
-
 variable "smtp_host" {
   description = "Host of the email service"
 }

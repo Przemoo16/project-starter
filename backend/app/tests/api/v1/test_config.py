@@ -22,7 +22,6 @@ async def test_get_config(
     assert response.status_code == status.HTTP_200_OK
     assert retrieved_config == response_helpers.format_response(
         {
-            "appName": "Project Starter",
             "userNameMaxLength": 64,
             "userPasswordMinLength": 8,
             "userPasswordMaxLength": 32,

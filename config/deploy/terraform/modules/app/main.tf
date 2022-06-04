@@ -141,12 +141,6 @@ resource "aws_elastic_beanstalk_environment" "web" {
 
   setting {
     namespace = "aws:elasticbeanstalk:application:environment"
-    name      = "APP_NAME"
-    value     = var.app_name
-  }
-
-  setting {
-    namespace = "aws:elasticbeanstalk:application:environment"
     name      = "AUTHJWT_SECRET_KEY"
     value     = var.secret_key
   }

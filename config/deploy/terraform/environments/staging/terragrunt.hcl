@@ -7,7 +7,6 @@ inputs = {
   prefix = "project-starter-staging"
   key_pair_name = "project-starter"
   domain_name = "project-starter-staging-web.zxc123.eu-central-1.elasticbeanstalk.com"
-  app_name = "Project Starter"
   smtp_host = "SMTP_HOST"
   smtp_port = 465
   smtp_user = "SMTP_USER"

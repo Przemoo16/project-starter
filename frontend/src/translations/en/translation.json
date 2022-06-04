@@ -31,6 +31,7 @@
     "withFreeAccount": "with a free account"
   },
   "ui": {
+    "appName": "Project Starter",
     "copyright": "Copyright",
     "settings": "Settings"
   },
