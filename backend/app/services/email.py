@@ -1,11 +1,11 @@
 from email.mime import multipart, text
 import logging
 import smtplib
+import socket
 import ssl
 import typing
 
 from app.config import general
-from app.exceptions.app import email as email_exceptions
 from app.utils import jinja, translation
 
 log = logging.getLogger(__name__)
@@ -34,17 +34,13 @@ def build_message(
 
 
 def send_email(message: str, receiver: str) -> None:
-    if settings.DEV_MODE:  # pragma: no cover
-        log.info("Email will not be send because development mode is active")
-        return
     context = ssl.create_default_context()
-    with smtplib.SMTP_SSL(
-        settings.SMTP_HOST, settings.SMTP_PORT, context=context
-    ) as server:
-        server.login(settings.SMTP_USER, settings.SMTP_PASSWORD)
-        try:
+    try:
+        with smtplib.SMTP_SSL(
+            settings.SMTP_HOST, settings.SMTP_PORT, context=context
+        ) as server:
+            server.login(settings.SMTP_USER, settings.SMTP_PASSWORD)
             response = server.sendmail(settings.EMAIL_SENDER, receiver, message)
-        except smtplib.SMTPException as e:
-            log.exception("Exception occurred when sending an email")
-            raise email_exceptions.SendingEmailError() from e
-        log.debug("Email response: %r", response)
+            log.debug("Email response: %r", response)
+    except (smtplib.SMTPException, socket.gaierror) as e:
+        log.warning("Error occurred when sending an email: %s", e)

@@ -7,7 +7,7 @@ APPS = ["app"]
 
 settings = general.get_settings()
 
-sentry.init_sentry(settings.SENTRY_DSN, settings.DEV_MODE)
+sentry.init_sentry(settings.SENTRY_DSN)
 
 app = celery.Celery(
     "celery",

@@ -19,7 +19,7 @@ app = fastapi.FastAPI(
     redoc_url="/redoc" if settings.DEV_MODE else None,
 )
 
-sentry.init_sentry(settings.SENTRY_DSN, settings.DEV_MODE)
+sentry.init_sentry(settings.SENTRY_DSN)
 
 handlers.init_handlers(app)
 

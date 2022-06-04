@@ -7,10 +7,8 @@ from sentry_sdk.integrations import celery
 log = logging.getLogger(__name__)
 
 
-def init_sentry(dsn: str, dev_mode: bool) -> None:  # pragma: no cover
-    if dev_mode:
-        return
+def init_sentry(dsn: str) -> None:
     try:
         sentry_sdk.init(dsn=dsn, integrations=[celery.CeleryIntegration()])
-    except utils.BadDsn:
-        log.exception("Could not init Sentry")
+    except utils.BadDsn as e:
+        log.warning("Could not init Sentry: %s", e)

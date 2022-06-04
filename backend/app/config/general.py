@@ -6,7 +6,7 @@ import pydantic
 
 class App(pydantic.BaseSettings):
     APP_NAME: str
-    DEV_MODE: bool
+    DEV_MODE: bool = False
     LOCALES: list[str] = ["en"]
     API_URL: str = "/api/v1"
 
