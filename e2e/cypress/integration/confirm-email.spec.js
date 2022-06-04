@@ -9,7 +9,6 @@ describe("Confirm email page", () => {
 
   it("shows app loader", () => {
     cy.get("[data-testid=appLoader]").should("exist");
-    cy.get("[data-testid=confirmEmailMessage]").should("not.exist");
   });
 
   it("displays proper message when confirm email with invalid key", () => {
