@@ -202,7 +202,7 @@ resource "aws_elastic_beanstalk_environment" "web" {
   setting {
     namespace = "aws:elasticbeanstalk:application:environment"
     name      = "EMAIL_SENDER"
-    value     = var.Email
+    value     = var.email_sender
   }
 
   setting {
