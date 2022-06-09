@@ -9,4 +9,4 @@ services:
     image: ${DOCKER_REPO}/proxy:${DOCKER_TAG}
     build:
       context: ../../
-      dockerfile: config/nginx/Dockerfile.prod
+      dockerfile: config/proxy/Dockerfile

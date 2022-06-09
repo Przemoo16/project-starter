@@ -77,6 +77,7 @@ test-backend:
 	$(COMPOSE_DEV) run --rm backend pytest .
 
 test-e2e:
+	./config/scripts/generate-localhost-ssl-certs.sh
 	$(COMPOSE_E2E) up -d
 	sleep 5 # Wait for migration to complete, TODO: Make waiting smarter
 	$(ADD_TEST_USERS_COMMAND)

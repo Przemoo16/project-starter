@@ -31,3 +31,8 @@ e2e/cypress/screenshots
 
 # Temporary
 tmp/
+
+# SSL
+certbot/
+fullchain.pem
+privkey.pem
