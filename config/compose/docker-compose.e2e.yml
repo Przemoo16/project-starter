@@ -6,14 +6,17 @@ services:
   proxy:
     build:
       context: ../../
-      dockerfile: config/nginx/Dockerfile.prod
+      dockerfile: config/proxy/Dockerfile
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:80"]
+      test: ["CMD-SHELL", "curl -k -f https://localhost"]
       interval: 5s
       timeout: 15s
       retries: 12
     depends_on:
       - backend
+    volumes:
+      - $PWD/config/proxy/ssl/fullchain.pem:/etc/letsencrypt/live/localhost/fullchain.pem
+      - $PWD/config/proxy/ssl/privkey.pem:/etc/letsencrypt/live/localhost/privkey.pem
 
   celery:
     environment:
