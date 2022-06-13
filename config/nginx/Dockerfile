@@ -2,8 +2,8 @@ FROM nginx:1.21.6
 
 COPY ./config/nginx/nginx.conf /var/nginx.conf
 
-COPY ./config/scripts/nginx-template-subst.sh /scripts/nginx-template-subst.sh
-COPY ./config/nginx/run.sh /scripts/run.sh
-RUN chmod +x /scripts/nginx-template-subst.sh /scripts/run.sh
+COPY ./config/scripts/nginx-template-subst.sh /var/scripts/nginx-template-subst.sh
+COPY ./config/nginx/run.sh /var/scripts/run.sh
+RUN chmod +x /var/scripts/nginx-template-subst.sh /var/scripts/run.sh
 
-CMD /scripts/run.sh
+CMD /var/scripts/run.sh

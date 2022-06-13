@@ -2,7 +2,7 @@ name: Lint and Test
 on:
   pull_request:
   push:
-    branches: [main]
+    branches: [main, testing, staging, production]
 jobs:
   lint-and-test: # TODO: Split to two separate jobs running in parallel (The built container has to be shared across jobs)
     runs-on: ubuntu-latest
