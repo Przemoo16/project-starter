@@ -15,10 +15,10 @@ FROM nginx:1.21.6
 
 COPY --from=build /frontend/build /var/www/html
 COPY ./config/proxy/nginx.conf /var/nginx.conf
-COPY ./config/proxy/init-config.sh /scripts/init-config.sh
-COPY ./config/proxy/init-certs.sh /scripts/init-certs.sh
-COPY ./config/scripts/nginx-template-subst.sh /scripts/nginx-template-subst.sh
-COPY ./config/proxy/run.sh /scripts/run.sh
-RUN chmod +x /scripts/init-config.sh /scripts/init-certs.sh /scripts/nginx-template-subst.sh /scripts/run.sh
+COPY ./config/proxy/init-config.sh /var/scripts/init-config.sh
+COPY ./config/proxy/init-certs.sh /var/scripts/init-certs.sh
+COPY ./config/scripts/nginx-template-subst.sh /var/scripts/nginx-template-subst.sh
+COPY ./config/proxy/run.sh /var/scripts/run.sh
+RUN chmod +x /var/scripts/init-config.sh /var/scripts/init-certs.sh /var/scripts/nginx-template-subst.sh /var/scripts/run.sh
 
-CMD /scripts/run.sh
+CMD /var/scripts/run.sh

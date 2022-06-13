@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-/scripts/init-config.sh
-/scripts/init-certs.sh
-/scripts/nginx-template-subst.sh
+/var/scripts/init-config.sh
+/var/scripts/init-certs.sh
+/var/scripts/nginx-template-subst.sh
 
 while :; do
     sleep 6h;

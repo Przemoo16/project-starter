@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 
-/scripts/nginx-template-subst.sh
+/var/scripts/nginx-template-subst.sh
 
 nginx -g 'daemon off;'
