@@ -16,5 +16,5 @@ mkdir -p $CERTS_PATH
 openssl req -x509 -nodes -newkey rsa:$KEY_SIZE -sha256 -days 1 \
     -keyout $PRIVATE_KEY_PATH \
     -out $FULL_CHAIN_PATH \
-    -subj /CN=$DOMAIN \
+    -subj /CN=$DOMAIN
 echo Initialized SSL certificates in the path $CERTS_PATH

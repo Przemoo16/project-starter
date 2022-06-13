@@ -2,8 +2,6 @@ ADD_TEST_USERS_COMMAND=$(COMPOSE_DEV) exec -T postgres psql --username=postgres 
 
 DOCKER_REPO=059132655198.dkr.ecr.eu-central-1.amazonaws.com/project-starter
 DOCKER_TAG=$(shell python config/deploy/scripts/generate_tag.py)
-AWS_PROFILE=default
-AWS_REGION=eu-central-1
 
 COMPOSE_PATH=config/compose/
 COMPOSE_FILE=$(COMPOSE_PATH)docker-compose.yml
@@ -61,7 +59,7 @@ migrate:
 	$(COMPOSE_DEV) run --rm backend alembic upgrade head
 
 push:
-	aws ecr get-login-password --region $(AWS_REGION) --profile $(AWS_PROFILE) | docker login --username AWS --password-stdin $(DOCKER_REPO)
+	aws ecr get-login-password | docker login --username AWS --password-stdin $(DOCKER_REPO)
 	$(COMPOSE_PROD) push
 
 remove:
