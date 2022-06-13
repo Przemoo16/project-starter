@@ -36,6 +36,9 @@ confirm-email:
 create-migration:
 	$(COMPOSE_DEV) run --rm backend alembic revision --autogenerate -m '$(m)'
 
+deploy:
+	$(shell python config/deploy/scripts/deployment.py)
+
 extract-messages:
 	$(COMPOSE_DEV) run --rm --no-deps backend pybabel extract -F babel.ini -k gettext_lazy -k _ -o locale/messages.pot .
 
@@ -77,14 +80,13 @@ test-backend:
 	$(COMPOSE_DEV) run --rm backend pytest .
 
 test-e2e:
-	./config/scripts/generate-localhost-ssl-certs.sh
 	$(COMPOSE_E2E) up -d
 	sleep 5 # Wait for migration to complete, TODO: Make waiting smarter
 	$(ADD_TEST_USERS_COMMAND)
 	$(COMPOSE_E2E) up --exit-code-from e2e
 
 test-frontend:
-	$(COMPOSE_DEV) run --rm frontend sh -c "CI=true yarn test"
+	$(COMPOSE_DEV) run --rm frontend bash -c "CI=true yarn test"
 
 update-messages:
 	$(COMPOSE_DEV) run --rm --no-deps backend pybabel update -i locale/messages.pot -d locale

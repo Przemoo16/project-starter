@@ -2,7 +2,8 @@ FROM nginx:1.21.6
 
 COPY ./config/nginx/nginx.conf /var/nginx.conf
 
-COPY ./config/scripts/nginx-template-subst.sh /bin/nginx-template-subst.sh
-RUN chmod +x /bin/nginx-template-subst.sh
+COPY ./config/scripts/nginx-template-subst.sh /scripts/nginx-template-subst.sh
+COPY ./config/nginx/run.sh /scripts/run.sh
+RUN chmod +x /scripts/nginx-template-subst.sh /scripts/run.sh
 
-CMD /bin/bash -c "/bin/nginx-template-subst.sh && exec nginx -g 'daemon off;'"
+CMD /scripts/run.sh

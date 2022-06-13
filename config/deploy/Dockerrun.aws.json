@@ -1,5 +1,19 @@
 {
   "AWSEBDockerrunVersion": 2,
+  "volumes": [
+    {
+      "name": "certbot-letsencrypt",
+      "host": {
+        "sourcePath": "/var/certbot/letsencrypt"
+      }
+    },
+    {
+      "name": "certbot-www",
+      "host": {
+        "sourcePath": "/var/certbot/www"
+      }
+    }
+  ],
   "containerDefinitions": [
     {
       "name": "%(PROXY_CONTAINER_NAME)s",
@@ -21,6 +35,14 @@
         {
           "sourceVolume": "awseb-logs-%(PROXY_CONTAINER_NAME)s",
           "containerPath": "/var/log/%(PROXY_CONTAINER_NAME)s"
+        },
+        {
+          "sourceVolume": "certbot-letsencrypt",
+          "containerPath": "/etc/letsencrypt"
+        },
+        {
+          "sourceVolume": "certbot-www",
+          "containerPath": "/var/www/certbot"
         }
       ]
     },
@@ -61,6 +83,32 @@
         {
           "sourceVolume": "awseb-logs-%(CELERY_BEAT_CONTAINER_NAME)s",
           "containerPath": "/var/log/%(CELERY_BEAT_CONTAINER_NAME)s"
+        }
+      ]
+    },
+    {
+      "name": "certbot",
+      "image": "certbot/certbot:v1.27.0",
+      "essential": true,
+      "memoryReservation": 50,
+      "links": ["%(PROXY_CONTAINER_NAME)s"],
+      "entryPoint": [
+        "/bin/sh",
+        "-c",
+        "while :; do sleep 12h; certbot renew; done;"
+      ],
+      "mountPoints": [
+        {
+          "sourceVolume": "awseb-logs-certbot",
+          "containerPath": "/var/log/certbot"
+        },
+        {
+          "sourceVolume": "certbot-letsencrypt",
+          "containerPath": "/etc/letsencrypt"
+        },
+        {
+          "sourceVolume": "certbot-www",
+          "containerPath": "/var/www/certbot"
         }
       ]
     }

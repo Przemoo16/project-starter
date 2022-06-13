@@ -14,9 +14,6 @@ services:
       retries: 12
     depends_on:
       - backend
-    volumes:
-      - $PWD/config/proxy/ssl/fullchain.pem:/etc/letsencrypt/live/localhost/fullchain.pem
-      - $PWD/config/proxy/ssl/privkey.pem:/etc/letsencrypt/live/localhost/privkey.pem
 
   celery:
     environment:
