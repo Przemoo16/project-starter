@@ -35,7 +35,9 @@ create-migration:
 	$(COMPOSE_DEV) run --rm backend alembic revision --autogenerate -m '$(m)'
 
 deploy:
-	$(shell python config/deploy/scripts/deployment.py)
+	python -m pip install --upgrade pip
+	pip install -r config/deploy/scripts/requirements.txt
+	python config/deploy/scripts/deployment.py
 
 extract-messages:
 	$(COMPOSE_DEV) run --rm --no-deps backend pybabel extract -F babel.ini -k gettext_lazy -k _ -o locale/messages.pot .
