@@ -2,6 +2,10 @@ name: Deploy
 on:
   workflow_dispatch:
     inputs:
+      version:
+        description: Deploy version (if empty the commit ID is used)
+        required: false
+        type: string
       environment:
         description: The environment to be deployed
         required: true
@@ -14,13 +18,18 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    env:
+      CI_BRANCH: ${{ inputs.environment }}
+      CI_COMMIT_ID: ${{ inputs.version }}
     steps:
       - name: Check out repository code
         uses: actions/checkout@v3
+        with:
+          ref: ${{ inputs.environment }}
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: 3.10.5
+          python-version: "3.10.5"
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
