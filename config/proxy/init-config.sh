@@ -4,7 +4,7 @@ LETSENCRYPT_PATH=/etc/letsencrypt
 NGINX_OPTIONS_PATH=$LETSENCRYPT_PATH/options-ssl-nginx.conf
 DHPARAMS_PATH=$LETSENCRYPT_PATH/ssl-dhparams.pem
 
-if [ -d $NGINX_OPTIONS_PATH ] && [ -d $DHPARAMS_PATH ]; then
+if [ -e $NGINX_OPTIONS_PATH ] && [ -e $DHPARAMS_PATH ]; then
     echo SSL NGINX config already exists
     exit
 fi
