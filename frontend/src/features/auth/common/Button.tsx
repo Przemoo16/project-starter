@@ -1,9 +1,9 @@
-import MuiButton, { ButtonProps } from '@mui/material/Button';
+import LoadingButton, { LoadingButtonProps } from '@mui/lab/LoadingButton';
 
-type SubmitButtonProps = Omit<ButtonProps, 'type' | 'variant' | 'fullWidth' | 'sx'>;
+type SubmitButtonProps = Omit<LoadingButtonProps, 'type' | 'variant' | 'fullWidth' | 'sx'>;
 
 export const SubmitButton = (props: SubmitButtonProps) => (
-  <MuiButton
+  <LoadingButton
     type="submit"
     variant="contained"
     fullWidth
