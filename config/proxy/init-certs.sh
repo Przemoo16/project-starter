@@ -6,7 +6,7 @@ KEY_SIZE=4096
 PRIVATE_KEY_PATH=$CERTS_PATH/privkey.pem
 FULL_CHAIN_PATH=$CERTS_PATH/fullchain.pem
 
-if [ -d $PRIVATE_KEY_PATH ] && [ -d $FULL_CHAIN_PATH ]; then
+if [ -e $PRIVATE_KEY_PATH ] && [ -e $FULL_CHAIN_PATH ]; then
     echo SSL certificates already exists
     exit
 fi
