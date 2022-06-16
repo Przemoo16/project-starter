@@ -18,16 +18,14 @@ import { notifyError, notifySuccess } from '../../ui-components/store';
 
 interface AuthState {
   user: User | null;
-  loginPending: boolean;
-  confirmEmailPending: boolean;
-  confirmEmailSuccess: boolean;
+  requestPending: boolean;
+  requestSuccess: boolean;
 }
 
 const initialState: AuthState = {
   user: null,
-  loginPending: true,
-  confirmEmailPending: false,
-  confirmEmailSuccess: false,
+  requestPending: true,
+  requestSuccess: false,
 };
 
 export const authSlice = createSlice({
@@ -35,36 +33,74 @@ export const authSlice = createSlice({
   initialState,
   reducers: {
     loadUser(state, { payload }: PayloadAction<{ user: User | null }>) {
-      state.loginPending = false;
+      state.requestPending = false;
+      state.requestSuccess = false;
       state.user = payload.user;
     },
     login(state, action: PayloadAction<LoginData>) {
-      state.loginPending = true;
+      state.requestPending = true;
+      state.requestSuccess = false;
     },
     loginSuccess(state, { payload }: PayloadAction<{ user: User }>) {
-      state.loginPending = false;
+      state.requestPending = false;
+      state.requestSuccess = true;
       state.user = payload.user;
     },
     loginFailure(state) {
-      state.loginPending = false;
+      state.requestPending = false;
+      state.requestSuccess = false;
       state.user = null;
     },
-    register(state, action: PayloadAction<RegisterData>) {},
+    register(state, action: PayloadAction<RegisterData>) {
+      state.requestPending = true;
+      state.requestSuccess = false;
+    },
+    registerSuccess(state) {
+      state.requestPending = false;
+      state.requestSuccess = true;
+    },
+    registerFailure(state) {
+      state.requestPending = false;
+      state.requestSuccess = false;
+    },
     logout(state) {
       state.user = null;
     },
-    resetPassword(state, action: PayloadAction<ResetPasswordData>) {},
-    setPassword(state, action: PayloadAction<SetPasswordData>) {},
+    resetPassword(state, action: PayloadAction<ResetPasswordData>) {
+      state.requestPending = true;
+      state.requestSuccess = false;
+    },
+    resetPasswordSuccess(state) {
+      state.requestPending = false;
+      state.requestSuccess = true;
+    },
+    resetPasswordFailure(state) {
+      state.requestPending = false;
+      state.requestSuccess = false;
+    },
+    setPassword(state, action: PayloadAction<SetPasswordData>) {
+      state.requestPending = true;
+      state.requestSuccess = false;
+    },
+    setPasswordSuccess(state) {
+      state.requestPending = false;
+      state.requestSuccess = true;
+    },
+    setPasswordFailure(state) {
+      state.requestPending = false;
+      state.requestSuccess = false;
+    },
     confirmEmail(state, action: PayloadAction<ConfirmEmailData>) {
-      state.confirmEmailPending = true;
+      state.requestPending = true;
+      state.requestSuccess = false;
     },
     confirmEmailSuccess(state) {
-      state.confirmEmailPending = false;
-      state.confirmEmailSuccess = true;
+      state.requestPending = false;
+      state.requestSuccess = true;
     },
-    confirmEmailError(state) {
-      state.confirmEmailPending = false;
-      state.confirmEmailSuccess = false;
+    confirmEmailFailure(state) {
+      state.requestPending = false;
+      state.requestSuccess = false;
     },
   },
 });
@@ -102,6 +138,7 @@ function* registerSaga() {
     try {
       yield backend.register(payload);
       yield put(notifySuccess(t('auth.registerSuccess')));
+      yield put(authActions.registerSuccess());
       history.push('/login');
     } catch (e) {
       const error = e as AxiosError;
@@ -110,6 +147,7 @@ function* registerSaga() {
       } else {
         yield put(notifyError(t('auth.registerError')));
       }
+      yield put(authActions.registerFailure());
     }
   });
 }
@@ -132,9 +170,11 @@ function* resetPasswordSaga() {
     try {
       yield backend.resetPassword(payload);
       yield put(notifySuccess(t('auth.resetPasswordSuccess')));
+      yield put(authActions.resetPasswordSuccess());
       history.push('/login');
     } catch (e) {
       yield put(notifyError(t('auth.resetPasswordError')));
+      yield put(authActions.resetPasswordFailure());
     }
   });
 }
@@ -144,9 +184,11 @@ function* setPasswordSaga() {
     try {
       yield backend.setPassword(payload);
       yield put(notifySuccess(t('auth.setPasswordSuccess')));
+      yield put(authActions.setPasswordSuccess());
       history.push('/login');
     } catch (e) {
       yield put(notifyError(t('auth.setPasswordError')));
+      yield put(authActions.setPasswordFailure());
     }
   });
 }
@@ -157,7 +199,7 @@ function* confirmEmailSaga() {
       yield backend.confirmEmail(payload);
       yield put(authActions.confirmEmailSuccess());
     } catch (e) {
-      yield put(authActions.confirmEmailError());
+      yield put(authActions.confirmEmailFailure());
     }
   });
 }

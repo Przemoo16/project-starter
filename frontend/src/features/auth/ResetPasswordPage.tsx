@@ -4,7 +4,7 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
 import { ResetPasswordData } from '../../backendTypes';
-import { useAppDispatch } from '../../services/store';
+import { useAppDispatch, useAppSelector } from '../../services/store';
 import { TextInput } from '../../ui-components/Input';
 import { SubmitButton } from './common/Button';
 import { PageContainer } from './common/Container';
@@ -17,6 +17,7 @@ const ResetPasswordPage = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const { resetPassword } = authActions;
+  const { requestPending } = useAppSelector(state => state.auth);
   const { control, handleSubmit } = useForm({
     mode: 'onTouched',
     defaultValues: {
@@ -44,7 +45,7 @@ const ResetPasswordPage = () => {
           autoComplete="email"
           data-testid="emailInput"
         />
-        <SubmitButton>{t('auth.sendEmailButton')}</SubmitButton>
+        <SubmitButton loading={requestPending}>{t('auth.sendEmailButton')}</SubmitButton>
         <LinksContainer>
           <Link to="/login" data-testid="loginLink">
             {t('auth.backToLoginLink')}
