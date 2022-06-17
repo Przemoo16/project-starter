@@ -56,6 +56,10 @@ class UserService(base.AppService):
     async def delete_user(self, user: user_models.User) -> None:
         await UserCRUD(self.session).delete(user)
 
+    @staticmethod
+    def is_active(user: user_models.User) -> bool:
+        return user.is_active
+
     async def count_users(
         self, filters: user_models.UserFilters
     ) -> pagination_models.TotalResults:
