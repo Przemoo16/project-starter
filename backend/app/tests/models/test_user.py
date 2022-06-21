@@ -11,7 +11,7 @@ if typing.TYPE_CHECKING:
     from app.tests import conftest
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 @freezegun.freeze_time("2022-01-16 22:00:00")
 async def test_user_model(session: "conftest.AsyncSession") -> None:
     email = converters.to_pydantic_email("test@email.com")
@@ -36,7 +36,7 @@ async def test_user_model(session: "conftest.AsyncSession") -> None:
     assert user.is_active is False
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 async def test_user_updated_at_field(session: "conftest.AsyncSession") -> None:
     with freezegun.freeze_time("2022-01-16 22:00:00"):
         user = user_models.User(

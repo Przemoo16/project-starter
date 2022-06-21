@@ -22,7 +22,7 @@ if typing.TYPE_CHECKING:
 settings = general.get_settings()
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 @freezegun.freeze_time("2022-02-05 18:30:00")
 @mock.patch("app.services.user.UserService.get_user")
 @mock.patch("app.services.user.UserService.is_active", return_value=True)
@@ -54,7 +54,7 @@ async def test_token_service_obtain_tokens(
     )
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 @mock.patch(
     "app.services.user.UserService.get_user",
     side_effect=user_exceptions.UserNotFoundError,
@@ -71,7 +71,7 @@ async def test_token_service_obtain_tokens_user_not_found(
         )
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 @mock.patch("app.services.user.UserService.get_user")
 async def test_token_service_obtain_tokens_invalid_password(
     mock_get_user: mock.AsyncMock, session: "conftest.AsyncSession"
@@ -89,7 +89,7 @@ async def test_token_service_obtain_tokens_invalid_password(
         )
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 @mock.patch("app.services.user.UserService.get_user")
 @mock.patch("app.services.user.UserService.is_active", return_value=False)
 async def test_token_service_obtain_tokens_inactive_user(
@@ -111,7 +111,7 @@ async def test_token_service_obtain_tokens_inactive_user(
     assert exc_info.value.context == {"id": user.id}
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 @mock.patch("app.services.user.UserService.get_user")
 @mock.patch("app.services.user.UserService.is_active", return_value=True)
 async def test_token_service_refresh_token(
@@ -130,7 +130,7 @@ async def test_token_service_refresh_token(
     assert not token_helpers.is_token_fresh(token.access_token)
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 async def test_token_service_refresh_token_invalid(
     session: "conftest.AsyncSession",
 ) -> None:
@@ -141,7 +141,7 @@ async def test_token_service_refresh_token_invalid(
     assert exc_info.value.context == {"token": token}
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 async def test_token_service_refresh_no_refresh_type(
     session: "conftest.AsyncSession",
 ) -> None:
@@ -153,7 +153,7 @@ async def test_token_service_refresh_no_refresh_type(
     assert exc_info.value.context == {"token": token}
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 @mock.patch("app.services.token.jwt_db.get", return_value="true")
 async def test_token_service_refresh_revoked_token(
     _: mock.MagicMock, session: "conftest.AsyncSession"
@@ -166,7 +166,7 @@ async def test_token_service_refresh_revoked_token(
     assert exc_info.value.context == {"token": token}
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 @mock.patch("app.services.user.UserService.get_user")
 @mock.patch("app.services.user.UserService.is_active", return_value=False)
 async def test_token_service_refresh_token_inactive_user(
@@ -181,7 +181,7 @@ async def test_token_service_refresh_token_inactive_user(
     assert exc_info.value.context == {"id": user.id}
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 @mock.patch("app.services.user.UserService.get_user")
 @mock.patch("app.services.token.jwt_db.setex")
 async def test_token_service_revoke_access_token(
@@ -197,7 +197,7 @@ async def test_token_service_revoke_access_token(
     mock_redis_setex.assert_called_once()
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 @mock.patch("app.services.user.UserService.get_user")
 @mock.patch("app.services.token.jwt_db.setex")
 async def test_token_service_revoke_refresh_token(
@@ -213,7 +213,7 @@ async def test_token_service_revoke_refresh_token(
     mock_redis_setex.assert_called_once()
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 async def test_token_service_revoke_token_invalid(
     session: "conftest.AsyncSession",
 ) -> None:
@@ -224,7 +224,7 @@ async def test_token_service_revoke_token_invalid(
     assert exc_info.value.context == {"token": token}
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 @freezegun.freeze_time("2022-02-06 13:30:00")
 async def test_token_service_revoke_token_already_expired(
     session: "conftest.AsyncSession",
@@ -238,7 +238,7 @@ async def test_token_service_revoke_token_already_expired(
     assert exc_info.value.context == {"token": token}
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 @mock.patch("app.services.token.jwt_db.get", return_value="true")
 async def test_token_service_revoke_already_revoked_token(
     _: mock.MagicMock, session: "conftest.AsyncSession"
@@ -251,7 +251,7 @@ async def test_token_service_revoke_already_revoked_token(
     assert exc_info.value.context == {"token": token}
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 @mock.patch("app.services.user.UserService.get_user")
 @mock.patch("app.services.token.jwt_db.set")
 async def test_token_service_revoke_token_missing_expiration(

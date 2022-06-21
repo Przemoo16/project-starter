@@ -11,7 +11,7 @@ if typing.TYPE_CHECKING:
 API_URL = "/api/v1"
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 async def test_get_config(
     async_client: "conftest.TestClient",
     mock_common: None,  # pylint: disable=unused-argument

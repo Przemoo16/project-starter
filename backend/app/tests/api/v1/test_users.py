@@ -13,7 +13,7 @@ if typing.TYPE_CHECKING:
 API_URL = "/api/v1"
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 async def test_create_user(
     async_client: "conftest.TestClient",
     mock_common: None,  # pylint: disable=unused-argument
@@ -36,7 +36,7 @@ async def test_create_user(
     )
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 async def test_get_me(
     async_client: "conftest.TestClient",
     session: "conftest.AsyncSession",
@@ -58,7 +58,7 @@ async def test_get_me(
     )
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 async def test_get_me_inactive_user(
     async_client: "conftest.TestClient",
     session: "conftest.AsyncSession",
@@ -73,7 +73,7 @@ async def test_get_me_inactive_user(
     assert response.status_code == status.HTTP_403_FORBIDDEN
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 async def test_update_me(
     async_client: "conftest.TestClient",
     session: "conftest.AsyncSession",
@@ -99,7 +99,7 @@ async def test_update_me(
     )
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 async def test_update_me_inactive_user(
     async_client: "conftest.TestClient",
     session: "conftest.AsyncSession",
@@ -117,7 +117,7 @@ async def test_update_me_inactive_user(
     assert response.status_code == status.HTTP_403_FORBIDDEN
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 async def test_delete_me(
     async_client: "conftest.TestClient",
     session: "conftest.AsyncSession",
@@ -133,7 +133,7 @@ async def test_delete_me(
     assert not response.content
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 async def test_delete_me_inactive_user(
     async_client: "conftest.TestClient",
     session: "conftest.AsyncSession",
@@ -148,7 +148,7 @@ async def test_delete_me_inactive_user(
     assert response.status_code == status.HTTP_403_FORBIDDEN
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 async def test_delete_me_no_fresh_token(
     async_client: "conftest.TestClient",
     session: "conftest.AsyncSession",
@@ -163,7 +163,7 @@ async def test_delete_me_no_fresh_token(
     assert response.status_code == status.HTTP_401_UNAUTHORIZED
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 async def test_change_my_password(
     async_client: "conftest.TestClient",
     session: "conftest.AsyncSession",
@@ -185,7 +185,7 @@ async def test_change_my_password(
     assert not response.content
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 async def test_change_my_password_inactive_user(
     async_client: "conftest.TestClient",
     session: "conftest.AsyncSession",
@@ -206,7 +206,7 @@ async def test_change_my_password_inactive_user(
     assert response.status_code == status.HTTP_403_FORBIDDEN
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 async def test_get_user(
     async_client: "conftest.TestClient",
     session: "conftest.AsyncSession",
@@ -228,7 +228,7 @@ async def test_get_user(
     )
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 async def test_get_user_inactive_user(
     async_client: "conftest.TestClient",
     session: "conftest.AsyncSession",
@@ -243,7 +243,7 @@ async def test_get_user_inactive_user(
     assert response.status_code == status.HTTP_403_FORBIDDEN
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 async def test_confirm_email(
     async_client: "conftest.TestClient",
     session: "conftest.AsyncSession",
@@ -260,7 +260,7 @@ async def test_confirm_email(
     assert not response.content
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 async def test_request_reset_password(
     async_client: "conftest.TestClient",
     session: "conftest.AsyncSession",
@@ -284,7 +284,7 @@ async def test_request_reset_password(
     )
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 async def test_request_reset_password_user_not_found(
     async_client: "conftest.TestClient",
     mock_common: None,  # pylint: disable=unused-argument
@@ -306,7 +306,7 @@ async def test_request_reset_password_user_not_found(
     )
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 async def test_reset_password(
     async_client: "conftest.TestClient",
     session: "conftest.AsyncSession",
