@@ -2,7 +2,6 @@ import typing
 
 import httpx
 import pytest
-import pytest_asyncio
 import redis
 from sqlalchemy import orm
 from sqlalchemy.ext import asyncio
@@ -22,6 +21,11 @@ TestClient: typing.TypeAlias = httpx.AsyncClient
 RedisClient: typing.TypeAlias = redis.Redis
 
 settings = general.get_settings()
+
+
+@pytest.fixture(name="anyio_backend", scope="session")
+def anyio_backend_fixture() -> str:
+    return "asyncio"
 
 
 @pytest.fixture(name="redis_client", scope="session")
@@ -48,7 +52,7 @@ def engine_fixture() -> typing.Generator[asyncio.AsyncEngine, None, None]:
     yield asyncio.create_async_engine(settings.DATABASE_URL)
 
 
-@pytest_asyncio.fixture(name="create_tables")
+@pytest.fixture(name="create_tables")
 async def create_tables_fixture(
     engine: asyncio.AsyncEngine,
 ) -> typing.AsyncGenerator[None, None]:
@@ -59,7 +63,7 @@ async def create_tables_fixture(
         await conn.run_sync(sqlmodel.SQLModel.metadata.drop_all)
 
 
-@pytest_asyncio.fixture(name="session")
+@pytest.fixture(name="session")
 async def session_fixture(  # pylint: disable=unused-argument
     engine: asyncio.AsyncEngine,
     create_tables: None,
@@ -73,7 +77,7 @@ async def session_fixture(  # pylint: disable=unused-argument
         yield session
 
 
-@pytest_asyncio.fixture(name="async_client")
+@pytest.fixture(name="async_client")
 async def async_client_fixture(
     session: AsyncSession,
 ) -> typing.AsyncGenerator[TestClient, None]:

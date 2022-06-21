@@ -10,7 +10,7 @@ if typing.TYPE_CHECKING:
     from app.tests import conftest
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 @mock.patch("app.models.user.USER_NAME_MAX_LENGTH", new=64)
 @mock.patch("app.services.config.settings.USER_PASSWORD_MIN_LENGTH", new=8)
 @mock.patch("app.services.config.settings.USER_PASSWORD_MAX_LENGTH", new=32)

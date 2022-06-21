@@ -17,7 +17,7 @@ if typing.TYPE_CHECKING:
     from app.tests import conftest
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 @mock.patch("app.services.user.user_tasks.send_email_to_confirm_email.delay")
 async def test_user_service_create_user(
     mock_send_email: mock.MagicMock, session: "conftest.AsyncSession"
@@ -39,7 +39,7 @@ async def test_user_service_create_user(
     )
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 @mock.patch("app.services.user.user_tasks.send_email_to_confirm_email.delay")
 async def test_user_service_create_user_already_exists(
     mock_send_email: mock.MagicMock,
@@ -58,7 +58,7 @@ async def test_user_service_create_user_already_exists(
     mock_send_email.assert_not_called()
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 async def test_user_service_get_users(session: "conftest.AsyncSession") -> None:
     await user_helpers.create_user(session=session)
     user_2 = await user_helpers.create_user(session=session)
@@ -73,7 +73,7 @@ async def test_user_service_get_users(session: "conftest.AsyncSession") -> None:
     assert retrieved_users == [user_2, user_3]
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 async def test_user_service_get_user(session: "conftest.AsyncSession") -> None:
     user = await user_helpers.create_user(session=session, email="test@email.com")
     user_filters = user_models.UserFilters(id=user.id, email=user.email)
@@ -83,7 +83,7 @@ async def test_user_service_get_user(session: "conftest.AsyncSession") -> None:
     assert retrieved_user == user
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 async def test_user_service_get_user_not_found(
     session: "conftest.AsyncSession",
 ) -> None:
@@ -96,7 +96,7 @@ async def test_user_service_get_user_not_found(
     assert exc_info.value.context == {"id": user.id, "email": wrong_email}
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 async def test_user_service_update_user(session: "conftest.AsyncSession") -> None:
     user = await user_helpers.create_user(session=session, name="Test User")
     user_update = user_models.UserUpdate(name="Updated Name", confirmed_email=True)
@@ -110,7 +110,7 @@ async def test_user_service_update_user(session: "conftest.AsyncSession") -> Non
     assert updated_user.password == user.password
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 async def test_user_service_update_user_password(
     session: "conftest.AsyncSession",
 ) -> None:
@@ -127,14 +127,14 @@ async def test_user_service_update_user_password(
     assert updated_user.password != new_password
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 async def test_user_service_delete_user(session: "conftest.AsyncSession") -> None:
     user = await user_helpers.create_user(session=session)
 
     await user_services.UserService(session).delete_user(user)
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 async def test_user_service_count_users(
     session: "conftest.AsyncSession",
 ) -> None:
@@ -148,7 +148,7 @@ async def test_user_service_count_users(
     assert num_users == 3
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 async def test_user_service_change_password(
     session: "conftest.AsyncSession",
 ) -> None:
@@ -164,7 +164,7 @@ async def test_user_service_change_password(
     assert user.password != new_password
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 async def test_user_service_change_password_invalid_password(
     session: "conftest.AsyncSession",
 ) -> None:
@@ -179,7 +179,7 @@ async def test_user_service_change_password_invalid_password(
         )
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 async def test_user_service_confirm_email(session: "conftest.AsyncSession") -> None:
     user = await user_helpers.create_user(session=session)
 
@@ -188,7 +188,7 @@ async def test_user_service_confirm_email(session: "conftest.AsyncSession") -> N
     assert user.confirmed_email is True
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 async def test_user_service_confirm_email_already_confirmed(
     session: "conftest.AsyncSession",
 ) -> None:
@@ -201,7 +201,7 @@ async def test_user_service_confirm_email_already_confirmed(
     }
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 @mock.patch("app.services.user.settings.ACCOUNT_ACTIVATION_DAYS", new=2)
 async def test_user_service_confirm_email_time_expired(
     session: "conftest.AsyncSession",
@@ -218,7 +218,7 @@ async def test_user_service_confirm_email_time_expired(
         }
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 @mock.patch("app.services.user.user_tasks.send_email_to_reset_password.delay")
 async def test_user_service_request_reset_password(
     mock_send_email: mock.MagicMock,
@@ -231,7 +231,7 @@ async def test_user_service_request_reset_password(
     mock_send_email.assert_called_once_with(user.email, user.reset_password_key)
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 async def test_user_service_reset_password(
     session: "conftest.AsyncSession",
 ) -> None:
@@ -247,7 +247,7 @@ async def test_user_service_reset_password(
     assert user.reset_password_key != old_reset_password_key
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 async def test_user_crud_create(session: "conftest.AsyncSession") -> None:
     user_create = user_models.UserCreate(
         email=converters.to_pydantic_email("test@email.com"),
@@ -266,7 +266,7 @@ async def test_user_crud_create(session: "conftest.AsyncSession") -> None:
     assert (await session.execute(statement)).scalar_one()
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 async def test_user_crud_read_many(session: "conftest.AsyncSession") -> None:
     await user_helpers.create_user(session=session)
     user_2 = await user_helpers.create_user(session=session)
@@ -281,7 +281,7 @@ async def test_user_crud_read_many(session: "conftest.AsyncSession") -> None:
     assert retrieved_users == [user_2, user_3]
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 async def test_user_crud_read_one(session: "conftest.AsyncSession") -> None:
     await user_helpers.create_user(session=session, email="test@email.com")
     user_2 = await user_helpers.create_user(session=session, email="test2@email.com")
@@ -292,7 +292,7 @@ async def test_user_crud_read_one(session: "conftest.AsyncSession") -> None:
     assert retrieved_user == user_2
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 async def test_user_crud_update(session: "conftest.AsyncSession") -> None:
     user = await user_helpers.create_user(session=session, name="Test User")
     user_update = user_models.UserUpdate(name="Updated Name", confirmed_email=True)
@@ -310,7 +310,7 @@ async def test_user_crud_update(session: "conftest.AsyncSession") -> None:
     assert (await session.execute(statement)).scalar_one()
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 async def test_user_crud_delete(session: "conftest.AsyncSession") -> None:
     user = await user_helpers.create_user(session=session)
 
@@ -323,7 +323,7 @@ async def test_user_crud_delete(session: "conftest.AsyncSession") -> None:
         (await session.execute(statement)).scalar_one()
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 async def test_user_crud_count(
     session: "conftest.AsyncSession",
 ) -> None:

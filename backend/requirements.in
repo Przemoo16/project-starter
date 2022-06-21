@@ -22,6 +22,7 @@ sqlmodel
 starlette
 uvicorn[standard]
 # dev
+anyio
 bandit
 black
 flake8
@@ -34,7 +35,6 @@ mypy
 pip-tools
 pylint
 pytest
-pytest-asyncio
 pytest-cov
 types-freezegun
 types-orjson

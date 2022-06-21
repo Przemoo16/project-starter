@@ -12,7 +12,7 @@ if typing.TYPE_CHECKING:
 API_URL = "/api/v1"
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 async def test_obtain_tokens(
     async_client: "conftest.TestClient",
     session: "conftest.AsyncSession",
@@ -37,7 +37,7 @@ async def test_obtain_tokens(
     assert tokens["tokenType"] == "bearer"
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 async def test_refresh_token(
     async_client: "conftest.TestClient",
     session: "conftest.AsyncSession",
@@ -55,7 +55,7 @@ async def test_refresh_token(
     assert token["tokenType"] == "bearer"
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 async def test_revoke_token(
     async_client: "conftest.TestClient",
     session: "conftest.AsyncSession",

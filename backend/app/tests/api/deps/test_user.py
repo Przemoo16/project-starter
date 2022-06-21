@@ -15,7 +15,7 @@ if typing.TYPE_CHECKING:
     from app.tests import conftest
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 async def test_get_current_user(session: "conftest.AsyncSession") -> None:
     user = await user_helpers.create_user(session=session)
     auth_handler = auth_helpers.create_auth_handler(user.id)
@@ -25,7 +25,7 @@ async def test_get_current_user(session: "conftest.AsyncSession") -> None:
     assert current_user == user
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 async def test_get_current_user_without_jwt(session: "conftest.AsyncSession") -> None:
     auth_handler = jwt_auth.AuthJWT()
 
@@ -33,7 +33,7 @@ async def test_get_current_user_without_jwt(session: "conftest.AsyncSession") ->
         await user_deps.get_current_user(session, auth_handler)
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 @mock.patch("fastapi_jwt_auth.AuthJWT.jwt_required")
 async def test_get_current_user_empty_jwt_subject(
     session: "conftest.AsyncSession",
@@ -44,7 +44,7 @@ async def test_get_current_user_empty_jwt_subject(
         await user_deps.get_current_user(session, auth_handler)
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 async def test_get_current_active_user(session: "conftest.AsyncSession") -> None:
     user = await user_helpers.create_active_user(session=session)
 
@@ -53,7 +53,7 @@ async def test_get_current_active_user(session: "conftest.AsyncSession") -> None
     assert current_user == user
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 async def test_get_current_active_user_inactive(
     session: "conftest.AsyncSession",
 ) -> None:
@@ -64,14 +64,14 @@ async def test_get_current_active_user_inactive(
     assert exc_info.value.context == {"id": user.id}
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 async def test_check_user_requests_own_data(session: "conftest.AsyncSession") -> None:
     user = await user_helpers.create_active_user(session=session)
 
     await user_deps.check_user_requests_own_data(user.id, user)
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 async def test_check_user_requests_own_data_foreign_data(
     session: "conftest.AsyncSession",
 ) -> None:

@@ -14,7 +14,7 @@ settings = general.get_settings()
 API_URL = settings.API_URL
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 async def test_confirm_email_flow(async_client: "conftest.TestClient") -> None:
     # Create a user
     email = "test@email.com"
@@ -56,7 +56,7 @@ async def test_confirm_email_flow(async_client: "conftest.TestClient") -> None:
     assert response.status_code == 200
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 async def test_change_password_flow(async_client: "conftest.TestClient") -> None:
     # Create a user
     email = "test@email.com"
@@ -119,7 +119,7 @@ async def test_change_password_flow(async_client: "conftest.TestClient") -> None
     assert response.status_code == 200
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 async def test_reset_password_flow(async_client: "conftest.TestClient") -> None:
     # Create a user
     email = "test@email.com"
