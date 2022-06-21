@@ -25,10 +25,12 @@ settings = general.get_settings()
 @pytest.mark.asyncio
 @freezegun.freeze_time("2022-02-05 18:30:00")
 @mock.patch("app.services.user.UserService.get_user")
+@mock.patch("app.services.user.UserService.is_active", return_value=True)
 @mock.patch("app.services.user.UserService.update_user")
 async def test_token_service_obtain_tokens(
-    mock_update_user: mock.MagicMock,
-    mock_get_user: mock.MagicMock,
+    mock_update_user: mock.AsyncMock,
+    _: mock.MagicMock,
+    mock_get_user: mock.AsyncMock,
     session: "conftest.AsyncSession",
 ) -> None:
     user = await user_helpers.create_active_user(
@@ -58,7 +60,7 @@ async def test_token_service_obtain_tokens(
     side_effect=user_exceptions.UserNotFoundError,
 )
 async def test_token_service_obtain_tokens_user_not_found(
-    _: mock.MagicMock,
+    _: mock.AsyncMock,
     session: "conftest.AsyncSession",
 ) -> None:
     email = converters.to_pydantic_email("test@email.com")
@@ -72,7 +74,7 @@ async def test_token_service_obtain_tokens_user_not_found(
 @pytest.mark.asyncio
 @mock.patch("app.services.user.UserService.get_user")
 async def test_token_service_obtain_tokens_invalid_password(
-    mock_get_user: mock.MagicMock, session: "conftest.AsyncSession"
+    mock_get_user: mock.AsyncMock, session: "conftest.AsyncSession"
 ) -> None:
     user = await user_helpers.create_active_user(
         session,
@@ -89,8 +91,10 @@ async def test_token_service_obtain_tokens_invalid_password(
 
 @pytest.mark.asyncio
 @mock.patch("app.services.user.UserService.get_user")
+@mock.patch("app.services.user.UserService.is_active", return_value=False)
 async def test_token_service_obtain_tokens_inactive_user(
-    mock_get_user: mock.MagicMock,
+    _: mock.MagicMock,
+    mock_get_user: mock.AsyncMock,
     session: "conftest.AsyncSession",
 ) -> None:
     user = await user_helpers.create_user(
@@ -109,8 +113,11 @@ async def test_token_service_obtain_tokens_inactive_user(
 
 @pytest.mark.asyncio
 @mock.patch("app.services.user.UserService.get_user")
+@mock.patch("app.services.user.UserService.is_active", return_value=True)
 async def test_token_service_refresh_token(
-    mock_get_user: mock.MagicMock, session: "conftest.AsyncSession"
+    _: mock.MagicMock,
+    mock_get_user: mock.AsyncMock,
+    session: "conftest.AsyncSession",
 ) -> None:
     user = await user_helpers.create_active_user(session)
     mock_get_user.return_value = user
@@ -161,8 +168,9 @@ async def test_token_service_refresh_revoked_token(
 
 @pytest.mark.asyncio
 @mock.patch("app.services.user.UserService.get_user")
+@mock.patch("app.services.user.UserService.is_active", return_value=False)
 async def test_token_service_refresh_token_inactive_user(
-    mock_get_user: mock.MagicMock, session: "conftest.AsyncSession"
+    _: mock.MagicMock, mock_get_user: mock.AsyncMock, session: "conftest.AsyncSession"
 ) -> None:
     user = await user_helpers.create_user(session)
     mock_get_user.return_value = user
@@ -174,11 +182,11 @@ async def test_token_service_refresh_token_inactive_user(
 
 
 @pytest.mark.asyncio
-@mock.patch("app.services.token.jwt_db.setex")
 @mock.patch("app.services.user.UserService.get_user")
+@mock.patch("app.services.token.jwt_db.setex")
 async def test_token_service_revoke_access_token(
-    _: mock.MagicMock,
     mock_redis_setex: mock.MagicMock,
+    _: mock.AsyncMock,
     session: "conftest.AsyncSession",
 ) -> None:
     user_id = "1dd53909-fcda-4c72-afcd-1bf4886389f8"
@@ -190,11 +198,11 @@ async def test_token_service_revoke_access_token(
 
 
 @pytest.mark.asyncio
-@mock.patch("app.services.token.jwt_db.setex")
 @mock.patch("app.services.user.UserService.get_user")
+@mock.patch("app.services.token.jwt_db.setex")
 async def test_token_service_revoke_refresh_token(
-    _: mock.MagicMock,
     mock_redis_setex: mock.MagicMock,
+    _: mock.AsyncMock,
     session: "conftest.AsyncSession",
 ) -> None:
     user_id = "1dd53909-fcda-4c72-afcd-1bf4886389f8"
@@ -244,10 +252,10 @@ async def test_token_service_revoke_already_revoked_token(
 
 
 @pytest.mark.asyncio
-@mock.patch("app.services.token.jwt_db.set")
 @mock.patch("app.services.user.UserService.get_user")
+@mock.patch("app.services.token.jwt_db.set")
 async def test_token_service_revoke_token_missing_expiration(
-    _: mock.MagicMock, mock_redis_set: mock.MagicMock, session: "conftest.AsyncSession"
+    mock_redis_set: mock.MagicMock, _: mock.AsyncMock, session: "conftest.AsyncSession"
 ) -> None:
     jti = "dummy_jti"
     user_id = "1dd53909-fcda-4c72-afcd-1bf4886389f8"

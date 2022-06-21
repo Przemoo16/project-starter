@@ -36,7 +36,7 @@ class TokenService(base.AppService):
         if not auth.verify_password(password, user.password):
             log.info("Invalid password for user with the email %r", email)
             raise invalid_credentials_exception
-        if not user.is_active:
+        if not user_service.is_active(user):
             raise token_exceptions.InactiveUserError(context={"id": user.id})
         user_update = user_models.UserUpdate(last_login=datetime.datetime.utcnow())
         updated_user = await user_service.update_user(user, user_update)
@@ -60,9 +60,10 @@ class TokenService(base.AppService):
             raise token_exceptions.RefreshTokenRequiredError(context=token_context)
         if jwt_config.check_if_token_in_denylist(decoded_token):
             raise token_exceptions.RevokedTokenError(context=token_context)
+        user_service = user_services.UserService(self.session)
         user_filters = user_models.UserFilters(id=decoded_token["sub"])
-        user = await user_services.UserService(self.session).get_user(user_filters)
-        if not user.is_active:
+        user = await user_service.get_user(user_filters)
+        if not user_service.is_active(user):
             raise token_exceptions.InactiveUserError(context={"id": user.id})
         return token_models.AccessToken(  # nosec
             access_token=jwt_auth.AuthJWT().create_access_token(

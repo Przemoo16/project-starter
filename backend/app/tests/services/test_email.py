@@ -90,9 +90,9 @@ def test_send_email(mock_sendmail: mock.MagicMock, *_: mock.MagicMock) -> None:
     mock_sendmail.assert_called_once_with("test@email.com", receiver, BUILT_MESSAGE)
 
 
+@mock.patch("smtplib.SMTP.__init__", side_effect=socket.gaierror)
 @mock.patch("smtplib.SMTP.connect", return_value=(220, b"dummy response"))
 @mock.patch("smtplib.SMTP.login", return_value=(235, b"dummy response"))
-@mock.patch("smtplib.SMTP.__init__", side_effect=socket.gaierror)
 def test_send_email_gai_error(*_: mock.MagicMock) -> None:
     email_services.send_email(BUILT_MESSAGE, "receiver@email.com")
 
