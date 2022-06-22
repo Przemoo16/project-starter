@@ -1,11 +1,11 @@
 import {
+  Account,
   Config,
   ConfirmEmailData,
   LoginData,
   RegisterData,
   ResetPasswordData,
   SetPasswordData,
-  User,
 } from '../backendTypes';
 import { RestClient } from './client/restClient';
 import { TokenStorage } from './storage/tokenStorage';
@@ -57,9 +57,9 @@ class Backend {
     });
   }
 
-  async getCurrentUser(): Promise<User> {
+  async getCurrentAccount(): Promise<Account> {
     if (!this.tokenStorage.accessToken) {
-      throw new Error('No token to get the user with');
+      throw new Error('No token to get the account');
     }
     const { data } = await this.client.request('/users/me');
     return data;
@@ -135,7 +135,18 @@ class Backend {
 
   async getConfig(): Promise<Config> {
     const { data } = await this.client.request('/config/');
-    return data;
+    const {
+      userNameMaxLength: accountNameMaxLength,
+      userPasswordMinLength: accountPasswordMinLength,
+      userPasswordMaxLength: accountPasswordMaxLength,
+      ...rest
+    } = data;
+    return {
+      accountNameMaxLength,
+      accountPasswordMinLength,
+      accountPasswordMaxLength,
+      ...rest,
+    };
   }
 }
 

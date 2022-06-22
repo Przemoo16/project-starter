@@ -4,12 +4,12 @@ import { channel } from 'redux-saga';
 import { fork, put, takeEvery, takeLeading } from 'redux-saga/effects';
 
 import {
+  Account,
   ConfirmEmailData,
   LoginData,
   RegisterData,
   ResetPasswordData,
   SetPasswordData,
-  User,
 } from '../../backendTypes';
 import { t } from '../../i18n';
 import { backend } from '../../services/backend';
@@ -17,13 +17,13 @@ import { history } from '../../services/history';
 import { notifyError, notifySuccess } from '../../ui-components/store';
 
 interface AuthState {
-  user: User | null;
+  account: Account | null;
   requestPending: boolean;
   requestSuccess: boolean;
 }
 
 const initialState: AuthState = {
-  user: null,
+  account: null,
   requestPending: true,
   requestSuccess: false,
 };
@@ -32,24 +32,24 @@ export const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    loadUser(state, { payload }: PayloadAction<{ user: User | null }>) {
+    loadAccount(state, { payload }: PayloadAction<{ account: Account | null }>) {
       state.requestPending = false;
       state.requestSuccess = false;
-      state.user = payload.user;
+      state.account = payload.account;
     },
     login(state, action: PayloadAction<LoginData>) {
       state.requestPending = true;
       state.requestSuccess = false;
     },
-    loginSuccess(state, { payload }: PayloadAction<{ user: User }>) {
+    loginSuccess(state, { payload }: PayloadAction<{ account: Account }>) {
       state.requestPending = false;
       state.requestSuccess = true;
-      state.user = payload.user;
+      state.account = payload.account;
     },
     loginFailure(state) {
       state.requestPending = false;
       state.requestSuccess = false;
-      state.user = null;
+      state.account = null;
     },
     register(state, action: PayloadAction<RegisterData>) {
       state.requestPending = true;
@@ -64,7 +64,7 @@ export const authSlice = createSlice({
       state.requestSuccess = false;
     },
     logout(state) {
-      state.user = null;
+      state.account = null;
     },
     resetPassword(state, action: PayloadAction<ResetPasswordData>) {
       state.requestPending = true;
@@ -109,17 +109,17 @@ export const authActions = authSlice.actions;
 
 function* loginSaga() {
   try {
-    const { ...data } = yield backend.getCurrentUser();
-    yield put(authActions.loadUser({ user: data }));
+    const { ...data } = yield backend.getCurrentAccount();
+    yield put(authActions.loadAccount({ account: data }));
   } catch {
-    yield put(authActions.loadUser({ user: null }));
+    yield put(authActions.loadAccount({ account: null }));
   }
 
   yield takeLeading(authActions.login, function* ({ payload }) {
     try {
       yield backend.login(payload);
-      const { ...data } = yield backend.getCurrentUser();
-      yield put(authActions.loginSuccess({ user: data }));
+      const { ...data } = yield backend.getCurrentAccount();
+      yield put(authActions.loginSuccess({ account: data }));
       history.push('/dashboard');
     } catch (e) {
       const error = e as AxiosError;

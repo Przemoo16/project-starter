@@ -17,9 +17,8 @@ const RegisterPage = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const { register } = authActions;
-  const { userNameMaxLength, userPasswordMinLength, userPasswordMaxLength } = useAppSelector(
-    state => state.config
-  );
+  const { accountNameMaxLength, accountPasswordMinLength, accountPasswordMaxLength } =
+    useAppSelector(state => state.config);
   const { requestPending } = useAppSelector(state => state.auth);
   const { control, handleSubmit } = useForm({
     mode: 'onTouched',
@@ -30,7 +29,7 @@ const RegisterPage = () => {
       repeatPassword: '',
     },
     resolver: yupResolver(
-      getRegisterSchema(userNameMaxLength, userPasswordMinLength, userPasswordMaxLength)
+      getRegisterSchema(accountNameMaxLength, accountPasswordMinLength, accountPasswordMaxLength)
     ),
   });
 
