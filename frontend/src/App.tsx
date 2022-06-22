@@ -73,7 +73,7 @@ const routes: RouteDefinition[] = [
 ];
 
 const App = () => {
-  const isAuthenticated = useAppSelector(state => !!state.auth.user);
+  const isAuthenticated = useAppSelector(state => !!state.auth.account);
   const isAuthPending = useAppSelector(state => state.auth.requestPending);
 
   return (

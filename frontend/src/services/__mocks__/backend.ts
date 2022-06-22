@@ -1,22 +1,22 @@
-import { Config, User } from '../../backendTypes';
+import { Account, Config } from '../../backendTypes';
 
 type InvalidTokensListener = () => Promise<void>;
 
 class Backend {
   listenOnInvalidTokens(cb: InvalidTokensListener) {}
 
-  async getCurrentUser(): Promise<User> {
+  async getCurrentAccount(): Promise<Account> {
     return {
-      id: 'testUserID',
-      name: 'Test User',
+      id: 'testAccountID',
+      name: 'Test Account',
     };
   }
 
   async getConfig(): Promise<Config> {
     return {
-      userNameMaxLength: 64,
-      userPasswordMinLength: 8,
-      userPasswordMaxLength: 32,
+      accountNameMaxLength: 64,
+      accountPasswordMinLength: 8,
+      accountPasswordMaxLength: 32,
     };
   }
 }

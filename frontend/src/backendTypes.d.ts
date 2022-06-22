@@ -1,4 +1,4 @@
-export interface User {
+export interface Account {
   id: string;
   name: string;
 }
@@ -28,7 +28,7 @@ export interface SetPasswordData {
 }
 
 export interface Config {
-  userNameMaxLength: number;
-  userPasswordMinLength: number;
-  userPasswordMaxLength: number;
+  accountNameMaxLength: number;
+  accountPasswordMinLength: number;
+  accountPasswordMaxLength: number;
 }
