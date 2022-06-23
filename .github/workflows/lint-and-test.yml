@@ -4,7 +4,7 @@ on:
   push:
     branches: [main, testing, staging, production]
 jobs:
-  lint-and-test: # TODO: Split to two separate jobs running in parallel (The built container has to be shared across jobs)
+  lint-and-test:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository code
