@@ -81,7 +81,6 @@ test-backend:
 
 test-e2e:
 	$(COMPOSE_E2E) up -d
-	sleep 5 # Wait for migration to complete, TODO: Make waiting smarter
 	$(ADD_TEST_USERS_COMMAND)
 	$(COMPOSE_E2E) up --exit-code-from e2e
 
