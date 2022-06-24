@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 
 import { LoginData } from '../../backendTypes';
 import { useAppDispatch, useAppSelector } from '../../services/store';
-import { TextInput } from '../../ui-components/Input';
+import { TextInput } from '../../ui-components/Inputs';
 import { SubmitButton } from './common/Button';
 import { PageContainer } from './common/Container';
 import { Form } from './common/Form';
@@ -17,7 +17,7 @@ const LoginPage = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const { login } = authActions;
-  const { requestPending } = useAppSelector(state => state.auth);
+  const { pending } = useAppSelector(state => state.auth);
   const { control, handleSubmit } = useForm({
     mode: 'onTouched',
     defaultValues: {
@@ -58,7 +58,7 @@ const LoginPage = () => {
           autoComplete="current-password"
           data-testid="passwordInput"
         />
-        <SubmitButton loading={requestPending}>{t('auth.loginButton')}</SubmitButton>
+        <SubmitButton loading={pending}>{t('auth.loginButton')}</SubmitButton>
         <LinksContainer>
           <Link to="/register" data-testid="registerLink">
             {t('auth.registerLink')}

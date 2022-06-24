@@ -13,7 +13,7 @@ interface DashboardLayoutProps {
   children: ReactNode;
 }
 
-const drawerWidth = 240;
+const DRAWER_WIDTH = 240;
 
 export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   const dispatch = useAppDispatch();
@@ -34,8 +34,8 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
         display: 'flex',
       }}
     >
-      <AppBar onOpenMenu={handleOpenDrawer} drawerWidth={drawerWidth} />
-      <Drawer open={drawerOpen} onClose={handleCloseDrawer} width={drawerWidth} />
+      <AppBar onOpenMenu={handleOpenDrawer} drawerWidth={DRAWER_WIDTH} />
+      <Drawer open={drawerOpen} onClose={handleCloseDrawer} width={DRAWER_WIDTH} />
       <Container
         component="main"
         maxWidth="lg"

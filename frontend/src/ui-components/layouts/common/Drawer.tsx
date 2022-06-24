@@ -12,12 +12,15 @@ import { Link as RouterLink } from 'react-router-dom';
 
 import { Logo } from '../../Icons';
 
-interface DrawerProps extends Pick<MuiDrawerProps, 'open' | 'onClose'> {
+interface DrawerProps extends Pick<MuiDrawerProps, 'open'> {
   width: number;
+  onClose: () => void;
 }
 
-type DrawerConditionalProps = Pick<DrawerProps, 'open' | 'onClose'> &
-  Pick<MuiDrawerProps, 'variant' | 'ModalProps'>;
+interface DrawerConditionalProps extends Pick<MuiDrawerProps, 'variant' | 'ModalProps'> {
+  open: DrawerProps['open'];
+  onClose?: DrawerProps['onClose'];
+}
 
 export const Drawer = ({ open, onClose, width }: DrawerProps) => {
   const largeScreen = useMediaQuery((theme: Theme) => theme.breakpoints.up('lg'));
@@ -52,7 +55,7 @@ export const Drawer = ({ open, onClose, width }: DrawerProps) => {
         <Logo size={40} />
       </Toolbar>
       <Divider />
-      <List component="nav">
+      <List component="nav" onClick={onClose} data-testid="navbar">
         <ListItemButton component={RouterLink} to="/dashboard">
           <ListItemIcon>
             <DashboardIcon />

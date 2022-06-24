@@ -6,6 +6,7 @@ import {
   RegisterData,
   ResetPasswordData,
   SetPasswordData,
+  UpdateAccountData,
 } from '../backendTypes';
 import { RestClient } from './client/restClient';
 import { TokenStorage } from './storage/tokenStorage';
@@ -147,6 +148,14 @@ class Backend {
       accountPasswordMaxLength,
       ...rest,
     };
+  }
+
+  async updateAccount(data: UpdateAccountData): Promise<Account> {
+    const res = await this.client.request('/users/me', {
+      method: 'PATCH',
+      data,
+    });
+    return res.data;
   }
 }
 
