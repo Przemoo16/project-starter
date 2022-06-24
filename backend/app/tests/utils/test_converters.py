@@ -67,3 +67,11 @@ def test_orjson_dumps_pass_option() -> None:
     )
 
     assert serialized == b'{"date":"2023-02-01T16:00:00Z"}'
+
+
+def test_to_utc_timestamp() -> None:
+    date = datetime.datetime(2022, 6, 24, 21, 0, 0)
+
+    utc_timestamp = converters.to_utc_timestamp(date)
+
+    assert utc_timestamp == 1656104400.0

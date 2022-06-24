@@ -1,3 +1,4 @@
+import datetime
 import decimal
 import typing
 import uuid
@@ -34,3 +35,16 @@ def orjson_dumps(
     if option:
         return orjson.dumps(data, option=option, default=default)
     return orjson.dumps(data, default=default)
+
+
+def to_utc_timestamp(dt: datetime.datetime) -> float:
+    """
+    Convert datetime object to the UTC timestamp.
+
+    The function returns the proper UTC timestamp from the datetime object.
+    To obtain a proper UTC timestamp, the `timestamp()` function cannot be used as
+    it treats naive datetime as local time and thus returns "invalid" (as not UTC)
+    "POSIX" timestamp:
+    https://docs.python.org/3/library/datetime.html#datetime.datetime.timestamp
+    """
+    return (dt - datetime.datetime(1970, 1, 1)).total_seconds()

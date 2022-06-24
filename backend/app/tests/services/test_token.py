@@ -272,7 +272,7 @@ async def test_token_service_revoke_token_missing_expiration(
 
 @freezegun.freeze_time("2022-02-06 12:30:00")
 def test_get_remaining_expiration() -> None:
-    exp = int(datetime.datetime(2022, 2, 6, 13, 0, 0).timestamp())
+    exp = int(converters.to_utc_timestamp(datetime.datetime(2022, 2, 6, 13, 0, 0)))
 
     remaining_expiration = (
         token_services._get_remaining_expiration(  # pylint: disable=protected-access
@@ -285,7 +285,7 @@ def test_get_remaining_expiration() -> None:
 
 @freezegun.freeze_time("2022-02-06 12:30:00")
 def test_get_remaining_expiration_already_expired() -> None:
-    exp = int(datetime.datetime(2022, 2, 6, 12, 0, 0).timestamp())
+    exp = int(converters.to_utc_timestamp(datetime.datetime(2022, 2, 6, 12, 0, 0)))
 
     remaining_expiration = (
         token_services._get_remaining_expiration(  # pylint: disable=protected-access
