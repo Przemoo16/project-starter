@@ -13,7 +13,7 @@ from app.models import token as token_models
 from app.models import user as user_models
 from app.services import base
 from app.services import user as user_services
-from app.utils import auth
+from app.utils import auth, converters
 
 log = logging.getLogger(__name__)
 
@@ -106,6 +106,6 @@ def decode_token(
 
 
 def _get_remaining_expiration(exp: int) -> int:
-    delta = int(exp - datetime.datetime.utcnow().timestamp())
+    delta = int(exp - converters.to_utc_timestamp(datetime.datetime.utcnow()))
     # Redis can only accept expiration values greater than 0
     return max(1, delta)
