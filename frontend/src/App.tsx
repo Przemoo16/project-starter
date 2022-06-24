@@ -26,13 +26,6 @@ const dashboardRoute: RouteDefinition = {
 };
 
 const routes: RouteDefinition[] = [
-  {
-    path: '/',
-    requiresAuth: false,
-    layout: AnonymousLayout,
-    content: LazyPages.HomePage,
-    anonymousOnly: false,
-  },
   loginRoute,
   {
     path: '/register',
@@ -74,8 +67,8 @@ const routes: RouteDefinition[] = [
     path: '*',
     requiresAuth: false,
     layout: AnonymousLayout,
-    content: LazyPages.NotFoundPage,
-    anonymousOnly: false,
+    content: LazyPages.HomePage,
+    anonymousOnly: true,
   },
 ];
 
