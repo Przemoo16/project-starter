@@ -27,7 +27,14 @@ export const AnonymousLayout = ({ children }: AnonymousLayoutProps) => {
         }}
       >
         <Typography align="center">{t('auth.loginTitle')}:</Typography>
-        <Button to="/login" component={Link} fullWidth variant="contained" sx={{ mt: 2 }}>
+        <Button
+          to="/login"
+          component={Link}
+          fullWidth
+          variant="contained"
+          sx={{ mt: 2 }}
+          data-testid="loginButton"
+        >
           {t('auth.loginButton')}
         </Button>
       </Box>
