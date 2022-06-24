@@ -3,33 +3,45 @@ import { Navigate } from 'react-router-dom';
 
 import { AppLoader } from './AppLoader';
 
+type LayoutDefinition = ComponentType<{ children: ReactNode }>;
+
 export interface RouteDefinition {
   path: string;
   requiresAuth: boolean;
-  layout: ComponentType<{ children: ReactNode }>;
+  layout: LayoutDefinition;
   content: ComponentType;
   anonymousOnly: boolean;
 }
 
-interface EnhancedRouteProps {
-  route: RouteDefinition;
+export interface AuthInfo {
   isAuthenticated: boolean;
   isAuthPending: boolean;
   authenticationFallback: string;
   authenticatedFallback: string;
+  authFallbackLayout: LayoutDefinition;
 }
 
-export const EnhancedRoute = ({
-  route,
-  isAuthPending,
-  isAuthenticated,
-  authenticationFallback,
-  authenticatedFallback,
-}: EnhancedRouteProps) => {
-  let { layout: Layout, content: Content, requiresAuth, anonymousOnly } = route;
+interface EnhancedRouteProps {
+  route: RouteDefinition;
+  authInfo: AuthInfo;
+}
+
+export const EnhancedRoute = ({ route, authInfo }: EnhancedRouteProps) => {
+  const { requiresAuth, anonymousOnly, layout: Layout, content: Content } = route;
+  const {
+    isAuthPending,
+    authFallbackLayout: AuthFallbackLayout,
+    isAuthenticated,
+    authenticationFallback,
+    authenticatedFallback,
+  } = authInfo;
 
   if (isAuthPending && requiresAuth) {
-    return <AppLoader />;
+    return (
+      <AuthFallbackLayout>
+        <AppLoader />
+      </AuthFallbackLayout>
+    );
   }
 
   if (requiresAuth && !isAuthenticated) {

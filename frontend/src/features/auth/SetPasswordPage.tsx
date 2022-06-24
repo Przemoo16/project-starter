@@ -6,7 +6,7 @@ import { useParams } from 'react-router-dom';
 
 import { SetPasswordData } from '../../backendTypes';
 import { useAppDispatch, useAppSelector } from '../../services/store';
-import { TextInput } from '../../ui-components/Input';
+import { TextInput } from '../../ui-components/Inputs';
 import { SubmitButton } from './common/Button';
 import { PageContainer } from './common/Container';
 import { Form } from './common/Form';
@@ -20,7 +20,7 @@ const SetPasswordPage = () => {
   const { accountPasswordMinLength, accountPasswordMaxLength } = useAppSelector(
     state => state.config
   );
-  const { requestPending } = useAppSelector(state => state.auth);
+  const { pending } = useAppSelector(state => state.auth);
   const dispatch = useAppDispatch();
   const { setPassword } = authActions;
   const { control, handleSubmit } = useForm({
@@ -61,7 +61,7 @@ const SetPasswordPage = () => {
           placeholder="********"
           data-testid="repeatPasswordInput"
         />
-        <SubmitButton loading={requestPending}>{t('auth.setPasswordButton')}</SubmitButton>
+        <SubmitButton loading={pending}>{t('auth.setPasswordButton')}</SubmitButton>
         <LinksContainer>
           <Link to="/login" data-testid="loginLink">
             {t('auth.backToLoginLink')}

@@ -1,4 +1,10 @@
 {
+  "account": {
+    "name": "Name",
+    "updateAccount": "Update account",
+    "updateError": "We couldn't update your account",
+    "updateSuccess": "Your account has been updated"
+  },
   "auth": {
     "accountAlreadyExists": "The account with provided email already exists",
     "backToLoginLink": "Back to login",
@@ -14,7 +20,6 @@
     "loginLink": "Do you already have an account?",
     "loginTitle": "Log in to your account",
     "logout": "Logout",
-    "name": "Name",
     "password": "Password",
     "registerError": "We couldn't create your account",
     "registerLink": "Don't have an account yet?",
@@ -31,9 +36,9 @@
     "withFreeAccount": "with a free account"
   },
   "ui": {
+    "account": "Account",
     "appName": "Project Starter",
-    "copyright": "Copyright",
-    "settings": "Settings"
+    "copyright": "Copyright"
   },
   "validation": {
     "invalidEmail": "Invalid email",

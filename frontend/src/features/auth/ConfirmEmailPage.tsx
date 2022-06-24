@@ -15,7 +15,7 @@ const ConfirmEmailPage = () => {
   const { key } = useParams();
   const dispatch = useAppDispatch();
   const { confirmEmail } = authActions;
-  const { requestPending, requestSuccess } = useAppSelector(state => state.auth);
+  const { pending, errors } = useAppSelector(state => state.auth);
 
   useEffect(() => {
     dispatch(confirmEmail({ key: key || '' }));
@@ -24,10 +24,10 @@ const ConfirmEmailPage = () => {
   return (
     <PageContainer icon={EmailOutlinedIcon} title={t('auth.confirmEmailTitle')}>
       <ContentContainer>
-        {requestPending && <AppLoader />}
+        {pending && <AppLoader />}
         <Typography align="center" sx={{ mt: 2 }} data-testid="confirmEmailMessage">
-          {!requestPending && requestSuccess && t('auth.confirmEmailSuccess')}
-          {!requestPending && !requestSuccess && t('auth.confirmEmailError')}
+          {!pending && !errors && t('auth.confirmEmailSuccess')}
+          {!pending && errors && t('auth.confirmEmailError')}
         </Typography>
         <LinksContainer>
           <Link to="/login" data-testid="loginLink">

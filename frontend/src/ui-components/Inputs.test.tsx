@@ -2,7 +2,7 @@ import userEvent from '@testing-library/user-event';
 import { useForm } from 'react-hook-form';
 
 import { render, screen, waitFor } from '../tests/utils';
-import { TextInput } from './Input';
+import { TextInput } from './Inputs';
 
 describe('TextInput component', () => {
   it('is a text type', () => {

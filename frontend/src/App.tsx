@@ -7,7 +7,7 @@ import { useAppSelector } from './services/store';
 import { AnonymousLayout } from './ui-components/layouts/AnonymousLayout';
 import { AuthLayout } from './ui-components/layouts/AuthLayout';
 import { DashboardLayout } from './ui-components/layouts/DashboardLayout';
-import { EnhancedRoute, RouteDefinition } from './ui-components/Routing';
+import { AuthInfo, EnhancedRoute, RouteDefinition } from './ui-components/Routing';
 
 const loginRoute: RouteDefinition = {
   path: '/login',
@@ -33,7 +33,6 @@ const routes: RouteDefinition[] = [
     content: LazyPages.HomePage,
     anonymousOnly: false,
   },
-  dashboardRoute,
   loginRoute,
   {
     path: '/register',
@@ -63,6 +62,14 @@ const routes: RouteDefinition[] = [
     content: LazyPages.SetPasswordPage,
     anonymousOnly: false,
   },
+  dashboardRoute,
+  {
+    path: '/account/profile',
+    requiresAuth: true,
+    layout: DashboardLayout,
+    content: LazyPages.ProfilePage,
+    anonymousOnly: false,
+  },
   {
     path: '*',
     requiresAuth: false,
@@ -74,7 +81,14 @@ const routes: RouteDefinition[] = [
 
 const App = () => {
   const isAuthenticated = useAppSelector(state => !!state.auth.account);
-  const isAuthPending = useAppSelector(state => state.auth.requestPending);
+  const isAuthPending = useAppSelector(state => state.auth.pending);
+  const authInfo: AuthInfo = {
+    isAuthenticated: isAuthenticated,
+    isAuthPending: isAuthPending,
+    authenticationFallback: loginRoute.path,
+    authenticatedFallback: dashboardRoute.path,
+    authFallbackLayout: loginRoute.layout,
+  };
 
   return (
     <Routes>
@@ -82,15 +96,7 @@ const App = () => {
         <Route
           key={i}
           path={route.path}
-          element={
-            <EnhancedRoute
-              route={route}
-              isAuthenticated={isAuthenticated}
-              isAuthPending={isAuthPending}
-              authenticationFallback={loginRoute.path}
-              authenticatedFallback={dashboardRoute.path}
-            />
-          }
+          element={<EnhancedRoute route={route} authInfo={authInfo} />}
         />
       ))}
     </Routes>

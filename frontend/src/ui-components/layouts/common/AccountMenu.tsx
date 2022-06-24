@@ -1,6 +1,6 @@
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import LogoutIcon from '@mui/icons-material/Logout';
-import SettingsIcon from '@mui/icons-material/Settings';
+import PersonIcon from '@mui/icons-material/Person';
 import IconButton from '@mui/material/IconButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import Menu from '@mui/material/Menu';
@@ -10,6 +10,7 @@ import { useTranslation } from 'react-i18next';
 
 import { authActions } from '../../../features/auth/store';
 import { useAppDispatch } from '../../../services/store';
+import { Link } from '../../../ui-components/Link';
 
 export const AccountMenu = () => {
   const { t } = useTranslation();
@@ -48,11 +49,11 @@ export const AccountMenu = () => {
         onClose={handleCloseMenu}
         data-testid="accountMenu"
       >
-        <MenuItem>
+        <MenuItem component={Link} to="/account/profile">
           <ListItemIcon>
-            <SettingsIcon />
+            <PersonIcon />
           </ListItemIcon>
-          {t('ui.settings')}
+          {t('ui.account')}
         </MenuItem>
         <MenuItem onClick={handleLogout} data-testid="logoutItem">
           <ListItemIcon>

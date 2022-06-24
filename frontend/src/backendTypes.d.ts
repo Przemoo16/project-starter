@@ -1,3 +1,15 @@
+interface JsonArray extends Array<AnyJson> {}
+type AnyJson = boolean | number | string | null | JsonArray | JsonMap;
+interface JsonMap {
+  [key: string]: AnyJson;
+}
+
+interface ErrorResponse {
+  case: string;
+  detail: string;
+  context: JsonMap | JsonMap[] | null;
+}
+
 export interface Account {
   id: string;
   name: string;
@@ -31,4 +43,8 @@ export interface Config {
   accountNameMaxLength: number;
   accountPasswordMinLength: number;
   accountPasswordMaxLength: number;
+}
+
+export interface UpdateAccountData {
+  name: string;
 }

@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 
 import { RegisterData } from '../../backendTypes';
 import { useAppDispatch, useAppSelector } from '../../services/store';
-import { TextInput } from '../../ui-components/Input';
+import { TextInput } from '../../ui-components/Inputs';
 import { SubmitButton } from './common/Button';
 import { PageContainer } from './common/Container';
 import { Form } from './common/Form';
@@ -19,7 +19,7 @@ const RegisterPage = () => {
   const { register } = authActions;
   const { accountNameMaxLength, accountPasswordMinLength, accountPasswordMaxLength } =
     useAppSelector(state => state.config);
-  const { requestPending } = useAppSelector(state => state.auth);
+  const { pending } = useAppSelector(state => state.auth);
   const { control, handleSubmit } = useForm({
     mode: 'onTouched',
     defaultValues: {
@@ -55,7 +55,7 @@ const RegisterPage = () => {
           size="small"
           margin="normal"
           fullWidth
-          label={t('auth.name')}
+          label={t('account.name')}
           type="text"
           placeholder="Jon Doe"
           autoComplete="name"
@@ -95,7 +95,7 @@ const RegisterPage = () => {
           placeholder="********"
           data-testid="repeatPasswordInput"
         />
-        <SubmitButton loading={requestPending}>{t('auth.getStarted')}</SubmitButton>
+        <SubmitButton loading={pending}>{t('auth.getStarted')}</SubmitButton>
         <LinksContainer>
           <Link to="/login" data-testid="loginLink">
             {t('auth.loginLink')}

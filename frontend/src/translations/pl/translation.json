@@ -1,4 +1,10 @@
 {
+  "account": {
+    "name": "Nazwa",
+    "updateAccount": "Zaktualizuj konto",
+    "updateError": "Nie mogliśmy zaktualizować Twojego konta",
+    "updateSuccess": "Twoje konto zostało zaktualizowane"
+  },
   "auth": {
     "accountAlreadyExists": "Konto z podanym adresem e-mail już istnieje",
     "backToLoginLink": "Wróć do logowania",
@@ -14,7 +20,6 @@
     "loginLink": "Masz już konto?",
     "loginTitle": "Zaloguj się na swoje konto",
     "logout": "Wyloguj się",
-    "name": "Nazwa",
     "password": "Hasło",
     "registerError": "Nie mogliśmy utworzyć Twojego konta",
     "registerLink": "Nie masz jeszcze konta?",
@@ -31,9 +36,9 @@
     "withFreeAccount": "z bezpłatnym kontem"
   },
   "ui": {
+    "account": "Konto",
     "appName": "Project Starter",
-    "copyright": "Copyright",
-    "settings": "Ustawienia"
+    "copyright": "Copyright"
   },
   "validation": {
     "invalidEmail": "Nieprawidłowy e-mail",
