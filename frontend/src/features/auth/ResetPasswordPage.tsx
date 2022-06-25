@@ -5,8 +5,8 @@ import { useTranslation } from 'react-i18next';
 
 import { ResetPasswordData } from '../../backendTypes';
 import { useAppDispatch, useAppSelector } from '../../services/store';
-import { TextInput } from '../../ui-components/Inputs';
-import { SubmitButton } from './common/Button';
+import { SubmitButton } from '../common/Button';
+import { TextInput } from '../common/Input';
 import { PageContainer } from './common/Container';
 import { Form } from './common/Form';
 import { Link, LinksContainer } from './common/Link';
@@ -36,11 +36,7 @@ const ResetPasswordPage = () => {
         <TextInput
           name="email"
           control={control}
-          size="small"
-          margin="normal"
-          fullWidth
           label={t('auth.email')}
-          type="text"
           placeholder="joe@example.com"
           autoComplete="email"
           data-testid="emailInput"

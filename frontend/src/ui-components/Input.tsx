@@ -6,12 +6,32 @@ import TextField, { TextFieldProps } from '@mui/material/TextField';
 import { useState } from 'react';
 import { Controller } from 'react-hook-form';
 
-type TextInputProps = TextFieldProps & {
+type CommonFields = 'type' | 'error' | 'helperText';
+
+export type TextInputProps = Omit<TextFieldProps, CommonFields> & {
   name: string;
   control: any;
 };
 
-export const TextInput = ({ name, control, type, ...rest }: TextInputProps) => {
+export type PasswordInputProps = Omit<
+  TextFieldProps,
+  'placeholder' | 'InputProps' | CommonFields
+> & {
+  name: string;
+  control: any;
+};
+
+export const TextInput = ({ name, control, ...rest }: TextInputProps) => (
+  <Controller
+    name={name}
+    control={control}
+    render={({ field, fieldState: { error } }) => (
+      <TextField {...field} type="text" error={!!error} helperText={error?.message} {...rest} />
+    )}
+  />
+);
+
+export const PasswordInput = ({ name, control, ...rest }: PasswordInputProps) => {
   const [passwordVisible, setPasswordVisibility] = useState(false);
 
   const handlePasswordVisibility = () => {
@@ -25,11 +45,12 @@ export const TextInput = ({ name, control, type, ...rest }: TextInputProps) => {
       render={({ field, fieldState: { error } }) => (
         <TextField
           {...field}
-          type={passwordVisible ? 'text' : type}
+          type={passwordVisible ? 'text' : 'password'}
+          placeholder="********"
           error={!!error}
           helperText={error?.message}
           InputProps={{
-            endAdornment: type === 'password' && (
+            endAdornment: (
               <InputAdornment position="end">
                 <IconButton
                   aria-label="toggle password visibility"
