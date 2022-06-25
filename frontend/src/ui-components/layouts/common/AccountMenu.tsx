@@ -46,6 +46,7 @@ export const AccountMenu = () => {
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
         open={!!anchorEl}
+        onClick={handleCloseMenu}
         onClose={handleCloseMenu}
         data-testid="accountMenu"
       >

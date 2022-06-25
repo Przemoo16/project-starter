@@ -10,5 +10,5 @@ inputs = {
   smtp_host = "SMTP_HOST"
   smtp_port = 465
   smtp_user = "SMTP_USER"
-  email_sender = "test@email.com"
+  email_sender = "sender@project-starter.me"
 }

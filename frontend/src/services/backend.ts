@@ -85,6 +85,9 @@ class Backend {
 
   private async revokeTokens() {
     for (const token of [this.tokenStorage.accessToken, this.tokenStorage.refreshToken]) {
+      if (!token) {
+        continue;
+      }
       try {
         await this.client.request('/token/revoke', {
           method: 'POST',
