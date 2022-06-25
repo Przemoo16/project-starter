@@ -6,8 +6,8 @@ import { useParams } from 'react-router-dom';
 
 import { SetPasswordData } from '../../backendTypes';
 import { useAppDispatch, useAppSelector } from '../../services/store';
-import { TextInput } from '../../ui-components/Inputs';
-import { SubmitButton } from './common/Button';
+import { SubmitButton } from '../common/Button';
+import { PasswordInput } from '../common/Input';
 import { PageContainer } from './common/Container';
 import { Form } from './common/Form';
 import { Link, LinksContainer } from './common/Link';
@@ -39,26 +39,16 @@ const SetPasswordPage = () => {
   return (
     <PageContainer icon={KeyOutlinedIcon} title={t('auth.setPasswordTitle')}>
       <Form onSubmit={handleSubmit(onSubmit)}>
-        <TextInput
+        <PasswordInput
           name="password"
           control={control}
-          size="small"
-          margin="normal"
-          fullWidth
           label={t('auth.password')}
-          type="password"
-          placeholder="********"
           data-testid="passwordInput"
         />
-        <TextInput
+        <PasswordInput
           name="repeatPassword"
           control={control}
-          size="small"
-          margin="normal"
-          fullWidth
           label={t('auth.repeatPassword')}
-          type="password"
-          placeholder="********"
           data-testid="repeatPasswordInput"
         />
         <SubmitButton loading={pending}>{t('auth.setPasswordButton')}</SubmitButton>

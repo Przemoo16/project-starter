@@ -5,8 +5,8 @@ import { useTranslation } from 'react-i18next';
 
 import { RegisterData } from '../../backendTypes';
 import { useAppDispatch, useAppSelector } from '../../services/store';
-import { TextInput } from '../../ui-components/Inputs';
-import { SubmitButton } from './common/Button';
+import { SubmitButton } from '../common/Button';
+import { PasswordInput, TextInput } from '../common/Input';
 import { PageContainer } from './common/Container';
 import { Form } from './common/Form';
 import { Link, LinksContainer } from './common/Link';
@@ -52,11 +52,7 @@ const RegisterPage = () => {
         <TextInput
           name="name"
           control={control}
-          size="small"
-          margin="normal"
-          fullWidth
           label={t('account.name')}
-          type="text"
           placeholder="Jon Doe"
           autoComplete="name"
           data-testid="nameInput"
@@ -64,35 +60,21 @@ const RegisterPage = () => {
         <TextInput
           name="email"
           control={control}
-          size="small"
-          margin="normal"
-          fullWidth
           label={t('auth.email')}
-          type="text"
           placeholder="joe@example.com"
           autoComplete="email"
           data-testid="emailInput"
         />
-        <TextInput
+        <PasswordInput
           name="password"
           control={control}
-          size="small"
-          margin="normal"
-          fullWidth
           label={t('auth.password')}
-          type="password"
-          placeholder="********"
           data-testid="passwordInput"
         />
-        <TextInput
+        <PasswordInput
           name="repeatPassword"
           control={control}
-          size="small"
-          margin="normal"
-          fullWidth
           label={t('auth.repeatPassword')}
-          type="password"
-          placeholder="********"
           data-testid="repeatPasswordInput"
         />
         <SubmitButton loading={pending}>{t('auth.getStarted')}</SubmitButton>

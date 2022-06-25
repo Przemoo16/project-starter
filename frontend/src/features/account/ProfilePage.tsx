@@ -5,8 +5,8 @@ import { useTranslation } from 'react-i18next';
 import { UpdateAccountData } from '../../backendTypes';
 import { useAppDispatch, useAppSelector } from '../../services/store';
 import { Form } from '../../ui-components/Form';
-import { TextInput } from '../../ui-components/Inputs';
-import { SubmitButton } from './common/Button';
+import { SubmitButton } from '../common/Button';
+import { TextInput } from '../common/Input';
 import { accountActions } from './store';
 import { getUpdateAccountSchema } from './validation';
 
@@ -34,11 +34,7 @@ const ProfilePage = () => {
       <TextInput
         name="name"
         control={control}
-        size="small"
-        margin="normal"
-        fullWidth
         label={t('account.name')}
-        type="text"
         placeholder="Jon Doe"
         autoComplete="name"
         data-testid="nameInput"
