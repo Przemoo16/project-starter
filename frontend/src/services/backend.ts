@@ -124,14 +124,14 @@ class Backend {
   }
 
   async resetPassword(data: ResetPasswordData) {
-    return this.client.request('/users/password/reset-request', {
+    return this.client.request('/users/password/reset', {
       method: 'POST',
       data,
     });
   }
 
   async setPassword(data: SetPasswordData) {
-    return this.client.request('/users/password/reset', {
+    return this.client.request('/users/password/set', {
       method: 'POST',
       data,
     });

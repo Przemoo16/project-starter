@@ -130,11 +130,11 @@ async def confirm_email(
 
 
 @router.post(
-    "/password/reset-request",
+    "/password/reset",
     status_code=status.HTTP_202_ACCEPTED,
     response_model=message.Message,
 )
-async def request_reset_password(
+async def reset_password(
     email: user_models.UserEmail = fastapi.Body(embed=True),
     session: db.AsyncSession = fastapi.Depends(db.get_session),
 ) -> typing.Any:
@@ -144,24 +144,24 @@ async def request_reset_password(
     except user_exceptions.UserNotFoundError:
         log.info("Message has not been sent because user not found")
     else:
-        user_service.request_reset_password(user_db)
+        user_service.reset_password(user_db)
     return {
         "message": "If provided valid email, the email to reset password has been sent"
     }
 
 
 @router.post(
-    "/password/reset",
+    "/password/set",
     response_class=responses.Response,
     status_code=status.HTTP_204_NO_CONTENT,
     responses={**user_exceptions.UserNotFoundError().doc},
 )
-async def reset_password(
-    reset_password_model: user_models.UserResetPassword,
+async def set_password(
+    set_password_model: user_models.UserSetPassword,
     session: db.AsyncSession = fastapi.Depends(db.get_session),
 ) -> typing.Any:
     user_service = user_services.UserService(session)
     user_db = await user_service.get_user(
-        user_models.UserFilters(reset_password_key=reset_password_model.key)
+        user_models.UserFilters(reset_password_key=set_password_model.key)
     )
-    await user_service.reset_password(user_db, reset_password_model.password)
+    await user_service.set_password(user_db, set_password_model.password)

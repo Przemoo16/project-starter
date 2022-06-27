@@ -143,18 +143,18 @@ async def test_reset_password_flow(async_client: "conftest.TestClient") -> None:
 
     assert response.status_code == 204
 
-    # Request reset password
+    # Reset password
     response = await async_client.post(
-        f"{API_URL}/users/password/reset-request",
+        f"{API_URL}/users/password/reset",
         json={"email": email},
     )
 
     assert response.status_code == 202
 
-    # Reset password
+    # Set new password
     new_password = "new_password"
     response = await async_client.post(
-        f"{API_URL}/users/password/reset",
+        f"{API_URL}/users/password/set",
         json={"key": str(reset_password_key), "password": new_password},
     )
 

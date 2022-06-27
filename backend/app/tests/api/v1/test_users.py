@@ -261,7 +261,7 @@ async def test_confirm_email(
 
 
 @pytest.mark.anyio
-async def test_request_reset_password(
+async def test_reset_password(
     async_client: "conftest.TestClient",
     session: "conftest.AsyncSession",
     mock_common: None,  # pylint: disable=unused-argument
@@ -270,7 +270,7 @@ async def test_request_reset_password(
     request_data = {"email": user.email}
 
     response = await async_client.post(
-        f"{API_URL}/users/password/reset-request", json=request_data
+        f"{API_URL}/users/password/reset", json=request_data
     )
     message = response.json()
 
@@ -285,14 +285,14 @@ async def test_request_reset_password(
 
 
 @pytest.mark.anyio
-async def test_request_reset_password_user_not_found(
+async def test_reset_password_user_not_found(
     async_client: "conftest.TestClient",
     mock_common: None,  # pylint: disable=unused-argument
 ) -> None:
     request_data = {"email": "test@email.com"}
 
     response = await async_client.post(
-        f"{API_URL}/users/password/reset-request", json=request_data
+        f"{API_URL}/users/password/reset", json=request_data
     )
     message = response.json()
 
@@ -307,7 +307,7 @@ async def test_request_reset_password_user_not_found(
 
 
 @pytest.mark.anyio
-async def test_reset_password(
+async def test_set_password(
     async_client: "conftest.TestClient",
     session: "conftest.AsyncSession",
     mock_common: None,  # pylint: disable=unused-argument
@@ -316,7 +316,7 @@ async def test_reset_password(
     request_data = {"key": str(user.reset_password_key), "password": "plain_password"}
 
     response = await async_client.post(
-        f"{API_URL}/users/password/reset", json=request_data
+        f"{API_URL}/users/password/set", json=request_data
     )
 
     assert response.status_code == status.HTTP_204_NO_CONTENT

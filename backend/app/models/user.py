@@ -100,7 +100,7 @@ class UserChangePassword(base.BaseModel):
     )
 
 
-class UserResetPassword(base.BaseModel):
+class UserSetPassword(base.BaseModel):
     key: UserResetPasswordKey
     password: UserPassword = sqlmodel.Field(
         min_length=settings.USER_PASSWORD_MIN_LENGTH,
