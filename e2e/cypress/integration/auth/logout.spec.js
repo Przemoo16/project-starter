@@ -17,6 +17,6 @@ describe("Logout functionality", () => {
 
     cy.visit("/dashboard");
 
-    cy.location("pathname").should("eq", "/login");
+    cy.location("pathname").should("eq", "/");
   });
 });

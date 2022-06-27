@@ -2,7 +2,7 @@
 
 KEY_SIZE=4096
 DOMAIN='$DOMAIN' # Use DOMAIN env from the container and not from the host
-EMAIL='contact@$DOMAIN'
+EMAIL='contact@$DOMAIN' # TODO: Replace with the proper production email
 CERTBOT_CONTAINER=$(docker ps -aqf name=certbot)
 PROXY_CONTAINER=$(docker ps -aqf name=proxy)
 WEBROOT_PATH=/var/www/certbot

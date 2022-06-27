@@ -1,5 +1,6 @@
 import './index.css';
 
+import { useTranslation } from 'react-i18next';
 import { Route, Routes } from 'react-router-dom';
 
 import { LazyPages } from './features/lazy';
@@ -9,15 +10,17 @@ import { AuthLayout } from './ui-components/layouts/AuthLayout';
 import { DashboardLayout } from './ui-components/layouts/DashboardLayout';
 import { AuthInfo, EnhancedRoute, RouteDefinition } from './ui-components/Routing';
 
-const loginRoute: RouteDefinition = {
-  path: '/login',
+const homeRoute: RouteDefinition = {
+  title: '',
+  path: '/',
   requiresAuth: false,
-  layout: AuthLayout,
-  content: LazyPages.LoginPage,
+  layout: AnonymousLayout,
+  content: LazyPages.HomePage,
   anonymousOnly: true,
 };
 
 const dashboardRoute: RouteDefinition = {
+  title: 'Dashboard',
   path: '/dashboard',
   requiresAuth: true,
   layout: DashboardLayout,
@@ -26,8 +29,17 @@ const dashboardRoute: RouteDefinition = {
 };
 
 const routes: RouteDefinition[] = [
-  loginRoute,
+  homeRoute,
   {
+    title: 'Login',
+    path: '/login',
+    requiresAuth: false,
+    layout: AuthLayout,
+    content: LazyPages.LoginPage,
+    anonymousOnly: true,
+  },
+  {
+    title: 'Register',
     path: '/register',
     requiresAuth: false,
     layout: AuthLayout,
@@ -35,6 +47,7 @@ const routes: RouteDefinition[] = [
     anonymousOnly: true,
   },
   {
+    title: 'Confirm email',
     path: '/confirm-email/:key',
     requiresAuth: false,
     layout: AuthLayout,
@@ -42,6 +55,7 @@ const routes: RouteDefinition[] = [
     anonymousOnly: false,
   },
   {
+    title: 'Reset password',
     path: '/reset-password',
     requiresAuth: false,
     layout: AuthLayout,
@@ -49,6 +63,7 @@ const routes: RouteDefinition[] = [
     anonymousOnly: true,
   },
   {
+    title: 'Set password',
     path: '/set-password/:key',
     requiresAuth: false,
     layout: AuthLayout,
@@ -57,6 +72,7 @@ const routes: RouteDefinition[] = [
   },
   dashboardRoute,
   {
+    title: 'Profile',
     path: '/account/profile',
     requiresAuth: true,
     layout: DashboardLayout,
@@ -64,23 +80,24 @@ const routes: RouteDefinition[] = [
     anonymousOnly: false,
   },
   {
+    title: '404',
     path: '*',
     requiresAuth: false,
     layout: AnonymousLayout,
-    content: LazyPages.HomePage,
-    anonymousOnly: true,
+    content: LazyPages.NotFoundPage,
+    anonymousOnly: false,
   },
 ];
 
 const App = () => {
+  const { t } = useTranslation();
   const isAuthenticated = useAppSelector(state => !!state.auth.account);
   const isAuthPending = useAppSelector(state => state.auth.pending);
   const authInfo: AuthInfo = {
     isAuthenticated: isAuthenticated,
     isAuthPending: isAuthPending,
-    authenticationFallback: loginRoute.path,
-    authenticatedFallback: dashboardRoute.path,
-    authFallbackLayout: loginRoute.layout,
+    authenticationFallback: homeRoute,
+    authenticatedFallback: dashboardRoute,
   };
 
   return (
@@ -89,7 +106,7 @@ const App = () => {
         <Route
           key={i}
           path={route.path}
-          element={<EnhancedRoute route={route} authInfo={authInfo} />}
+          element={<EnhancedRoute pageTitle={t('ui.appName')} route={route} authInfo={authInfo} />}
         />
       ))}
     </Routes>

@@ -4,7 +4,7 @@ import { render, screen, waitFor } from '../../../tests/utils';
 import { AccountMenu } from './AccountMenu';
 
 describe('AccountMenu component', () => {
-  it('toggles menu when clicking the icon', async () => {
+  it('toggles menu', async () => {
     const user = userEvent.setup();
     render(<AccountMenu />);
 
@@ -14,6 +14,12 @@ describe('AccountMenu component', () => {
 
     await waitFor(() =>
       expect(screen.getByTestId('accountMenu')).toHaveStyle({ visibility: 'visible' })
+    );
+
+    await user.click(screen.getByRole('menu'));
+
+    await waitFor(() =>
+      expect(screen.getByTestId('accountMenu')).toHaveStyle({ visibility: 'hidden' })
     );
   });
 });

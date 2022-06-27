@@ -1,4 +1,4 @@
-import { ComponentType, ReactNode, Suspense } from 'react';
+import { ComponentType, ReactNode, Suspense, useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
 
 import { AppLoader } from './AppLoader';
@@ -6,6 +6,7 @@ import { AppLoader } from './AppLoader';
 type LayoutDefinition = ComponentType<{ children: ReactNode }>;
 
 export interface RouteDefinition {
+  title: string;
   path: string;
   requiresAuth: boolean;
   layout: LayoutDefinition;
@@ -16,40 +17,42 @@ export interface RouteDefinition {
 export interface AuthInfo {
   isAuthenticated: boolean;
   isAuthPending: boolean;
-  authenticationFallback: string;
-  authenticatedFallback: string;
-  authFallbackLayout: LayoutDefinition;
+  authenticationFallback: RouteDefinition;
+  authenticatedFallback: RouteDefinition;
 }
 
 interface EnhancedRouteProps {
+  pageTitle: string;
   route: RouteDefinition;
   authInfo: AuthInfo;
 }
 
-export const EnhancedRoute = ({ route, authInfo }: EnhancedRouteProps) => {
-  const { requiresAuth, anonymousOnly, layout: Layout, content: Content } = route;
-  const {
-    isAuthPending,
-    authFallbackLayout: AuthFallbackLayout,
-    isAuthenticated,
-    authenticationFallback,
-    authenticatedFallback,
-  } = authInfo;
+export const EnhancedRoute = ({ pageTitle, route, authInfo }: EnhancedRouteProps) => {
+  const { title, requiresAuth, anonymousOnly, layout: Layout, content: Content } = route;
+
+  useEffect(() => {
+    document.title = title ? `${title} | ${pageTitle}` : pageTitle;
+  }, [pageTitle, title]);
+
+  const { isAuthPending, isAuthenticated, authenticationFallback, authenticatedFallback } =
+    authInfo;
+
+  const AuthenticationFallbackLayout = authenticationFallback.layout;
 
   if (isAuthPending && requiresAuth) {
     return (
-      <AuthFallbackLayout>
+      <AuthenticationFallbackLayout>
         <AppLoader />
-      </AuthFallbackLayout>
+      </AuthenticationFallbackLayout>
     );
   }
 
   if (requiresAuth && !isAuthenticated) {
-    return <Navigate to={authenticationFallback} />;
+    return <Navigate to={authenticationFallback.path} />;
   }
 
   if (anonymousOnly && isAuthenticated) {
-    return <Navigate to={authenticatedFallback} />;
+    return <Navigate to={authenticatedFallback.path} />;
   }
 
   return (

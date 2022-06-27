@@ -1,4 +1,10 @@
-import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
+import axios, { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
+
+import { ErrorResponse } from '../../backendTypes';
+
+const TOKEN_EXPIRED_STATUS_CODE = 422;
+const TOKEN_EXPIRED_RESPONSE_CASE = 'JWTDecodeError';
+const TOKEN_EXPIRED_RESPONSE_DETAIL = 'Signature has expired';
 
 export interface Callbacks {
   onUnauthorized: () => Promise<unknown>;
@@ -56,15 +62,15 @@ export class RestClient {
   private addErrorHandler() {
     this.fetcher.interceptors.response.use(
       (response: AxiosResponse) => response,
-      async (error: any) => {
+      async (error: AxiosError<ErrorResponse>) => {
         const originalRequest = error.config as RequestConfig;
 
         if (
           this.authHeader &&
           !originalRequest._skipErrorHandler &&
-          error.response.status === 422 &&
-          error.response.data.case === 'JWTDecodeError' &&
-          error.response.data.detail === 'Signature has expired'
+          error.response?.status === TOKEN_EXPIRED_STATUS_CODE &&
+          error.response?.data.case === TOKEN_EXPIRED_RESPONSE_CASE &&
+          error.response?.data.detail === TOKEN_EXPIRED_RESPONSE_DETAIL
         ) {
           originalRequest._skipErrorHandler = true;
 

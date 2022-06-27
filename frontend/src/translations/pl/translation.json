@@ -1,4 +1,8 @@
 {
+  "404": {
+    "areYouLost": "Zgubiłeś się? Wygląda na to, że strona, której szukasz, nie istnieje.",
+    "pageNotFound": "Strona nie istnieje"
+  },
   "account": {
     "name": "Nazwa",
     "updateAccount": "Zaktualizuj konto",
