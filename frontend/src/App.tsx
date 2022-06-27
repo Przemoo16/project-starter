@@ -10,12 +10,12 @@ import { AuthLayout } from './ui-components/layouts/AuthLayout';
 import { DashboardLayout } from './ui-components/layouts/DashboardLayout';
 import { AuthInfo, EnhancedRoute, RouteDefinition } from './ui-components/Routing';
 
-const homeRoute: RouteDefinition = {
-  title: '',
-  path: '/',
+const loginRoute: RouteDefinition = {
+  title: 'Login',
+  path: '/login',
   requiresAuth: false,
-  layout: AnonymousLayout,
-  content: LazyPages.HomePage,
+  layout: AuthLayout,
+  content: LazyPages.LoginPage,
   anonymousOnly: true,
 };
 
@@ -29,15 +29,15 @@ const dashboardRoute: RouteDefinition = {
 };
 
 const routes: RouteDefinition[] = [
-  homeRoute,
   {
-    title: 'Login',
-    path: '/login',
+    title: '',
+    path: '/',
     requiresAuth: false,
-    layout: AuthLayout,
-    content: LazyPages.LoginPage,
+    layout: AnonymousLayout,
+    content: LazyPages.HomePage,
     anonymousOnly: true,
   },
+  loginRoute,
   {
     title: 'Register',
     path: '/register',
@@ -96,7 +96,7 @@ const App = () => {
   const authInfo: AuthInfo = {
     isAuthenticated: isAuthenticated,
     isAuthPending: isAuthPending,
-    authenticationFallback: homeRoute,
+    authenticationFallback: loginRoute,
     authenticatedFallback: dashboardRoute,
   };
 
