@@ -163,7 +163,7 @@ function* logoutSaga() {
 
   yield takeLeading(authActions.logout, function* () {
     yield backend.logout();
-    window.location.assign('/');
+    window.location.assign('/login');
   });
 }
 
