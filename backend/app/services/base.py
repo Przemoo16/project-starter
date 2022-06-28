@@ -24,15 +24,13 @@ class AppService(DBSessionContext):
 
 
 class AppCRUD(DBSessionContext):
-    async def _create(
-        self, model: typing.Type[Entry], entry: "base.BaseModel"
-    ) -> Entry:
+    async def _create(self, model: type[Entry], entry: "base.BaseModel") -> Entry:
         db_entry = model.from_orm(entry)
         return await self._save(db_entry)
 
     async def _read_many(
         self,
-        model: typing.Type[Entry],
+        model: type[Entry],
         entry: "base.PydanticBaseModel",
         pagination: pagination_models.Pagination = pagination_models.Pagination(),
     ) -> list[Entry]:
@@ -44,7 +42,7 @@ class AppCRUD(DBSessionContext):
         return (await self.session.execute(statement)).scalars().all()
 
     async def _read_one(
-        self, model: typing.Type[Entry], entry: "base.PydanticBaseModel"
+        self, model: type[Entry], entry: "base.PydanticBaseModel"
     ) -> Entry:
         statement = _build_filters_statement(model, sqlmodel.select(model), entry)
         return (await self.session.execute(statement)).scalar_one()
@@ -60,7 +58,7 @@ class AppCRUD(DBSessionContext):
         await self.session.commit()
 
     async def _count(
-        self, model: typing.Type["base.BaseModel"], entry: "base.PydanticBaseModel"
+        self, model: type["base.BaseModel"], entry: "base.PydanticBaseModel"
     ) -> pagination_models.TotalResults:
         select_statament: expression.SelectOfScalar[typing.Any] = sqlmodel.select(
             [sqlmodel.func.count()]
@@ -76,7 +74,7 @@ class AppCRUD(DBSessionContext):
 
 
 def _build_filters_statement(
-    model: typing.Type["base.BaseModel"],
+    model: type["base.BaseModel"],
     statement: expression.SelectOfScalar[Entry],
     filters: "base.PydanticBaseModel",
 ) -> expression.SelectOfScalar[Entry]:

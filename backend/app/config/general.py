@@ -62,6 +62,6 @@ class Settings(
         case_sensitive = True
 
 
-@functools.lru_cache()
+@functools.lru_cache
 def get_settings() -> Settings:
     return Settings()

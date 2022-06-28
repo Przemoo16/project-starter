@@ -219,6 +219,8 @@ pytz==2022.1
     # via
     #   babel
     #   celery
+pyupgrade==2.34.0
+    # via -r requirements.in
 pyyaml==6.0
     # via
     #   bandit
@@ -262,6 +264,8 @@ starlette==0.19.1
     #   fastapi
 stevedore==3.5.0
     # via bandit
+tokenize-rt==4.2.1
+    # via pyupgrade
 tomli==2.0.1
     # via
     #   black

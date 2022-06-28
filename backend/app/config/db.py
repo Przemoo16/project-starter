@@ -27,6 +27,6 @@ async def get_session() -> typing.AsyncGenerator[
         yield session
 
 
-@functools.lru_cache()
+@functools.lru_cache
 def get_jwt_db() -> redis.Redis:  # type: ignore
     return redis.Redis.from_url(settings.AUTHJWT_DATABASE_URL, decode_responses=True)
