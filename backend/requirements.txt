@@ -13,10 +13,8 @@ anyio==3.6.1
     #   -r requirements.in
     #   httpcore
     #   starlette
-    #   watchgod
-asgiref==3.5.2
-    # via uvicorn
-astroid==2.11.5
+    #   watchfiles
+astroid==2.11.6
     # via pylint
 async-timeout==4.0.2
     # via redis
@@ -24,7 +22,7 @@ asyncpg==0.25.0
     # via -r requirements.in
 attrs==21.4.0
     # via pytest
-babel==2.10.1
+babel==2.10.3
     # via -r requirements.in
 bandit==1.7.4
     # via -r requirements.in
@@ -32,11 +30,13 @@ bcrypt==3.2.2
     # via passlib
 billiard==3.6.4.0
     # via celery
-black==22.3.0
+black==22.6.0
     # via -r requirements.in
+build==0.8.0
+    # via pip-tools
 celery==5.2.7
     # via -r requirements.in
-certifi==2022.5.18.1
+certifi==2022.6.15
     # via
     #   httpcore
     #   httpx
@@ -140,16 +140,17 @@ mccabe==0.6.1
     # via
     #   flake8
     #   pylint
-mypy==0.960
+mypy==0.961
     # via -r requirements.in
 mypy-extensions==0.4.3
     # via
     #   black
     #   mypy
-orjson==3.7.0
+orjson==3.7.5
     # via -r requirements.in
 packaging==21.3
     # via
+    #   build
     #   pytest
     #   redis
 passlib[bcrypt]==1.7.4
@@ -159,8 +160,8 @@ pathspec==0.9.0
 pbr==5.9.0
     # via stevedore
 pep517==0.12.0
-    # via pip-tools
-pip-tools==6.6.2
+    # via build
+pip-tools==6.7.0
     # via -r requirements.in
 platformdirs==2.5.2
     # via
@@ -168,7 +169,7 @@ platformdirs==2.5.2
     #   pylint
 pluggy==1.0.0
     # via pytest
-prompt-toolkit==3.0.29
+prompt-toolkit==3.0.30
     # via click-repl
 psycopg2-binary==2.9.3
     # via -r requirements.in
@@ -193,11 +194,11 @@ pydocstyle==6.1.1
     # via flake8-docstrings
 pyflakes==2.4.0
     # via flake8
-pyhumps==3.7.1
+pyhumps==3.7.2
     # via -r requirements.in
 pyjwt==1.7.1
     # via fastapi-jwt-auth
-pylint==2.14.0
+pylint==2.14.3
     # via -r requirements.in
 pyparsing==3.0.9
     # via packaging
@@ -225,15 +226,15 @@ pyyaml==6.0
     # via
     #   bandit
     #   uvicorn
-redis==4.3.3
+redis==4.3.4
     # via -r requirements.in
-requests==2.27.1
+requests==2.28.0
     # via -r requirements.in
 rfc3986[idna2008]==1.5.0
     # via httpx
 rsa==4.8
     # via python-jose
-sentry-sdk==1.5.12
+sentry-sdk==1.6.0
     # via -r requirements.in
 six==1.16.0
     # via
@@ -250,11 +251,11 @@ sniffio==1.2.0
     #   httpx
 snowballstemmer==2.2.0
     # via pydocstyle
-sqlalchemy==1.4.37
+sqlalchemy==1.4.39
     # via
     #   alembic
     #   sqlmodel
-sqlalchemy2-stubs==0.0.2a22
+sqlalchemy2-stubs==0.0.2a24
     # via sqlmodel
 sqlmodel==0.0.6
     # via -r requirements.in
@@ -269,6 +270,7 @@ tokenize-rt==4.2.1
 tomli==2.0.1
     # via
     #   black
+    #   build
     #   coverage
     #   mypy
     #   pep517
@@ -276,11 +278,11 @@ tomli==2.0.1
     #   pytest
 tomlkit==0.11.0
     # via pylint
-types-freezegun==1.1.9
+types-freezegun==1.1.10
     # via -r requirements.in
 types-orjson==3.6.2
     # via -r requirements.in
-types-redis==4.2.6
+types-redis==4.3.2
     # via -r requirements.in
 typing-extensions==4.2.0
     # via
@@ -291,7 +293,7 @@ urllib3==1.26.9
     # via
     #   requests
     #   sentry-sdk
-uvicorn[standard]==0.17.6
+uvicorn[standard]==0.18.2
     # via -r requirements.in
 uvloop==0.16.0
     # via uvicorn
@@ -300,7 +302,7 @@ vine==5.0.0
     #   amqp
     #   celery
     #   kombu
-watchgod==0.8.2
+watchfiles==0.15.0
     # via uvicorn
 wcwidth==0.2.5
     # via prompt-toolkit
