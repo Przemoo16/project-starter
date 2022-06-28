@@ -85,13 +85,13 @@ class UserService(base.AppService):
         await UserCRUD(self.session).update(user, user_update)
 
     @staticmethod
-    def request_reset_password(user: user_models.User) -> None:
+    def reset_password(user: user_models.User) -> None:
         user_tasks.send_email_to_reset_password.delay(
             user.email, user.reset_password_key
         )
         log.info("The task to send email to reset password has been invoked")
 
-    async def reset_password(
+    async def set_password(
         self,
         user: user_models.User,
         password: user_models.UserPassword,

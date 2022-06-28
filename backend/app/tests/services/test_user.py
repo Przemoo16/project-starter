@@ -220,19 +220,19 @@ async def test_user_service_confirm_email_time_expired(
 
 @pytest.mark.anyio
 @mock.patch("app.services.user.user_tasks.send_email_to_reset_password.delay")
-async def test_user_service_request_reset_password(
+async def test_user_service_reset_password(
     mock_send_email: mock.MagicMock,
     session: "conftest.AsyncSession",
 ) -> None:
     user = await user_helpers.create_user(session=session)
 
-    user_services.UserService(session).request_reset_password(user)
+    user_services.UserService(session).reset_password(user)
 
     mock_send_email.assert_called_once_with(user.email, user.reset_password_key)
 
 
 @pytest.mark.anyio
-async def test_user_service_reset_password(
+async def test_user_service_set_password(
     session: "conftest.AsyncSession",
 ) -> None:
     old_password = "hashed_password"
@@ -240,7 +240,7 @@ async def test_user_service_reset_password(
     old_reset_password_key = user.reset_password_key
     new_plain_password = "plain_password"
 
-    await user_services.UserService(session).reset_password(user, new_plain_password)
+    await user_services.UserService(session).set_password(user, new_plain_password)
 
     assert user.password != old_password
     assert user.password != new_plain_password
