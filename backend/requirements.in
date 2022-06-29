@@ -36,6 +36,7 @@ pip-tools
 pylint
 pytest
 pytest-cov
+pyupgrade
 types-freezegun
 types-orjson
 types-redis
