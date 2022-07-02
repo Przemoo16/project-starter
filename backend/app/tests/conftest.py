@@ -89,7 +89,7 @@ async def async_client_fixture(
     main.app.dependency_overrides.clear()
 
 
-@pytest.fixture(name="mock_common")
+@pytest.fixture(name="mock_common", autouse=True)
 def mock_common_fixture(monkeypatch: "pytest_monkeypatch.MonkeyPatch") -> None:
     monkeypatch.setattr("smtplib.SMTP", email_mocks.MockSMTP)
     monkeypatch.setattr("smtplib.SMTP_SSL", email_mocks.MockSMTP_SSL)

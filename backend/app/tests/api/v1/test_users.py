@@ -14,10 +14,7 @@ API_URL = "/api/v1"
 
 
 @pytest.mark.anyio
-async def test_create_user(
-    async_client: "conftest.TestClient",
-    mock_common: None,  # pylint: disable=unused-argument
-) -> None:
+async def test_create_user(async_client: "conftest.TestClient") -> None:
     email = "test@email.com"
     name = "Test User"
     request_data = {"email": email, "password": "plain_password", "name": name}
@@ -38,9 +35,7 @@ async def test_create_user(
 
 @pytest.mark.anyio
 async def test_get_me(
-    async_client: "conftest.TestClient",
-    session: "conftest.AsyncSession",
-    mock_common: None,  # pylint: disable=unused-argument
+    async_client: "conftest.TestClient", session: "conftest.AsyncSession"
 ) -> None:
     user = await user_helpers.create_active_user(session=session)
     token = jwt_auth.AuthJWT().create_access_token(str(user.id))
@@ -60,9 +55,7 @@ async def test_get_me(
 
 @pytest.mark.anyio
 async def test_get_me_inactive_user(
-    async_client: "conftest.TestClient",
-    session: "conftest.AsyncSession",
-    mock_common: None,  # pylint: disable=unused-argument
+    async_client: "conftest.TestClient", session: "conftest.AsyncSession"
 ) -> None:
     user = await user_helpers.create_user(session=session)
     token = jwt_auth.AuthJWT().create_access_token(str(user.id))
@@ -75,9 +68,7 @@ async def test_get_me_inactive_user(
 
 @pytest.mark.anyio
 async def test_update_me(
-    async_client: "conftest.TestClient",
-    session: "conftest.AsyncSession",
-    mock_common: None,  # pylint: disable=unused-argument
+    async_client: "conftest.TestClient", session: "conftest.AsyncSession"
 ) -> None:
     user = await user_helpers.create_active_user(session=session, name="Test User")
     new_name = "Updated Name"
@@ -101,9 +92,7 @@ async def test_update_me(
 
 @pytest.mark.anyio
 async def test_update_me_inactive_user(
-    async_client: "conftest.TestClient",
-    session: "conftest.AsyncSession",
-    mock_common: None,  # pylint: disable=unused-argument
+    async_client: "conftest.TestClient", session: "conftest.AsyncSession"
 ) -> None:
     user = await user_helpers.create_user(session=session)
     request_data = {"name": "Updated Name"}
@@ -119,9 +108,7 @@ async def test_update_me_inactive_user(
 
 @pytest.mark.anyio
 async def test_delete_me(
-    async_client: "conftest.TestClient",
-    session: "conftest.AsyncSession",
-    mock_common: None,  # pylint: disable=unused-argument
+    async_client: "conftest.TestClient", session: "conftest.AsyncSession"
 ) -> None:
     user = await user_helpers.create_active_user(session=session)
     token = jwt_auth.AuthJWT().create_access_token(str(user.id), fresh=True)
@@ -135,9 +122,7 @@ async def test_delete_me(
 
 @pytest.mark.anyio
 async def test_delete_me_inactive_user(
-    async_client: "conftest.TestClient",
-    session: "conftest.AsyncSession",
-    mock_common: None,  # pylint: disable=unused-argument
+    async_client: "conftest.TestClient", session: "conftest.AsyncSession"
 ) -> None:
     user = await user_helpers.create_user(session=session)
     token = jwt_auth.AuthJWT().create_access_token(str(user.id))
@@ -150,9 +135,7 @@ async def test_delete_me_inactive_user(
 
 @pytest.mark.anyio
 async def test_delete_me_no_fresh_token(
-    async_client: "conftest.TestClient",
-    session: "conftest.AsyncSession",
-    mock_common: None,  # pylint: disable=unused-argument
+    async_client: "conftest.TestClient", session: "conftest.AsyncSession"
 ) -> None:
     user = await user_helpers.create_active_user(session=session)
     token = jwt_auth.AuthJWT().create_access_token(str(user.id), fresh=False)
@@ -165,9 +148,7 @@ async def test_delete_me_no_fresh_token(
 
 @pytest.mark.anyio
 async def test_change_my_password(
-    async_client: "conftest.TestClient",
-    session: "conftest.AsyncSession",
-    mock_common: None,  # pylint: disable=unused-argument
+    async_client: "conftest.TestClient", session: "conftest.AsyncSession"
 ) -> None:
     user = await user_helpers.create_active_user(
         session=session,
@@ -187,9 +168,7 @@ async def test_change_my_password(
 
 @pytest.mark.anyio
 async def test_change_my_password_inactive_user(
-    async_client: "conftest.TestClient",
-    session: "conftest.AsyncSession",
-    mock_common: None,  # pylint: disable=unused-argument
+    async_client: "conftest.TestClient", session: "conftest.AsyncSession"
 ) -> None:
     user = await user_helpers.create_user(
         session=session,
@@ -208,9 +187,7 @@ async def test_change_my_password_inactive_user(
 
 @pytest.mark.anyio
 async def test_get_user(
-    async_client: "conftest.TestClient",
-    session: "conftest.AsyncSession",
-    mock_common: None,  # pylint: disable=unused-argument
+    async_client: "conftest.TestClient", session: "conftest.AsyncSession"
 ) -> None:
     user = await user_helpers.create_active_user(session=session)
     token = jwt_auth.AuthJWT().create_access_token(str(user.id))
@@ -230,9 +207,7 @@ async def test_get_user(
 
 @pytest.mark.anyio
 async def test_get_user_inactive_user(
-    async_client: "conftest.TestClient",
-    session: "conftest.AsyncSession",
-    mock_common: None,  # pylint: disable=unused-argument
+    async_client: "conftest.TestClient", session: "conftest.AsyncSession"
 ) -> None:
     user = await user_helpers.create_user(session=session)
     token = jwt_auth.AuthJWT().create_access_token(str(user.id))
@@ -245,9 +220,7 @@ async def test_get_user_inactive_user(
 
 @pytest.mark.anyio
 async def test_confirm_email(
-    async_client: "conftest.TestClient",
-    session: "conftest.AsyncSession",
-    mock_common: None,  # pylint: disable=unused-argument
+    async_client: "conftest.TestClient", session: "conftest.AsyncSession"
 ) -> None:
     user = await user_helpers.create_user(session=session)
     request_data = {"key": str(user.confirmation_email_key)}
@@ -262,9 +235,7 @@ async def test_confirm_email(
 
 @pytest.mark.anyio
 async def test_reset_password(
-    async_client: "conftest.TestClient",
-    session: "conftest.AsyncSession",
-    mock_common: None,  # pylint: disable=unused-argument
+    async_client: "conftest.TestClient", session: "conftest.AsyncSession"
 ) -> None:
     user = await user_helpers.create_user(session=session)
     request_data = {"email": user.email}
@@ -287,7 +258,6 @@ async def test_reset_password(
 @pytest.mark.anyio
 async def test_reset_password_user_not_found(
     async_client: "conftest.TestClient",
-    mock_common: None,  # pylint: disable=unused-argument
 ) -> None:
     request_data = {"email": "test@email.com"}
 
@@ -308,9 +278,7 @@ async def test_reset_password_user_not_found(
 
 @pytest.mark.anyio
 async def test_set_password(
-    async_client: "conftest.TestClient",
-    session: "conftest.AsyncSession",
-    mock_common: None,  # pylint: disable=unused-argument
+    async_client: "conftest.TestClient", session: "conftest.AsyncSession"
 ) -> None:
     user = await user_helpers.create_user(session=session)
     request_data = {"key": str(user.reset_password_key), "password": "plain_password"}

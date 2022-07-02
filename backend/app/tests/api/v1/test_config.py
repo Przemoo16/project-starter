@@ -12,10 +12,7 @@ API_URL = "/api/v1"
 
 
 @pytest.mark.anyio
-async def test_get_config(
-    async_client: "conftest.TestClient",
-    mock_common: None,  # pylint: disable=unused-argument
-) -> None:
+async def test_get_config(async_client: "conftest.TestClient") -> None:
     response = await async_client.get(f"{API_URL}/config", follow_redirects=True)
     retrieved_config = response.json()
 
