@@ -17,7 +17,7 @@ const ResetPasswordPage = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const { resetPassword } = authActions;
-  const { pending } = useAppSelector(state => state.auth);
+  const { resetPasswordPending } = useAppSelector(state => state.auth);
   const { control, handleSubmit } = useForm({
     mode: 'onTouched',
     defaultValues: {
@@ -41,7 +41,7 @@ const ResetPasswordPage = () => {
           autoComplete="email"
           data-testid="emailInput"
         />
-        <SubmitButton loading={pending}>{t('auth.sendEmailButton')}</SubmitButton>
+        <SubmitButton loading={resetPasswordPending}>{t('auth.sendEmailButton')}</SubmitButton>
         <LinksContainer>
           <Link to="/login" data-testid="loginLink">
             {t('auth.backToLoginLink')}

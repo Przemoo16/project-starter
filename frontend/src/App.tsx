@@ -10,7 +10,7 @@ import { AuthInfo, EnhancedRoute } from './ui-components/Routing';
 const App = () => {
   const { t } = useTranslation();
   const isAuthenticated = useAppSelector(state => !!state.auth.account);
-  const isAuthPending = useAppSelector(state => state.auth.pending);
+  const isAuthPending = useAppSelector(state => state.auth.loginPending);
   const authInfo: AuthInfo = {
     isAuthenticated: isAuthenticated,
     isAuthPending: isAuthPending,

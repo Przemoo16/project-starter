@@ -17,7 +17,7 @@ const LoginPage = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const { login } = authActions;
-  const { pending } = useAppSelector(state => state.auth);
+  const { loginPending } = useAppSelector(state => state.auth);
   const { control, handleSubmit } = useForm({
     mode: 'onTouched',
     defaultValues: {
@@ -49,7 +49,7 @@ const LoginPage = () => {
           autoComplete="password"
           data-testid="passwordInput"
         />
-        <SubmitButton loading={pending}>{t('auth.loginButton')}</SubmitButton>
+        <SubmitButton loading={loginPending}>{t('auth.loginButton')}</SubmitButton>
         <LinksContainer>
           <Link to="/register" data-testid="registerLink">
             {t('auth.registerLink')}

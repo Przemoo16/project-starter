@@ -20,7 +20,7 @@ const SetPasswordPage = () => {
   const { accountPasswordMinLength, accountPasswordMaxLength } = useAppSelector(
     state => state.config
   );
-  const { pending } = useAppSelector(state => state.auth);
+  const { setPasswordPending } = useAppSelector(state => state.auth);
   const dispatch = useAppDispatch();
   const { setPassword } = authActions;
   const { control, handleSubmit } = useForm({
@@ -51,7 +51,7 @@ const SetPasswordPage = () => {
           label={t('auth.repeatPassword')}
           data-testid="repeatPasswordInput"
         />
-        <SubmitButton loading={pending}>{t('auth.setPasswordButton')}</SubmitButton>
+        <SubmitButton loading={setPasswordPending}>{t('auth.setPasswordButton')}</SubmitButton>
         <LinksContainer>
           <Link to="/login" data-testid="loginLink">
             {t('auth.backToLoginLink')}

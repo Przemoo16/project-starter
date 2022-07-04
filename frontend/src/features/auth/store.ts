@@ -20,13 +20,21 @@ import { notifyError, notifySuccess } from '../../ui-components/store';
 
 interface AuthState {
   account: Account | null;
-  pending: boolean;
+  loginPending: boolean;
+  registerPending: boolean;
+  resetPasswordPending: boolean;
+  setPasswordPending: boolean;
+  confirmEmailPending: boolean;
   errors: ErrorResponse | null;
 }
 
 const initialState: AuthState = {
   account: null,
-  pending: true,
+  loginPending: true,
+  registerPending: false,
+  resetPasswordPending: false,
+  setPasswordPending: false,
+  confirmEmailPending: false,
   errors: null,
 };
 
@@ -35,73 +43,73 @@ export const authSlice = createSlice({
   initialState,
   reducers: {
     loadAccount(state, { payload }: PayloadAction<{ account: Account | null }>) {
-      state.pending = false;
+      state.loginPending = false;
       state.errors = null;
       state.account = payload.account;
     },
     login(state, action: PayloadAction<LoginData>) {
-      state.pending = true;
+      state.loginPending = true;
       state.errors = null;
     },
     loginSuccess(state, { payload }: PayloadAction<{ account: Account }>) {
-      state.pending = false;
+      state.loginPending = false;
       state.errors = null;
       state.account = payload.account;
     },
     loginFailure(state, { payload }: PayloadAction<{ errors: ErrorResponse }>) {
-      state.pending = false;
+      state.loginPending = false;
       state.errors = payload.errors;
       state.account = null;
     },
     register(state, action: PayloadAction<RegisterData>) {
-      state.pending = true;
+      state.registerPending = true;
       state.errors = null;
     },
     registerSuccess(state) {
-      state.pending = false;
+      state.registerPending = false;
       state.errors = null;
     },
     registerFailure(state, { payload }: PayloadAction<{ errors: ErrorResponse }>) {
-      state.pending = false;
+      state.registerPending = false;
       state.errors = payload.errors;
     },
     logout(state) {
       state.account = null;
     },
     resetPassword(state, action: PayloadAction<ResetPasswordData>) {
-      state.pending = true;
+      state.resetPasswordPending = true;
       state.errors = null;
     },
     resetPasswordSuccess(state) {
-      state.pending = false;
+      state.resetPasswordPending = false;
       state.errors = null;
     },
     resetPasswordFailure(state, { payload }: PayloadAction<{ errors: ErrorResponse }>) {
-      state.pending = false;
+      state.resetPasswordPending = false;
       state.errors = payload.errors;
     },
     setPassword(state, action: PayloadAction<SetPasswordData>) {
-      state.pending = true;
+      state.setPasswordPending = true;
       state.errors = null;
     },
     setPasswordSuccess(state) {
-      state.pending = false;
+      state.setPasswordPending = false;
       state.errors = null;
     },
     setPasswordFailure(state, { payload }: PayloadAction<{ errors: ErrorResponse }>) {
-      state.pending = false;
+      state.setPasswordPending = false;
       state.errors = payload.errors;
     },
     confirmEmail(state, action: PayloadAction<ConfirmEmailData>) {
-      state.pending = true;
+      state.confirmEmailPending = true;
       state.errors = null;
     },
     confirmEmailSuccess(state) {
-      state.pending = false;
+      state.confirmEmailPending = false;
       state.errors = null;
     },
     confirmEmailFailure(state, { payload }: PayloadAction<{ errors: ErrorResponse }>) {
-      state.pending = false;
+      state.confirmEmailPending = false;
       state.errors = payload.errors;
     },
   },
