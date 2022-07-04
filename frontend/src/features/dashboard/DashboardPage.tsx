@@ -1,9 +1,5 @@
-import Typography from '@mui/material/Typography';
+import { Title } from '../common/Typography';
 
-const DashboardPage = () => (
-  <Typography component="h1" variant="h4" align="center">
-    Dashboard Page
-  </Typography>
-);
+const DashboardPage = () => <Title>Dashboard Page</Title>;
 
 export default DashboardPage;

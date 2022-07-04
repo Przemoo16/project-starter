@@ -68,10 +68,10 @@ class UserService(base.AppService):
     async def change_password(
         self,
         user: user_models.User,
-        old_password: user_models.UserPassword,
+        current_password: user_models.UserPassword,
         new_password: user_models.UserPassword,
     ) -> None:
-        if not auth.verify_password(old_password, user.password):
+        if not auth.verify_password(current_password, user.password):
             raise user_exceptions.InvalidPasswordError()
         user_update = user_models.UserUpdate(password=auth.hash_password(new_password))
         await UserCRUD(self.session).update(user, user_update)
