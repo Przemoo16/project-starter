@@ -9,8 +9,8 @@ import { useTranslation } from 'react-i18next';
 
 import { authActions } from '../../../features/auth/store';
 import { useAppDispatch, useAppSelector } from '../../../services/store';
-import { Link } from '../../../ui-components/Link';
 import { AccountAvatar } from '../../Avatar';
+import { Link } from '../../Link';
 
 export const AccountMenu = () => {
   const { t } = useTranslation();
