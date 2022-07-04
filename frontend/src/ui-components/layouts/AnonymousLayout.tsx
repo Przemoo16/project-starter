@@ -1,10 +1,10 @@
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
 import { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
+import { Paragraph } from '../../ui-components/Typography';
 import { ContainerWithHero } from './common/Container';
 
 interface AnonymousLayoutProps {
@@ -26,7 +26,7 @@ export const AnonymousLayout = ({ children }: AnonymousLayoutProps) => {
           justifyContent: 'center',
         }}
       >
-        <Typography align="center">{t('auth.loginTitle')}:</Typography>
+        <Paragraph align="center">{t('auth.loginTitle')}:</Paragraph>
         <Button
           to="/login"
           component={Link}

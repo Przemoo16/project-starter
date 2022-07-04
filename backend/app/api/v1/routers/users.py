@@ -89,7 +89,7 @@ async def change_my_password(
 ) -> typing.Any:
     await user_services.UserService(session).change_password(
         current_user,
-        change_password_model.old_password,
+        change_password_model.current_password,
         change_password_model.new_password,
     )
 

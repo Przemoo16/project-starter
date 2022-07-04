@@ -154,7 +154,7 @@ async def test_change_my_password(
         session=session,
         password="$2b$12$q8JcpltDZkSLOdMuPyt/jORzExLKp9HsKgCoFJQ1IzzITc2/Pg42q",
     )
-    request_data = {"oldPassword": "plain_password", "newPassword": "new_password"}
+    request_data = {"currentPassword": "plain_password", "newPassword": "new_password"}
     token = jwt_auth.AuthJWT().create_access_token(str(user.id))
     headers = {"Authorization": f"Bearer {token}"}
 
@@ -174,7 +174,7 @@ async def test_change_my_password_inactive_user(
         session=session,
         password="$2b$12$q8JcpltDZkSLOdMuPyt/jORzExLKp9HsKgCoFJQ1IzzITc2/Pg42q",
     )
-    request_data = {"oldPassword": "plain_password", "newPassword": "new_password"}
+    request_data = {"currentPassword": "plain_password", "newPassword": "new_password"}
     token = jwt_auth.AuthJWT().create_access_token(str(user.id))
     headers = {"Authorization": f"Bearer {token}"}
 

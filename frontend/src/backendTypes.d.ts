@@ -13,6 +13,7 @@ interface ErrorResponse {
 export interface Account {
   id: string;
   name: string;
+  avatar?: string;
 }
 
 export interface RegisterData {
@@ -45,6 +46,11 @@ export interface Config {
   accountPasswordMaxLength: number;
 }
 
-export interface UpdateAccountData {
+export interface UpdateAccountDetailsData {
   name: string;
+}
+
+export interface ChangePasswordData {
+  currentPassword: string;
+  newPassword: string;
 }

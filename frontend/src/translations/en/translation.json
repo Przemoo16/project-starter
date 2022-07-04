@@ -4,10 +4,20 @@
     "pageNotFound": "Page not found"
   },
   "account": {
+    "changePassword": "Change password",
+    "changePasswordError": "We couldn't change your password",
+    "changePasswordSuccess": "Your password has been changed",
+    "currentPassword": "Current password",
+    "deleteAccount": "Delete account",
+    "deleteAccountError": "We couldn't delete your account",
+    "deleteAccountWarning": "Once you delete your account, there is no going back. Please be certain.",
+    "deleteAccountSuccess": "Your account has been deleted",
     "name": "Name",
-    "updateAccount": "Update account",
-    "updateError": "We couldn't update your account",
-    "updateSuccess": "Your account has been updated"
+    "newPassword": "New password",
+    "repeatNewPassword": "Repeat new password",
+    "updateAccountDetails": "Update account details",
+    "updateAccountDetailsError": "We couldn't update your account details",
+    "updateAccountDetailsSuccess": "Your account details have been updated"
   },
   "auth": {
     "accountAlreadyExists": "The account with provided email already exists",

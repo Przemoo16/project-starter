@@ -56,6 +56,7 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
             alignItems: 'center',
             justifyContent: 'center',
             flexGrow: 1,
+            my: 5,
           }}
         >
           {children}

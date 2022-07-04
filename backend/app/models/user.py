@@ -93,7 +93,7 @@ class UserRead(base.BaseModel):
 
 
 class UserChangePassword(base.BaseModel):
-    old_password: UserPassword
+    current_password: UserPassword
     new_password: UserPassword = sqlmodel.Field(
         min_length=settings.USER_PASSWORD_MIN_LENGTH,
         max_length=settings.USER_PASSWORD_MAX_LENGTH,

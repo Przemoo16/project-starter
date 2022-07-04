@@ -235,16 +235,16 @@ async def test_user_service_reset_password(
 async def test_user_service_set_password(
     session: "conftest.AsyncSession",
 ) -> None:
-    old_password = "hashed_password"
-    user = await user_helpers.create_user(session=session, password=old_password)
-    old_reset_password_key = user.reset_password_key
+    current_password = "hashed_password"
+    user = await user_helpers.create_user(session=session, password=current_password)
+    current_reset_password_key = user.reset_password_key
     new_plain_password = "plain_password"
 
     await user_services.UserService(session).set_password(user, new_plain_password)
 
-    assert user.password != old_password
+    assert user.password != current_password
     assert user.password != new_plain_password
-    assert user.reset_password_key != old_reset_password_key
+    assert user.reset_password_key != current_reset_password_key
 
 
 @pytest.mark.anyio

@@ -1,8 +1,9 @@
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import SvgIcon from '@mui/material/SvgIcon';
-import Typography from '@mui/material/Typography';
 import { ReactNode } from 'react';
+
+import { Title } from '../../common/Typography';
 
 interface PageContainerProps {
   icon: typeof SvgIcon;
@@ -26,9 +27,7 @@ export const PageContainer = ({ icon: Icon, title, children }: PageContainerProp
     <Avatar sx={{ bgcolor: 'secondary.main' }}>
       <Icon />
     </Avatar>
-    <Typography component="h1" variant="h4" align="center" sx={{ mt: 2 }}>
-      {title}
-    </Typography>
+    <Title sx={{ mt: 2 }}>{title}</Title>
     {children}
   </Box>
 );

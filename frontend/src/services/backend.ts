@@ -1,12 +1,13 @@
 import {
   Account,
+  ChangePasswordData,
   Config,
   ConfirmEmailData,
   LoginData,
   RegisterData,
   ResetPasswordData,
   SetPasswordData,
-  UpdateAccountData,
+  UpdateAccountDetailsData,
 } from '../backendTypes';
 import { RestClient } from './client/restClient';
 import { TokenStorage } from './storage/tokenStorage';
@@ -153,12 +154,25 @@ class Backend {
     };
   }
 
-  async updateAccount(data: UpdateAccountData): Promise<Account> {
+  async updateAccountDetails(data: UpdateAccountDetailsData): Promise<Account> {
     const res = await this.client.request('/users/me', {
       method: 'PATCH',
       data,
     });
     return res.data;
+  }
+
+  async changePassword(data: ChangePasswordData) {
+    return this.client.request('/users/me/password', {
+      method: 'POST',
+      data,
+    });
+  }
+
+  async deleteAccount() {
+    return this.client.request('/users/me', {
+      method: 'DELETE',
+    });
   }
 }
 

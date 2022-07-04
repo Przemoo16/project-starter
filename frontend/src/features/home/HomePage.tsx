@@ -1,14 +1,11 @@
-import Typography from '@mui/material/Typography';
 import { useTranslation } from 'react-i18next';
+
+import { Title } from '../common/Typography';
 
 const HomePage = () => {
   const { t } = useTranslation();
 
-  return (
-    <Typography component="h1" variant="h4" align="center">
-      {t('ui.appName')}
-    </Typography>
-  );
+  return <Title>{t('ui.appName')}</Title>;
 };
 
 export default HomePage;

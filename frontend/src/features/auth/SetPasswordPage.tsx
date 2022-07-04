@@ -6,8 +6,8 @@ import { useParams } from 'react-router-dom';
 
 import { SetPasswordData } from '../../backendTypes';
 import { useAppDispatch, useAppSelector } from '../../services/store';
-import { SubmitButton } from '../common/Button';
 import { PasswordInput } from '../common/Input';
+import { SubmitButton } from './common/Button';
 import { PageContainer } from './common/Container';
 import { Form } from './common/Form';
 import { Link, LinksContainer } from './common/Link';

@@ -1,4 +1,3 @@
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import LogoutIcon from '@mui/icons-material/Logout';
 import PersonIcon from '@mui/icons-material/Person';
 import IconButton from '@mui/material/IconButton';
@@ -9,13 +8,15 @@ import { MouseEvent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { authActions } from '../../../features/auth/store';
-import { useAppDispatch } from '../../../services/store';
+import { useAppDispatch, useAppSelector } from '../../../services/store';
 import { Link } from '../../../ui-components/Link';
+import { AccountAvatar } from '../../Avatar';
 
 export const AccountMenu = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const { logout } = authActions;
+  const { account } = useAppSelector(state => state.auth);
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
 
   const handleOpenMenu = (event: MouseEvent<HTMLElement>) => {
@@ -38,7 +39,7 @@ export const AccountMenu = () => {
         aria-label="my account"
         data-testid="accountButton"
       >
-        <AccountCircleIcon fontSize="large" />
+        <AccountAvatar account={account} sx={{ width: 35, height: 35 }} />
       </IconButton>
       <Menu
         anchorEl={anchorEl}
@@ -50,7 +51,7 @@ export const AccountMenu = () => {
         onClose={handleCloseMenu}
         data-testid="accountMenu"
       >
-        <MenuItem component={Link} to="/account/profile">
+        <MenuItem component={Link} to="/account">
           <ListItemIcon>
             <PersonIcon />
           </ListItemIcon>

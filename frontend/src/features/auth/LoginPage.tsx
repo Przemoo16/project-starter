@@ -5,8 +5,8 @@ import { useTranslation } from 'react-i18next';
 
 import { LoginData } from '../../backendTypes';
 import { useAppDispatch, useAppSelector } from '../../services/store';
-import { SubmitButton } from '../common/Button';
 import { PasswordInput, TextInput } from '../common/Input';
+import { SubmitButton } from './common/Button';
 import { PageContainer } from './common/Container';
 import { Form } from './common/Form';
 import { Link, LinksContainer } from './common/Link';

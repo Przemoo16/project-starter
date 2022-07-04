@@ -66,11 +66,11 @@ export const routes: RouteDefinition[] = [
   },
   dashboardRoute,
   {
-    title: 'Profile',
-    path: '/account/profile',
+    title: 'Account',
+    path: '/account',
     requiresAuth: true,
     layout: DashboardLayout,
-    content: LazyPages.ProfilePage,
+    content: LazyPages.AccountPage,
     anonymousOnly: false,
   },
   {
