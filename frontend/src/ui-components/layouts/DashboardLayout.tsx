@@ -5,9 +5,9 @@ import { ReactNode } from 'react';
 
 import { useAppDispatch, useAppSelector } from '../../services/store';
 import { uiActions } from '../store';
-import { AppBar } from './common/AppBar';
 import { Copyright } from './common/Copyright';
-import { Drawer } from './common/Drawer';
+import { AppBar } from './nav/AppBar';
+import { Drawer } from './nav/Drawer';
 
 interface DashboardLayoutProps {
   children: ReactNode;
