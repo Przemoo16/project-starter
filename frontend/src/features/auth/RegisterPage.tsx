@@ -19,7 +19,7 @@ const RegisterPage = () => {
   const { register } = authActions;
   const { accountNameMaxLength, accountPasswordMinLength, accountPasswordMaxLength } =
     useAppSelector(state => state.config);
-  const { pending } = useAppSelector(state => state.auth);
+  const { registerPending } = useAppSelector(state => state.auth);
   const { control, handleSubmit } = useForm({
     mode: 'onTouched',
     defaultValues: {
@@ -77,7 +77,7 @@ const RegisterPage = () => {
           label={t('auth.repeatPassword')}
           data-testid="repeatPasswordInput"
         />
-        <SubmitButton loading={pending}>{t('auth.getStarted')}</SubmitButton>
+        <SubmitButton loading={registerPending}>{t('auth.getStarted')}</SubmitButton>
         <LinksContainer>
           <Link to="/login" data-testid="loginLink">
             {t('auth.loginLink')}
