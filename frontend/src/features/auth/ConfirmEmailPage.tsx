@@ -26,8 +26,8 @@ const ConfirmEmailPage = () => {
       <ContentContainer>
         {confirmEmailPending && <AppLoader />}
         <Paragraph align="center" sx={{ mt: 2 }} data-testid="confirmEmailMessage">
-          {!pending && !errors && t('auth.confirmEmailSuccess')}
-          {!pending && errors && t('auth.confirmEmailError')}
+          {!confirmEmailPending && !errors && t('auth.confirmEmailSuccess')}
+          {!confirmEmailPending && errors && t('auth.confirmEmailError')}
         </Paragraph>
         <LinksContainer>
           <Link to="/login" data-testid="loginLink">
