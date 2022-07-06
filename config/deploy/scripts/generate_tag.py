@@ -30,8 +30,12 @@ def get_commit_id() -> str:
     return os.getenv("CI_COMMIT_ID") or current_commit
 
 
-if __name__ == "__main__":
+def main() -> None:
     tag = generate_tag()
     sys.stdout.write(tag)
     sys.stdout.flush()
     sys.exit(0)
+
+
+if __name__ == "__main__":
+    main()

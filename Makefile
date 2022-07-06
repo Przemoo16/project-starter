@@ -1,5 +1,3 @@
-ADD_TEST_USERS_COMMAND=$(COMPOSE_DEV) exec -T postgres psql --username=postgres postgres -c "$(shell cat backend/sql/insert-test-users.sql)"
-
 DOCKER_REPO=059132655198.dkr.ecr.eu-central-1.amazonaws.com/project-starter
 DOCKER_TAG=$(shell python config/deploy/scripts/generate_tag.py)
 
@@ -12,9 +10,6 @@ COMPOSE_E2E_FILE=$(COMPOSE_PATH)docker-compose.e2e.yml
 COMPOSE_DEV=docker compose -f $(COMPOSE_FILE) -f $(COMPOSE_DEV_FILE)
 COMPOSE_PROD=DOCKER_REPO=$(DOCKER_REPO) DOCKER_TAG=$(DOCKER_TAG) docker compose -f $(COMPOSE_PROD_FILE)
 COMPOSE_E2E=docker compose -f $(COMPOSE_FILE) -f $(COMPOSE_E2E_FILE)
-
-add-test-users:
-	$(ADD_TEST_USERS_COMMAND)
 
 build:
 	$(COMPOSE_DEV) build
@@ -81,8 +76,6 @@ test-backend:
 	$(COMPOSE_DEV) run --rm backend pytest .
 
 test-e2e:
-	$(COMPOSE_E2E) up -d
-	$(ADD_TEST_USERS_COMMAND)
 	$(COMPOSE_E2E) up --exit-code-from e2e
 
 test-frontend:

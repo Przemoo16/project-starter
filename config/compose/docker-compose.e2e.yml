@@ -24,12 +24,14 @@ services:
       - DEV_MODE=off
 
   e2e:
-    image: cypress/included:9.6.1
+    build:
+      context: ../../
+      dockerfile: config/e2e/Dockerfile
     volumes:
-      - $PWD/e2e/cypress:/cypress
-      - $PWD/e2e/cypress.json:/cypress.json
+      - $PWD/e2e/cypress:/e2e/cypress
+      - $PWD/e2e/cypress.config.ts:/e2e/cypress.config.ts
     depends_on:
       proxy:
         condition: service_healthy
-    environment:
-      - CYPRESS_baseUrl=http://proxy
+    env_file:
+      - .env

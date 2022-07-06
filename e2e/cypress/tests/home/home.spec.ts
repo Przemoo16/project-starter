@@ -1,9 +1,7 @@
 describe("Home page", () => {
-  beforeEach(() => {
-    cy.visit("/");
-  });
-
   it("contains button with link to the /login page", () => {
+    cy.visit("/");
+
     cy.get("[data-testid=loginButton]").should("have.attr", "href", "/login");
   });
 

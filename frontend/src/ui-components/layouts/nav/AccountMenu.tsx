@@ -51,7 +51,7 @@ export const AccountMenu = () => {
         onClose={handleCloseMenu}
         data-testid="accountMenu"
       >
-        <MenuItem component={Link} to="/account">
+        <MenuItem component={Link} to="/account" data-testid="accountItem">
           <ListItemIcon>
             <PersonIcon />
           </ListItemIcon>
