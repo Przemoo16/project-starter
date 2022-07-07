@@ -59,6 +59,7 @@
     "invalidEmail": "Invalid email",
     "maxName": "Name can be up to {{max}} characters",
     "maxPassword": "Password can be up to {{max}} characters",
+    "minName": "Name must be at least {{min}} characters",
     "minPassword": "Password must be at least {{min}} characters",
     "passwordMatch": "Password doesn't match",
     "required": "This field is required"

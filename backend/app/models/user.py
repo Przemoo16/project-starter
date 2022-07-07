@@ -22,13 +22,16 @@ UserIsActive: typing.TypeAlias = bool
 
 settings = general.get_settings()
 
+USER_NAME_MIN_LENGTH = 4
 USER_NAME_MAX_LENGTH = 64
 
 
 class UserBase(base.BaseModel):
     email: UserEmail = sqlmodel.Field(index=True, sa_column_kwargs={"unique": True})
     password: UserPassword  # In database it's a hash so it doesn't have a strict length
-    name: UserName = sqlmodel.Field(max_length=USER_NAME_MAX_LENGTH)
+    name: UserName = sqlmodel.Field(
+        min_length=USER_NAME_MIN_LENGTH, max_length=USER_NAME_MAX_LENGTH
+    )
 
 
 class User(UserBase, table=True):
@@ -76,7 +79,7 @@ class UserFilters(base.PydanticBaseModel):
 
 class UserUpdateAPI(base.PydanticBaseModel):
     name: UserName | None = sqlmodel.Field(
-        default=None, max_length=USER_NAME_MAX_LENGTH
+        default=None, min_length=USER_NAME_MIN_LENGTH, max_length=USER_NAME_MAX_LENGTH
     )
 
 

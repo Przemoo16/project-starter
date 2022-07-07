@@ -28,6 +28,24 @@ describe("Register page", () => {
     cy.get("[id$=helper-text]").should("have.text", "This field is required");
   });
 
+  it("displays that name is too short", () => {
+    cy.get("[data-testid=nameInput]").type("p");
+    cy.fixture("../fixtures/user.json")
+      .as("userData")
+      .then((data) => {
+        cy.get("[data-testid=emailInput]").type(data.email);
+        cy.get("[data-testid=passwordInput]").type(data.password);
+        cy.get("[data-testid=repeatPasswordInput]").type(data.password);
+      });
+
+    cy.get("[data-testid=submitButton]").click();
+
+    cy.get("[id$=helper-text]").should(
+      "have.text",
+      "Name must be at least 4 characters"
+    );
+  });
+
   it("displays that name is too long", () => {
     cy.get("[data-testid=nameInput]").type("p".repeat(65));
     cy.fixture("../fixtures/user.json")

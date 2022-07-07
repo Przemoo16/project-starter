@@ -5,6 +5,7 @@ import { Config } from '../backendTypes';
 import { backend } from '../services/backend';
 
 const initialState: Config = {
+  accountNameMinLength: 4,
   accountNameMaxLength: 64,
   accountPasswordMinLength: 8,
   accountPasswordMaxLength: 32,
@@ -15,6 +16,7 @@ export const configSlice = createSlice({
   initialState,
   reducers: {
     loadConfig: (state, { payload }: PayloadAction<Config>) => {
+      state.accountNameMinLength = payload.accountNameMinLength;
       state.accountNameMaxLength = payload.accountNameMaxLength;
       state.accountPasswordMinLength = payload.accountPasswordMinLength;
       state.accountPasswordMaxLength = payload.accountPasswordMaxLength;
