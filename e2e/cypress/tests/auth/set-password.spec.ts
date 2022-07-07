@@ -12,48 +12,33 @@ describe("Set password page", () => {
   });
 
   it("displays that password is required", () => {
-    cy.fixture("../fixtures/activeUser.json")
-      .as("userData")
-      .then((data) => {
-        cy.get("[data-testid=submitButton]").click();
+    cy.get("[data-testid=submitButton]").click();
 
-        cy.get("[id$=helper-text]").should(
-          "have.text",
-          "This field is required"
-        );
-      });
+    cy.get("[id$=helper-text]").should("have.text", "This field is required");
   });
 
   it("displays that password is too short", () => {
-    cy.fixture("../fixtures/activeUser.json")
-      .as("userData")
-      .then((data) => {
-        cy.get("[data-testid=passwordInput]").type("p");
-        cy.get("[data-testid=repeatPasswordInput]").type("p");
+    cy.get("[data-testid=passwordInput]").type("p");
+    cy.get("[data-testid=repeatPasswordInput]").type("p");
 
-        cy.get("[data-testid=submitButton]").click();
+    cy.get("[data-testid=submitButton]").click();
 
-        cy.get("[id$=helper-text]").should(
-          "have.text",
-          "Password must be at least 8 characters"
-        );
-      });
+    cy.get("[id$=helper-text]").should(
+      "have.text",
+      "Password must be at least 8 characters"
+    );
   });
 
   it("displays that password is too long", () => {
-    cy.fixture("../fixtures/activeUser.json")
-      .as("userData")
-      .then((data) => {
-        cy.get("[data-testid=passwordInput]").type("p".repeat(33));
-        cy.get("[data-testid=repeatPasswordInput]").type("p".repeat(33));
+    cy.get("[data-testid=passwordInput]").type("p".repeat(33));
+    cy.get("[data-testid=repeatPasswordInput]").type("p".repeat(33));
 
-        cy.get("[data-testid=submitButton]").click();
+    cy.get("[data-testid=submitButton]").click();
 
-        cy.get("[id$=helper-text]").should(
-          "have.text",
-          "Password can be up to 32 characters"
-        );
-      });
+    cy.get("[id$=helper-text]").should(
+      "have.text",
+      "Password can be up to 32 characters"
+    );
   });
 
   it("displays that repeated password does not match", () => {
@@ -64,14 +49,11 @@ describe("Set password page", () => {
         cy.get("[data-testid=repeatPasswordInput]").type(
           `${data.password}-not-match`
         );
-
-        cy.get("[data-testid=submitButton]").click();
-
-        cy.get("[id$=helper-text]").should(
-          "have.text",
-          "Password doesn't match"
-        );
       });
+
+    cy.get("[data-testid=submitButton]").click();
+
+    cy.get("[id$=helper-text]").should("have.text", "Password doesn't match");
   });
 
   it("displays proper message when set password with invalid key", () => {
@@ -81,14 +63,14 @@ describe("Set password page", () => {
       .then((data) => {
         cy.get("[data-testid=passwordInput]").type(data.password);
         cy.get("[data-testid=repeatPasswordInput]").type(data.password);
-
-        cy.get("[data-testid=submitButton]").click();
-
-        cy.get("[role=alert]").should(
-          "have.text",
-          "We couldn't changed your password. Please check if the provided link is correct"
-        );
       });
+
+    cy.get("[data-testid=submitButton]").click();
+
+    cy.get("[role=alert]").should(
+      "have.text",
+      "We couldn't changed your password. Please check if the provided link is correct"
+    );
   });
 
   it("enables to set new password", () => {
@@ -97,14 +79,14 @@ describe("Set password page", () => {
       .then((data) => {
         cy.get("[data-testid=passwordInput]").type(data.password);
         cy.get("[data-testid=repeatPasswordInput]").type(data.password);
-
-        cy.get("[data-testid=submitButton]").click();
-
-        cy.get("[role=alert]").should(
-          "have.text",
-          "Your password has been changed"
-        );
-        cy.location("pathname").should("eq", "/login");
       });
+
+    cy.get("[data-testid=submitButton]").click();
+
+    cy.get("[role=alert]").should(
+      "have.text",
+      "Your password has been changed"
+    );
+    cy.location("pathname").should("eq", "/login");
   });
 });

@@ -26,12 +26,12 @@ describe("Confirm email page", () => {
       .as("userData")
       .then((data) => {
         cy.visit(`/confirm-email/${data.confirmationEmailKey}`);
-
-        cy.get("[data-testid=appLoader]").should("not.exist");
-        cy.get("[data-testid=confirmEmailMessage]").should(
-          "have.text",
-          "Your email has been confirmed. You can now log in to your account."
-        );
       });
+
+    cy.get("[data-testid=appLoader]").should("not.exist");
+    cy.get("[data-testid=confirmEmailMessage]").should(
+      "have.text",
+      "Your email has been confirmed. You can now log in to your account."
+    );
   });
 });

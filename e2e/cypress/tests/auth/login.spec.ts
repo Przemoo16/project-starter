@@ -25,11 +25,11 @@ describe("Login page", () => {
       .then((data) => {
         cy.get("[data-testid=emailInput]").type(data.name);
         cy.get("[data-testid=passwordInput]").type(data.password);
-
-        cy.get("[data-testid=submitButton]").click();
-
-        cy.get("[id$=helper-text]").should("have.text", "Invalid email");
       });
+
+    cy.get("[data-testid=submitButton]").click();
+
+    cy.get("[id$=helper-text]").should("have.text", "Invalid email");
   });
 
   it("displays that email is required", () => {
@@ -37,14 +37,11 @@ describe("Login page", () => {
       .as("userData")
       .then((data) => {
         cy.get("[data-testid=passwordInput]").type(data.password);
-
-        cy.get("[data-testid=submitButton]").click();
-
-        cy.get("[id$=helper-text]").should(
-          "have.text",
-          "This field is required"
-        );
       });
+
+    cy.get("[data-testid=submitButton]").click();
+
+    cy.get("[id$=helper-text]").should("have.text", "This field is required");
   });
 
   it("displays that password is required", () => {
@@ -52,14 +49,11 @@ describe("Login page", () => {
       .as("userData")
       .then((data) => {
         cy.get("[data-testid=emailInput]").type(data.email);
-
-        cy.get("[data-testid=submitButton]").click();
-
-        cy.get("[id$=helper-text]").should(
-          "have.text",
-          "This field is required"
-        );
       });
+
+    cy.get("[data-testid=submitButton]").click();
+
+    cy.get("[id$=helper-text]").should("have.text", "This field is required");
   });
 
   it("displays proper message when log in with inactive account", () => {
@@ -68,14 +62,14 @@ describe("Login page", () => {
       .then((data) => {
         cy.get("[data-testid=emailInput]").type(data.email);
         cy.get("[data-testid=passwordInput]").type(data.password);
-
-        cy.get("[data-testid=submitButton]").click();
-
-        cy.get("[role=alert]").should(
-          "have.text",
-          "The account is inactive. Please activate your account to continue"
-        );
       });
+
+    cy.get("[data-testid=submitButton]").click();
+
+    cy.get("[role=alert]").should(
+      "have.text",
+      "The account is inactive. Please activate your account to continue"
+    );
   });
 
   it("displays proper message when log in with invalid credentials", () => {
@@ -83,15 +77,12 @@ describe("Login page", () => {
       .as("userData")
       .then((data) => {
         cy.get("[data-testid=emailInput]").type(data.email);
-        cy.get("[data-testid=passwordInput]").type("Invalid password");
-
-        cy.get("[data-testid=submitButton]").click();
-
-        cy.get("[role=alert]").should(
-          "have.text",
-          "Incorrect email or password"
-        );
       });
+    cy.get("[data-testid=passwordInput]").type("Invalid password");
+
+    cy.get("[data-testid=submitButton]").click();
+
+    cy.get("[role=alert]").should("have.text", "Incorrect email or password");
   });
 
   it("enables to log in", () => {
