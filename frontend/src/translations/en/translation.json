@@ -12,6 +12,7 @@
     "deleteAccountError": "We couldn't delete your account",
     "deleteAccountSuccess": "Your account has been deleted",
     "deleteAccountWarning": "Once you delete your account, there is no going back. Please be certain.",
+    "invalidCurrentPassword": "Invalid current password",
     "name": "Name",
     "newPassword": "New password",
     "repeatNewPassword": "Repeat new password",

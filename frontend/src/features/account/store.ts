@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { AxiosError } from 'axios';
 import { fork, put, takeLeading } from 'redux-saga/effects';
 
 import { ChangePasswordData, ErrorResponse, UpdateAccountDetailsData } from '../../backendTypes';
@@ -88,8 +89,13 @@ function* changePasswordSaga() {
       yield put(notifySuccess(t('account.changePasswordSuccess')));
       yield put(accountActions.changePasswordSuccess());
     } catch (e) {
-      yield put(notifyError(t('account.changePasswordError')));
-      yield put(accountActions.changePasswordFailure({ errors: handleError(e) }));
+      const error = e as AxiosError<ErrorResponse>;
+      if (error.response?.status === 422) {
+        yield put(notifyError(t('account.invalidCurrentPassword')));
+      } else {
+        yield put(notifyError(t('account.changePasswordError')));
+      }
+      yield put(accountActions.changePasswordFailure({ errors: handleError(error) }));
     }
   });
 }

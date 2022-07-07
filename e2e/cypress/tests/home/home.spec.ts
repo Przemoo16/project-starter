@@ -7,7 +7,6 @@ describe("Home page", () => {
 
   it("redirects user who is already log in", () => {
     cy.login();
-    cy.location("pathname").should("eq", "/dashboard");
 
     cy.visit("/");
 
