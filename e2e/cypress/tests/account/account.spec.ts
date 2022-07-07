@@ -64,6 +64,16 @@ describe("Account page", () => {
     );
   });
 
+  it("displays empty form to change password", () => {
+    cy.login();
+
+    cy.visit("/account");
+
+    cy.get("[data-testid=currentPasswordInput]").should("have.value", "");
+    cy.get("[data-testid=newPasswordInput]").should("have.value", "");
+    cy.get("[data-testid=repeatNewPasswordInput]").should("have.value", "");
+  });
+
   it("displays that current password is required", () => {
     cy.login();
     cy.visit("/account");
