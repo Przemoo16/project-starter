@@ -2,11 +2,12 @@ import * as yup from 'yup';
 
 import { t } from '../../i18n';
 
-export const getUpdateAccountDetailsSchema = (nameMaxLength: number) => {
+export const getUpdateAccountDetailsSchema = (nameMinLength: number, nameMaxLength: number) => {
   return yup.object().shape({
     name: yup
       .string()
       .required(t('validation.required'))
+      .min(nameMinLength, t('validation.minName', { min: nameMinLength }))
       .max(nameMaxLength, t('validation.maxName', { max: nameMaxLength })),
   });
 };

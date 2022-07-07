@@ -1,8 +1,8 @@
 """Create user table
 
-Revision ID: 4520398df854
+Revision ID: d8facbe5f801
 Revises: 
-Create Date: 2022-03-04 18:25:30.095179
+Create Date: 2022-07-07 15:33:10.943292
 
 """
 from alembic import op
@@ -13,7 +13,7 @@ import app.models.custom
 
 
 # revision identifiers, used by Alembic.
-revision = '4520398df854'
+revision = 'd8facbe5f801'
 down_revision = None
 branch_labels = None
 depends_on = None

@@ -19,6 +19,7 @@ async def test_get_config(async_client: "conftest.TestClient") -> None:
     assert response.status_code == status.HTTP_200_OK
     assert retrieved_config == response_helpers.format_response(
         {
+            "userNameMinLength": 4,
             "userNameMaxLength": 64,
             "userPasswordMinLength": 8,
             "userPasswordMaxLength": 32,

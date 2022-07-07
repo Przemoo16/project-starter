@@ -14,6 +14,7 @@ class Backend {
 
   async getConfig(): Promise<Config> {
     return {
+      accountNameMinLength: 4,
       accountNameMaxLength: 64,
       accountPasswordMinLength: 8,
       accountPasswordMaxLength: 32,

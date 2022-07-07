@@ -27,7 +27,7 @@ confirm-email:
 	$(COMPOSE_DEV) exec -T postgres psql --username=postgres postgres -c "UPDATE public.user SET confirmed_email = TRUE WHERE email = '$(EMAIL)';"
 
 create-migration:
-	$(COMPOSE_DEV) run --rm backend alembic revision --autogenerate -m '$(m)'
+	$(COMPOSE_DEV) run --rm backend alembic revision --autogenerate --message '$(MESSAGE)'
 
 deploy:
 	python -m pip install --upgrade pip

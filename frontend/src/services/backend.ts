@@ -141,12 +141,14 @@ class Backend {
   async getConfig(): Promise<Config> {
     const { data } = await this.client.request('/config/');
     const {
+      userNameMinLength: accountNameMinLength,
       userNameMaxLength: accountNameMaxLength,
       userPasswordMinLength: accountPasswordMinLength,
       userPasswordMaxLength: accountPasswordMaxLength,
       ...rest
     } = data;
     return {
+      accountNameMinLength,
       accountNameMaxLength,
       accountPasswordMinLength,
       accountPasswordMaxLength,

@@ -37,6 +37,20 @@ describe("Account page", () => {
     cy.get("[id$=helper-text]").should("have.text", "This field is required");
   });
 
+  it("displays that name is too short", () => {
+    cy.login();
+    cy.visit("/account");
+    cy.get("[data-testid=nameInput]").clear();
+    cy.get("[data-testid=nameInput]").type("p");
+
+    cy.get("[data-testid=updateAccountDetailsButton]").click();
+
+    cy.get("[id$=helper-text]").should(
+      "have.text",
+      "Name must be at least 4 characters"
+    );
+  });
+
   it("displays that name is too long", () => {
     cy.login();
     cy.visit("/account");

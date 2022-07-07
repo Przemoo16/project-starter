@@ -17,7 +17,7 @@ export const UpdateAccountDetailsSection = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const { updateAccountDetails } = accountActions;
-  const { accountNameMaxLength } = useAppSelector(state => state.config);
+  const { accountNameMinLength, accountNameMaxLength } = useAppSelector(state => state.config);
   const { account } = useAppSelector(state => state.auth);
   const { updateAccountDetailsPending } = useAppSelector(state => state.account);
   const { control, handleSubmit } = useForm({
@@ -25,7 +25,9 @@ export const UpdateAccountDetailsSection = () => {
     defaultValues: {
       name: account?.name || '',
     },
-    resolver: yupResolver(getUpdateAccountDetailsSchema(accountNameMaxLength)),
+    resolver: yupResolver(
+      getUpdateAccountDetailsSchema(accountNameMinLength, accountNameMaxLength)
+    ),
   });
 
   const onSubmit: SubmitHandler<UpdateAccountDetailsData> = async values => {

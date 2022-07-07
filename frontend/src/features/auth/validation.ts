@@ -9,6 +9,7 @@ export const getLoginSchema = () =>
   });
 
 export const getRegisterSchema = (
+  nameMinLength: number,
   nameMaxLength: number,
   passwordMinLength: number,
   passwordMaxLength: number
@@ -17,6 +18,7 @@ export const getRegisterSchema = (
     name: yup
       .string()
       .required(t('validation.required'))
+      .min(nameMinLength, t('validation.minName', { min: nameMinLength }))
       .max(nameMaxLength, t('validation.maxName', { max: nameMaxLength })),
     email: yup.string().email(t('validation.invalidEmail')).required(t('validation.required')),
     password: yup
