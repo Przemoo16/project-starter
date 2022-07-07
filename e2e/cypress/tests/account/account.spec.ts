@@ -1,3 +1,5 @@
+const NEW_PASSWORD = "new-password";
+
 describe("Account page", () => {
   it("redirects user who is not log in", () => {
     cy.visit("/account");
@@ -48,7 +50,7 @@ describe("Account page", () => {
     );
   });
 
-  it("enables to update the name", () => {
+  it("enables to update details", () => {
     cy.login();
     cy.visit("/account");
     cy.get("[data-testid=nameInput]").clear();
@@ -60,5 +62,141 @@ describe("Account page", () => {
       "have.text",
       "Your account details have been updated"
     );
+  });
+
+  it("displays that current password is required", () => {
+    cy.login();
+    cy.visit("/account");
+    cy.get("[data-testid=newPasswordInput]").type(NEW_PASSWORD);
+    cy.get("[data-testid=repeatNewPasswordInput]").type(NEW_PASSWORD);
+
+    cy.get("[data-testid=changePasswordButton]").click();
+
+    cy.get("[id$=helper-text]").should("have.text", "This field is required");
+  });
+
+  it("displays that password is required", () => {
+    cy.login();
+    cy.visit("/account");
+    cy.fixture("../fixtures/activeUser.json")
+      .as("userData")
+      .then((data) => {
+        cy.get("[data-testid=currentPasswordInput]").type(data.password);
+
+        cy.get("[data-testid=changePasswordButton]").click();
+
+        cy.get("[id$=helper-text]").should(
+          "have.text",
+          "This field is required"
+        );
+      });
+  });
+
+  it("displays that password is too short", () => {
+    cy.login();
+    cy.visit("/account");
+    cy.fixture("../fixtures/activeUser.json")
+      .as("userData")
+      .then((data) => {
+        cy.get("[data-testid=currentPasswordInput]").type(data.password);
+        cy.get("[data-testid=newPasswordInput]").type("p");
+        cy.get("[data-testid=repeatNewPasswordInput]").type("p");
+
+        cy.get("[data-testid=changePasswordButton]").click();
+
+        cy.get("[id$=helper-text]").should(
+          "have.text",
+          "Password must be at least 8 characters"
+        );
+      });
+  });
+
+  it("displays that password is too long", () => {
+    cy.login();
+    cy.visit("/account");
+    cy.fixture("../fixtures/activeUser.json")
+      .as("userData")
+      .then((data) => {
+        cy.get("[data-testid=currentPasswordInput]").type(data.password);
+        cy.get("[data-testid=newPasswordInput]").type("p".repeat(33));
+        cy.get("[data-testid=repeatNewPasswordInput]").type("p".repeat(33));
+
+        cy.get("[data-testid=changePasswordButton]").click();
+
+        cy.get("[id$=helper-text]").should(
+          "have.text",
+          "Password can be up to 32 characters"
+        );
+      });
+  });
+
+  it("displays that repeated password does not match", () => {
+    cy.login();
+    cy.visit("/account");
+    cy.fixture("../fixtures/activeUser.json")
+      .as("userData")
+      .then((data) => {
+        cy.get("[data-testid=currentPasswordInput]").type(data.password);
+        cy.get("[data-testid=newPasswordInput]").type(NEW_PASSWORD);
+        cy.get("[data-testid=repeatNewPasswordInput]").type(
+          `${NEW_PASSWORD}-not-match`
+        );
+
+        cy.get("[data-testid=changePasswordButton]").click();
+
+        cy.get("[id$=helper-text]").should(
+          "have.text",
+          "Password doesn't match"
+        );
+      });
+  });
+
+  it("displays proper message when current password is invalid", () => {
+    cy.login();
+    cy.visit("/account");
+    cy.get("[data-testid=currentPasswordInput]").type("Invalid password");
+    cy.get("[data-testid=newPasswordInput]").type(NEW_PASSWORD);
+    cy.get("[data-testid=repeatNewPasswordInput]").type(NEW_PASSWORD);
+
+    cy.get("[data-testid=changePasswordButton]").click();
+
+    cy.get("[role=alert]").should("have.text", "Invalid current password");
+  });
+
+  it("enables to change password", () => {
+    cy.login();
+    cy.visit("/account");
+    cy.fixture("../fixtures/activeUser.json")
+      .as("userData")
+      .then((data) => {
+        cy.get("[data-testid=currentPasswordInput]").type(data.password);
+        cy.get("[data-testid=newPasswordInput]").type(NEW_PASSWORD);
+        cy.get("[data-testid=repeatNewPasswordInput]").type(NEW_PASSWORD);
+
+        cy.get("[data-testid=changePasswordButton]").click();
+
+        cy.get("[role=alert]").should(
+          "have.text",
+          "Your password has been changed"
+        );
+      });
+  });
+
+  it("cleans form after change password", () => {
+    cy.login();
+    cy.visit("/account");
+    cy.fixture("../fixtures/activeUser.json")
+      .as("userData")
+      .then((data) => {
+        cy.get("[data-testid=currentPasswordInput]").type(data.password);
+        cy.get("[data-testid=newPasswordInput]").type(NEW_PASSWORD);
+        cy.get("[data-testid=repeatNewPasswordInput]").type(NEW_PASSWORD);
+
+        cy.get("[data-testid=changePasswordButton]").click();
+
+        cy.get("[data-testid=currentPasswordInput]").should("have.value", "");
+        cy.get("[data-testid=newPasswordInput]").should("have.value", "");
+        cy.get("[data-testid=repeatNewPasswordInput]").should("have.value", "");
+      });
   });
 });
