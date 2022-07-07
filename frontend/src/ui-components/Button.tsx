@@ -4,9 +4,9 @@ export type SubmitButtonProps = Omit<LoadingButtonProps, 'type'>;
 export type ErrorButtonProps = Omit<LoadingButtonProps, 'color'>;
 
 export const SubmitButton = (props: SubmitButtonProps) => (
-  <LoadingButton type="submit" {...props} data-testid="submitButton" />
+  <LoadingButton type="submit" data-testid="submitButton" {...props} />
 );
 
 export const ErrorButton = (props: ErrorButtonProps) => (
-  <LoadingButton color="error" {...props} data-testid="errorButton" />
+  <LoadingButton color="error" data-testid="errorButton" {...props} />
 );

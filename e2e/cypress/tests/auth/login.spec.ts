@@ -66,7 +66,10 @@ describe("Login page", () => {
     cy.fixture("../fixtures/inactiveUser.json")
       .as("userData")
       .then((data) => {
-        cy.login(data.email, data.password);
+        cy.get("[data-testid=emailInput]").type(data.email);
+        cy.get("[data-testid=passwordInput]").type(data.password);
+
+        cy.get("[data-testid=submitButton]").click();
 
         cy.get("[role=alert]").should(
           "have.text",
@@ -79,7 +82,10 @@ describe("Login page", () => {
     cy.fixture("../fixtures/activeUser.json")
       .as("userData")
       .then((data) => {
-        cy.login(data.email, "Invalid password");
+        cy.get("[data-testid=emailInput]").type(data.email);
+        cy.get("[data-testid=passwordInput]").type("Invalid password");
+
+        cy.get("[data-testid=submitButton]").click();
 
         cy.get("[role=alert]").should(
           "have.text",
@@ -90,13 +96,10 @@ describe("Login page", () => {
 
   it("enables to log in", () => {
     cy.login();
-
-    cy.location("pathname").should("eq", "/dashboard");
   });
 
   it("redirects user who is already log in", () => {
     cy.login();
-    cy.location("pathname").should("eq", "/dashboard");
 
     cy.visit("/login");
 

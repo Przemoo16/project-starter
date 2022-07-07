@@ -65,7 +65,9 @@ export const ChangePasswordSection = () => {
           label={t('account.repeatNewPassword')}
           data-testid="repeatNewPasswordInput"
         />
-        <SubmitButton loading={changePasswordPending}>{t('account.changePassword')}</SubmitButton>
+        <SubmitButton loading={changePasswordPending} data-testid="changePasswordButton">
+          {t('account.changePassword')}
+        </SubmitButton>
       </Form>
     </SectionContainer>
   );

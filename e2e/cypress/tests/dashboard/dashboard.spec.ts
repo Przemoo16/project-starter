@@ -7,8 +7,6 @@ describe("Dashboard page", () => {
 
   it("can be opened by a logged in user", () => {
     cy.login();
-
-    cy.location("pathname").should("eq", "/dashboard");
   });
 
   it("enables to go to the account settings", () => {

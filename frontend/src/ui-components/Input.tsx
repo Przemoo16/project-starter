@@ -8,30 +8,45 @@ import { Controller } from 'react-hook-form';
 
 type CommonFields = 'type' | 'error' | 'helperText';
 
-export type TextInputProps = Omit<TextFieldProps, CommonFields> & {
+interface InputProps {
   name: string;
   control: any;
-};
+  'data-testid'?: string;
+}
 
-export type PasswordInputProps = Omit<
-  TextFieldProps,
-  'placeholder' | 'InputProps' | CommonFields
-> & {
-  name: string;
-  control: any;
-};
+export type TextInputProps = InputProps & Omit<TextFieldProps, CommonFields>;
 
-export const TextInput = ({ name, control, ...rest }: TextInputProps) => (
+export type PasswordInputProps = InputProps &
+  Omit<TextFieldProps, 'placeholder' | 'InputProps' | CommonFields>;
+
+export const TextInput = ({
+  name,
+  control,
+  'data-testid': dataTestId,
+  ...rest
+}: TextInputProps) => (
   <Controller
     name={name}
     control={control}
     render={({ field, fieldState: { error } }) => (
-      <TextField {...field} type="text" error={!!error} helperText={error?.message} {...rest} />
+      <TextField
+        {...field}
+        type="text"
+        error={!!error}
+        helperText={error?.message}
+        inputProps={{ 'data-testid': dataTestId }}
+        {...rest}
+      />
     )}
   />
 );
 
-export const PasswordInput = ({ name, control, ...rest }: PasswordInputProps) => {
+export const PasswordInput = ({
+  name,
+  control,
+  'data-testid': dataTestId,
+  ...rest
+}: PasswordInputProps) => {
   const [passwordVisible, setPasswordVisibility] = useState(false);
 
   const handlePasswordVisibility = () => {
@@ -49,6 +64,9 @@ export const PasswordInput = ({ name, control, ...rest }: PasswordInputProps) =>
           placeholder="********"
           error={!!error}
           helperText={error?.message}
+          inputProps={{
+            'data-testid': dataTestId,
+          }}
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">

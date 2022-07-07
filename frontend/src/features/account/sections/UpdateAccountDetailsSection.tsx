@@ -45,7 +45,10 @@ export const UpdateAccountDetailsSection = () => {
           autoComplete="name"
           data-testid="nameInput"
         />
-        <SubmitButton loading={updateAccountDetailsPending}>
+        <SubmitButton
+          loading={updateAccountDetailsPending}
+          data-testid="updateAccountDetailsButton"
+        >
           {t('account.updateAccountDetails')}
         </SubmitButton>
       </Form>
