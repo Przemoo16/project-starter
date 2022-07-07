@@ -19,6 +19,11 @@ describe("Login page", () => {
     );
   });
 
+  it("displays empty form", () => {
+    cy.get("[data-testid=emailInput]").should("have.value", "");
+    cy.get("[data-testid=passwordInput]").should("have.value", "");
+  });
+
   it("displays that email is invalid", () => {
     cy.fixture("../fixtures/activeUser.json")
       .as("userData")

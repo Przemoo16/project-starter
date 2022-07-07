@@ -7,6 +7,13 @@ describe("Register page", () => {
     cy.get("[data-testid=loginLink]").should("have.attr", "href", "/login");
   });
 
+  it("displays empty form", () => {
+    cy.get("[data-testid=nameInput]").should("have.value", "");
+    cy.get("[data-testid=emailInput]").should("have.value", "");
+    cy.get("[data-testid=passwordInput]").should("have.value", "");
+    cy.get("[data-testid=repeatPasswordInput]").should("have.value", "");
+  });
+
   it("displays that name is required", () => {
     cy.fixture("../fixtures/user.json")
       .as("userData")

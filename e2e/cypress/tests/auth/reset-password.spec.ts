@@ -7,6 +7,10 @@ describe("Reset password page", () => {
     cy.get("[data-testid=loginLink]").should("have.attr", "href", "/login");
   });
 
+  it("displays empty form", () => {
+    cy.get("[data-testid=emailInput]").should("have.value", "");
+  });
+
   it("displays that email is invalid", () => {
     cy.fixture("../fixtures/activeUser.json")
       .as("userData")
