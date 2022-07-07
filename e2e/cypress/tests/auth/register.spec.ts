@@ -14,32 +14,29 @@ describe("Register page", () => {
         cy.get("[data-testid=emailInput]").type(data.email);
         cy.get("[data-testid=passwordInput]").type(data.password);
         cy.get("[data-testid=repeatPasswordInput]").type(data.password);
-
-        cy.get("[data-testid=submitButton]").click();
-
-        cy.get("[id$=helper-text]").should(
-          "have.text",
-          "This field is required"
-        );
       });
+
+    cy.get("[data-testid=submitButton]").click();
+
+    cy.get("[id$=helper-text]").should("have.text", "This field is required");
   });
 
   it("displays that name is too long", () => {
+    cy.get("[data-testid=nameInput]").type("p".repeat(65));
     cy.fixture("../fixtures/user.json")
       .as("userData")
       .then((data) => {
-        cy.get("[data-testid=nameInput]").type("p".repeat(65));
         cy.get("[data-testid=emailInput]").type(data.email);
         cy.get("[data-testid=passwordInput]").type(data.password);
         cy.get("[data-testid=repeatPasswordInput]").type(data.password);
-
-        cy.get("[data-testid=submitButton]").click();
-
-        cy.get("[id$=helper-text]").should(
-          "have.text",
-          "Name can be up to 64 characters"
-        );
       });
+
+    cy.get("[data-testid=submitButton]").click();
+
+    cy.get("[id$=helper-text]").should(
+      "have.text",
+      "Name can be up to 64 characters"
+    );
   });
 
   it("displays that email is invalid", () => {
@@ -50,11 +47,11 @@ describe("Register page", () => {
         cy.get("[data-testid=emailInput]").type(data.name);
         cy.get("[data-testid=passwordInput]").type(data.password);
         cy.get("[data-testid=repeatPasswordInput]").type(data.password);
-
-        cy.get("[data-testid=submitButton]").click();
-
-        cy.get("[id$=helper-text]").should("have.text", "Invalid email");
       });
+
+    cy.get("[data-testid=submitButton]").click();
+
+    cy.get("[id$=helper-text]").should("have.text", "Invalid email");
   });
 
   it("displays that email is required", () => {
@@ -64,14 +61,11 @@ describe("Register page", () => {
         cy.get("[data-testid=nameInput]").type(data.name);
         cy.get("[data-testid=passwordInput]").type(data.password);
         cy.get("[data-testid=repeatPasswordInput]").type(data.password);
-
-        cy.get("[data-testid=submitButton]").click();
-
-        cy.get("[id$=helper-text]").should(
-          "have.text",
-          "This field is required"
-        );
       });
+
+    cy.get("[data-testid=submitButton]").click();
+
+    cy.get("[id$=helper-text]").should("have.text", "This field is required");
   });
 
   it("displays that password is required", () => {
@@ -80,14 +74,11 @@ describe("Register page", () => {
       .then((data) => {
         cy.get("[data-testid=nameInput]").type(data.name);
         cy.get("[data-testid=emailInput]").type(data.email);
-
-        cy.get("[data-testid=submitButton]").click();
-
-        cy.get("[id$=helper-text]").should(
-          "have.text",
-          "This field is required"
-        );
       });
+
+    cy.get("[data-testid=submitButton]").click();
+
+    cy.get("[id$=helper-text]").should("have.text", "This field is required");
   });
 
   it("displays that password is too short", () => {
@@ -96,16 +87,16 @@ describe("Register page", () => {
       .then((data) => {
         cy.get("[data-testid=nameInput]").type(data.name);
         cy.get("[data-testid=emailInput]").type(data.email);
-        cy.get("[data-testid=passwordInput]").type("p");
-        cy.get("[data-testid=repeatPasswordInput]").type("p");
-
-        cy.get("[data-testid=submitButton]").click();
-
-        cy.get("[id$=helper-text]").should(
-          "have.text",
-          "Password must be at least 8 characters"
-        );
       });
+    cy.get("[data-testid=passwordInput]").type("p");
+    cy.get("[data-testid=repeatPasswordInput]").type("p");
+
+    cy.get("[data-testid=submitButton]").click();
+
+    cy.get("[id$=helper-text]").should(
+      "have.text",
+      "Password must be at least 8 characters"
+    );
   });
 
   it("displays that password is too long", () => {
@@ -114,16 +105,16 @@ describe("Register page", () => {
       .then((data) => {
         cy.get("[data-testid=nameInput]").type(data.name);
         cy.get("[data-testid=emailInput]").type(data.email);
-        cy.get("[data-testid=passwordInput]").type("p".repeat(33));
-        cy.get("[data-testid=repeatPasswordInput]").type("p".repeat(33));
-
-        cy.get("[data-testid=submitButton]").click();
-
-        cy.get("[id$=helper-text]").should(
-          "have.text",
-          "Password can be up to 32 characters"
-        );
       });
+    cy.get("[data-testid=passwordInput]").type("p".repeat(33));
+    cy.get("[data-testid=repeatPasswordInput]").type("p".repeat(33));
+
+    cy.get("[data-testid=submitButton]").click();
+
+    cy.get("[id$=helper-text]").should(
+      "have.text",
+      "Password can be up to 32 characters"
+    );
   });
 
   it("displays that repeated password does not match", () => {
@@ -136,14 +127,11 @@ describe("Register page", () => {
         cy.get("[data-testid=repeatPasswordInput]").type(
           `${data.password}-not-match`
         );
-
-        cy.get("[data-testid=submitButton]").click();
-
-        cy.get("[id$=helper-text]").should(
-          "have.text",
-          "Password doesn't match"
-        );
       });
+
+    cy.get("[data-testid=submitButton]").click();
+
+    cy.get("[id$=helper-text]").should("have.text", "Password doesn't match");
   });
 
   it("displays proper message when register with already existing email", () => {
@@ -154,14 +142,14 @@ describe("Register page", () => {
         cy.get("[data-testid=emailInput]").type(data.email);
         cy.get("[data-testid=passwordInput]").type(data.password);
         cy.get("[data-testid=repeatPasswordInput]").type(data.password);
-
-        cy.get("[data-testid=submitButton]").click();
-
-        cy.get("[role=alert]").should(
-          "have.text",
-          "The account with provided email already exists"
-        );
       });
+
+    cy.get("[data-testid=submitButton]").click();
+
+    cy.get("[role=alert]").should(
+      "have.text",
+      "The account with provided email already exists"
+    );
   });
 
   it("enables to register", () => {
@@ -172,15 +160,15 @@ describe("Register page", () => {
         cy.get("[data-testid=emailInput]").type(data.email);
         cy.get("[data-testid=passwordInput]").type(data.password);
         cy.get("[data-testid=repeatPasswordInput]").type(data.password);
-
-        cy.get("[data-testid=submitButton]").click();
-
-        cy.get("[role=alert]").should(
-          "have.text",
-          "Your account has been created. Please check your email and follow the instructions to activate your account"
-        );
-        cy.location("pathname").should("eq", "/login");
       });
+
+    cy.get("[data-testid=submitButton]").click();
+
+    cy.get("[role=alert]").should(
+      "have.text",
+      "Your account has been created. Please check your email and follow the instructions to activate your account"
+    );
+    cy.location("pathname").should("eq", "/login");
   });
 
   it("redirects user who is already log in", () => {
