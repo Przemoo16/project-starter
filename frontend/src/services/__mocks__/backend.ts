@@ -8,6 +8,7 @@ class Backend {
   async getCurrentAccount(): Promise<Account> {
     return {
       id: 'testAccountID',
+      email: 'test@email.com',
       name: 'Test Account',
     };
   }

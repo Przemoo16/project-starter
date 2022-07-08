@@ -34,7 +34,7 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
         display: 'flex',
       }}
     >
-      <AppBar onOpenMenu={handleOpenDrawer} drawerWidth={DRAWER_WIDTH} />
+      <AppBar onOpen={handleOpenDrawer} drawerWidth={DRAWER_WIDTH} />
       <Drawer open={drawerOpen} onClose={handleCloseDrawer} width={DRAWER_WIDTH} />
       <Container
         component="main"

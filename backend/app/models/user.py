@@ -92,6 +92,7 @@ class UserUpdate(UserUpdateAPI):
 
 class UserRead(base.BaseModel):
     id: UserID
+    email: UserEmail
     name: UserName
 
 

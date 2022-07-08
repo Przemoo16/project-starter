@@ -7,11 +7,11 @@ import Toolbar from '@mui/material/Toolbar';
 import { AccountMenu } from './AccountMenu';
 
 interface AppBarProps {
-  onOpenMenu: () => void;
+  onOpen: () => void;
   drawerWidth: number;
 }
 
-export const AppBar = ({ onOpenMenu, drawerWidth }: AppBarProps) => (
+export const AppBar = ({ onOpen, drawerWidth }: AppBarProps) => (
   <MuiAppBar
     sx={{
       left: {
@@ -24,7 +24,7 @@ export const AppBar = ({ onOpenMenu, drawerWidth }: AppBarProps) => (
   >
     <Toolbar>
       <IconButton
-        onClick={onOpenMenu}
+        onClick={onOpen}
         color="inherit"
         aria-label="open menu"
         sx={{

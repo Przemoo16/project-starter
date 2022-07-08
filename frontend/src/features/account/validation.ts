@@ -25,3 +25,8 @@ export const getChangePasswordSchema = (passwordMinLength: number, passwordMaxLe
       .oneOf([yup.ref('newPassword'), null], t(`validation.passwordMatch`)),
   });
 };
+
+export const getDeleteAccountSchema = () =>
+  yup.object().shape({
+    password: yup.string().required(t('validation.required')),
+  });

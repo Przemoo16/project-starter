@@ -2,7 +2,12 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { AxiosError } from 'axios';
 import { fork, put, takeLeading } from 'redux-saga/effects';
 
-import { ChangePasswordData, ErrorResponse, UpdateAccountDetailsData } from '../../backendTypes';
+import {
+  ChangePasswordData,
+  ErrorResponse,
+  LoginData,
+  UpdateAccountDetailsData,
+} from '../../backendTypes';
 import { t } from '../../i18n';
 import { backend } from '../../services/backend';
 import { handleError } from '../../services/utils';
@@ -14,6 +19,7 @@ interface AccountState {
   changePasswordPending: boolean;
   deleteAccountPending: boolean;
   errors: ErrorResponse | null;
+  deleteAccountModalOpen: boolean;
 }
 
 const initialState: AccountState = {
@@ -21,6 +27,7 @@ const initialState: AccountState = {
   changePasswordPending: false,
   deleteAccountPending: false,
   errors: null,
+  deleteAccountModalOpen: false,
 };
 
 export const accountSlice = createSlice({
@@ -51,7 +58,7 @@ export const accountSlice = createSlice({
       state.changePasswordPending = false;
       state.errors = payload.errors;
     },
-    deleteAccount(state) {
+    deleteAccount(state, action: PayloadAction<LoginData>) {
       state.deleteAccountPending = true;
       state.errors = null;
     },
@@ -62,6 +69,12 @@ export const accountSlice = createSlice({
     deleteAccountFailure(state, { payload }: PayloadAction<{ errors: ErrorResponse }>) {
       state.deleteAccountPending = false;
       state.errors = payload.errors;
+    },
+    openDeleteAccountModal: state => {
+      state.deleteAccountModalOpen = true;
+    },
+    closeDeleteAccountModal: state => {
+      state.deleteAccountModalOpen = false;
     },
   },
 });
@@ -101,14 +114,20 @@ function* changePasswordSaga() {
 }
 
 function* deleteAccountSaga() {
-  yield takeLeading(accountActions.deleteAccount, function* () {
+  yield takeLeading(accountActions.deleteAccount, function* ({ payload }) {
     try {
+      yield backend.login(payload);
       yield backend.deleteAccount();
-      yield put(notifySuccess(t('account.deleteAccountSuccess')));
       yield put(accountActions.deleteAccountSuccess());
+      yield put(authActions.logout());
     } catch (e) {
-      yield put(notifyError(t('account.deleteAccountError')));
-      yield put(accountActions.deleteAccountFailure({ errors: handleError(e) }));
+      const error = e as AxiosError<ErrorResponse>;
+      if (error.response?.status === 401) {
+        yield put(notifyError(t('account.InvalidPassword')));
+      } else {
+        yield put(notifyError(t('account.deleteAccountError')));
+      }
+      yield put(accountActions.deleteAccountFailure({ errors: handleError(error) }));
     }
   });
 }
