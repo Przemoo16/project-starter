@@ -8,6 +8,7 @@ fastapi
 fastapi-jwt-auth
 gunicorn
 jinja2
+kombu
 orjson
 passlib[bcrypt]
 psycopg2-binary
