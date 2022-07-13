@@ -33,12 +33,7 @@ export const AccountMenu = () => {
 
   return (
     <>
-      <IconButton
-        color="inherit"
-        onClick={handleOpenMenu}
-        aria-label="my account"
-        data-testid="accountButton"
-      >
+      <IconButton onClick={handleOpenMenu} aria-label="my account" data-testid="accountButton">
         <AccountAvatar account={account} sx={{ width: 35, height: 35 }} />
       </IconButton>
       <Menu

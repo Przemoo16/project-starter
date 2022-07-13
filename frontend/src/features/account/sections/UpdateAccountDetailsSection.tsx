@@ -37,7 +37,7 @@ export const UpdateAccountDetailsSection = () => {
   return (
     <SectionContainer>
       <SubTitle>{t('account.updateAccountDetails')}</SubTitle>
-      <AccountAvatar account={account} sx={{ width: 100, height: 100, mt: 2 }} />
+      <AccountAvatar account={account} sx={{ width: 100, height: 100, mt: 3, mb: 1 }} />
       <Form onSubmit={handleSubmit(onSubmit)}>
         <TextInput
           name="name"
