@@ -28,6 +28,7 @@ async def test_create_user(async_client: "conftest.TestClient") -> None:
     assert retrieved_user == response_helpers.format_response(
         {
             "id": retrieved_user["id"],
+            "email": email,
             "name": name,
         }
     )
@@ -48,6 +49,7 @@ async def test_get_me(
     assert retrieved_user == response_helpers.format_response(
         {
             "id": user.id,
+            "email": user.email,
             "name": user.name,
         }
     )
@@ -85,6 +87,7 @@ async def test_update_me(
     assert retrieved_user == response_helpers.format_response(
         {
             "id": user.id,
+            "email": user.email,
             "name": new_name,
         }
     )
@@ -200,6 +203,7 @@ async def test_get_user(
     assert retrieved_user == response_helpers.format_response(
         {
             "id": user.id,
+            "email": user.email,
             "name": user.name,
         }
     )
