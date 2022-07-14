@@ -121,9 +121,11 @@ async def test_token_service_refresh_token(
 ) -> None:
     user = await user_helpers.create_active_user(session)
     mock_get_user.return_value = user
-    token = jwt_auth.AuthJWT().create_refresh_token(str(user.id))
+    refresh_token = jwt_auth.AuthJWT().create_refresh_token(str(user.id))
 
-    token = await token_services.TokenService(session).refresh_token(token=token)
+    token = await token_services.TokenService(session).refresh_token(
+        token=refresh_token
+    )
 
     assert token.access_token
     assert token.token_type == "bearer"
