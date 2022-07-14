@@ -10,7 +10,8 @@ const Component = () => {
   const { addNotification } = uiActions;
 
   const handleClick = () => {
-    dispatch(addNotification({ message: 'Test message', type: 'error', duration: 4000 }));
+    const message = `Test message: ${Math.random().toString(16).substring(2, 10)}`;
+    dispatch(addNotification({ message: message, type: 'error', duration: 4000 }));
   };
   return (
     <button data-testid="snackbarButton" onClick={handleClick}>
