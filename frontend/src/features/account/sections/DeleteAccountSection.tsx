@@ -20,7 +20,9 @@ export const DeleteAccountSection = () => {
     <SectionContainer>
       <SubTitle>{t('account.deleteAccount')}</SubTitle>
       <Paragraph sx={{ mt: 2 }}>{t('account.deleteAccountWarning')}</Paragraph>
-      <ErrorButton onClick={handleOpenModal}>{t('account.deleteAccount')}</ErrorButton>
+      <ErrorButton onClick={handleOpenModal} data-testid="deleteAccountButton">
+        {t('account.deleteAccount')}
+      </ErrorButton>
       <DeleteAccountModal />
     </SectionContainer>
   );

@@ -70,6 +70,9 @@ setup:
 	git config blame.ignoreRevsFile .git-blame-ignore-revs
 	pre-commit install --hook-type pre-commit --hook-type pre-push
 
+stop:
+	$(COMPOSE_DEV) stop
+
 test: test-backend test-frontend
 
 test-backend:

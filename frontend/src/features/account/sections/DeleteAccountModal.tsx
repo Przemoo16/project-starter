@@ -19,7 +19,7 @@ export const DeleteAccountModal = () => {
   const { account } = useAppSelector(state => state.auth);
   const { deleteAccountPending, deleteAccountModalOpen } = useAppSelector(state => state.account);
   const { deleteAccount, closeDeleteAccountModal } = accountActions;
-  const { control, handleSubmit } = useForm({
+  const { control, handleSubmit, reset } = useForm({
     mode: 'onTouched',
     defaultValues: {
       password: '',
@@ -33,6 +33,7 @@ export const DeleteAccountModal = () => {
 
   const handleCloseModal = () => {
     dispatch(closeDeleteAccountModal());
+    reset({ password: '' });
   };
 
   return (
@@ -65,7 +66,12 @@ export const DeleteAccountModal = () => {
             autoComplete="password"
             data-testid="passwordInput"
           />
-          <ErrorButton type="submit" fullWidth loading={deleteAccountPending}>
+          <ErrorButton
+            type="submit"
+            fullWidth
+            loading={deleteAccountPending}
+            data-testid="confirmDeleteAccountButton"
+          >
             {t('account.deleteAccount')}
           </ErrorButton>
         </Form>

@@ -217,4 +217,69 @@ describe("Account page", () => {
     cy.get("[data-testid=newPasswordInput]").should("have.value", "");
     cy.get("[data-testid=repeatNewPasswordInput]").should("have.value", "");
   });
+
+  it("toggles delete account modal", () => {
+    cy.login();
+    cy.visit("/account");
+    cy.get("[data-testid=deleteAccountButton]").click();
+
+    cy.get("[data-testid=modalContent]").should("be.visible");
+
+    cy.get("[data-testid=closeIcon]").click();
+
+    cy.get("[data-testid=modalContent]").should("not.be.visible");
+  });
+
+  it("displays that password is required", () => {
+    cy.login();
+    cy.visit("/account");
+    cy.get("[data-testid=deleteAccountButton]").click();
+
+    cy.get("[data-testid=confirmDeleteAccountButton]").click();
+
+    cy.get("[id$=helper-text]").should("have.text", "This field is required");
+  });
+
+  it("cleans form after closing modal", () => {
+    cy.login();
+    cy.visit("/account");
+    cy.get("[data-testid=deleteAccountButton]").click();
+    cy.fixture("../fixtures/activeUser.json")
+      .as("userData")
+      .then((data) => {
+        cy.get("[data-testid=passwordInput]").type(data.password);
+      });
+
+    cy.get("[data-testid=closeIcon]").click();
+
+    cy.get("[data-testid=deleteAccountButton]").click();
+
+    cy.get("[data-testid=passwordInput]").should("have.value", "");
+  });
+
+  it("displays proper message when password is invalid", () => {
+    cy.login();
+    cy.visit("/account");
+    cy.get("[data-testid=deleteAccountButton]").click();
+    cy.get("[data-testid=passwordInput]").type("Invalid password");
+
+    cy.get("[data-testid=confirmDeleteAccountButton]").click();
+
+    cy.get("[role=alert]").should("have.text", "Invalid password");
+  });
+
+  it("enables to delete account", () => {
+    cy.login();
+    cy.visit("/account");
+    cy.get("[data-testid=deleteAccountButton]").click();
+    cy.fixture("../fixtures/activeUser.json")
+      .as("userData")
+      .then((data) => {
+        cy.get("[data-testid=passwordInput]").type(data.password);
+      });
+
+    cy.get("[data-testid=confirmDeleteAccountButton]").click();
+
+    cy.location("pathname").should("eq", "/login");
+  });
 });
