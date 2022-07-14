@@ -1,4 +1,5 @@
 import CloseIcon from '@mui/icons-material/Close';
+import { styled } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import { useSnackbar } from 'notistack';
 import { SnackbarKey, SnackbarProvider as NotistackProvider } from 'notistack';
@@ -14,6 +15,18 @@ interface SnackbarProviderProps {
 
 const MAX_SNACKS = 3;
 
+const StyledSnackbarProvider = styled(NotistackProvider)`
+  &.SnackbarItem-variantSuccess {
+    background-color: ${props => props.theme.palette.success.main};
+  }
+  &.SnackbarItem-variantError {
+    background-color: ${props => props.theme.palette.error.main};
+  }
+  &.SnackbarItem-variantInfo {
+    background-color: ${props => props.theme.palette.info.main};
+  }
+`;
+
 export const SnackbarProvider = ({ maxSnacks = MAX_SNACKS, children }: SnackbarProviderProps) => {
   const ref = useRef<NotistackProvider>(null);
 
@@ -22,7 +35,7 @@ export const SnackbarProvider = ({ maxSnacks = MAX_SNACKS, children }: SnackbarP
   };
 
   return (
-    <NotistackProvider
+    <StyledSnackbarProvider
       maxSnack={maxSnacks}
       ref={ref}
       action={key => (
@@ -38,7 +51,7 @@ export const SnackbarProvider = ({ maxSnacks = MAX_SNACKS, children }: SnackbarP
       )}
     >
       {children}
-    </NotistackProvider>
+    </StyledSnackbarProvider>
   );
 };
 
@@ -58,6 +71,7 @@ export const Snackbar = () => {
             horizontal: 'right',
           },
           autoHideDuration: duration,
+          preventDuplicate: true,
         })
       );
       dispatch(clearNotifications());
