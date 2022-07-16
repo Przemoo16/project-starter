@@ -61,7 +61,7 @@ describe("Login page", () => {
     cy.get("[id$=helper-text]").should("have.text", "This field is required");
   });
 
-  it("displays proper message when log in with inactive account", () => {
+  it("displays proper message when inactive user logs in", () => {
     cy.fixture("../fixtures/inactiveUser.json")
       .as("userData")
       .then((data) => {
@@ -73,7 +73,7 @@ describe("Login page", () => {
 
     cy.get("[role=alert]").should(
       "have.text",
-      "The account is inactive. Please activate your account to continue"
+      "The account is inactive. Please activate your account to proceed"
     );
   });
 

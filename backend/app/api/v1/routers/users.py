@@ -139,9 +139,13 @@ async def reset_password(
 ) -> typing.Any:
     user_service = user_services.UserService(session)
     try:
-        user_db = await user_service.get_user(user_models.UserFilters(email=email))
+        user_db = await user_service.get_active_user(
+            user_models.UserFilters(email=email)
+        )
     except user_exceptions.UserNotFoundError:
         log.info("Message has not been sent because user not found")
+    except user_exceptions.InactiveUserError:
+        log.info("Message has not been sent because user is inactive")
     else:
         await user_service.reset_password(user_db)
     return {
@@ -154,6 +158,7 @@ async def reset_password(
     response_class=responses.Response,
     status_code=status.HTTP_204_NO_CONTENT,
     responses={
+        **user_exceptions.InactiveUserError().doc,
         **reset_password_exceptions.ResetPasswordTokenNotFoundError().doc,
         **reset_password_exceptions.ResetPasswordTokenExpiredError().doc,
     },

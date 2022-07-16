@@ -282,6 +282,28 @@ async def test_reset_password_user_not_found(
 
 
 @pytest.mark.anyio
+async def test_reset_password_inactive_user(
+    async_client: "conftest.TestClient", session: "conftest.AsyncSession"
+) -> None:
+    user = await user_helpers.create_user(session=session)
+    request_data = {"email": user.email}
+
+    response = await async_client.post(
+        f"{API_URL}/users/password/reset", json=request_data
+    )
+    message = response.json()
+
+    assert response.status_code == status.HTTP_202_ACCEPTED
+    assert message == response_helpers.format_response(
+        {
+            "message": (
+                "If provided valid email, the email to reset password has been sent"
+            )
+        }
+    )
+
+
+@pytest.mark.anyio
 async def test_set_password(
     async_client: "conftest.TestClient", session: "conftest.AsyncSession"
 ) -> None:

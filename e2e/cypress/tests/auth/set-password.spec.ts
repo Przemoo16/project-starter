@@ -78,6 +78,23 @@ describe("Set password page", () => {
     );
   });
 
+  it("displays proper message when inactive user sets password", () => {
+    cy.fixture("../fixtures/inactiveUser.json")
+      .as("userData")
+      .then((data) => {
+        cy.visit(`/set-password/${data.resetPasswordToken}`);
+        cy.get("[data-testid=passwordInput]").type(data.password);
+        cy.get("[data-testid=repeatPasswordInput]").type(data.password);
+      });
+
+    cy.get("[data-testid=submitButton]").click();
+
+    cy.get("[role=alert]").should(
+      "have.text",
+      "The account is inactive. Please activate your account to proceed"
+    );
+  });
+
   it("displays proper message when set password with expired token", () => {
     cy.fixture("../fixtures/activeUser.json")
       .as("userData")

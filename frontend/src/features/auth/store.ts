@@ -18,7 +18,7 @@ import { history } from '../../services/history';
 import { handleError } from '../../services/utils';
 import { notifyError, notifySuccess } from '../../ui-components/store';
 
-const RESET_PASSWORD_TOKEN_EXPIRED_CASE = 'ResetPasswordTokenExpired';
+const RESET_PASSWORD_TOKEN_EXPIRED_CASE = 'ResetPasswordTokenExpiredError';
 
 interface AuthState {
   account: Account | null;
@@ -200,7 +200,9 @@ function* setPasswordSaga() {
       history.push('/login');
     } catch (e) {
       const error = e as AxiosError<ErrorResponse>;
-      if (
+      if (error.response?.status === 403) {
+        yield put(notifyError(t('auth.inactiveAccount')));
+      } else if (
         error.response?.status === 422 &&
         error.response?.data.case === RESET_PASSWORD_TOKEN_EXPIRED_CASE
       ) {
