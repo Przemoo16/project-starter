@@ -37,7 +37,7 @@ export interface ResetPasswordData {
 }
 
 export interface SetPasswordData {
-  key: string;
+  token: string;
   password: string;
 }
 

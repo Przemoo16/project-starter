@@ -8,13 +8,17 @@ import sqlmodel
 from app.config import general
 from app.models import base, helpers
 
+if typing.TYPE_CHECKING:
+    # For relationships, models with lazy annotations has to be used directly and
+    # not via module (reset_password.ResetPasswordToken)
+    from app.models.reset_password import ResetPasswordToken, ResetPasswordTokenID
+
 UserID: typing.TypeAlias = uuid.UUID
 UserEmail: typing.TypeAlias = pydantic.EmailStr
 UserPassword: typing.TypeAlias = str
 UserName: typing.TypeAlias = str
 UserConfirmedEmail: typing.TypeAlias = bool
 UserConfirmationEmailKey: typing.TypeAlias = uuid.UUID
-UserResetPasswordKey: typing.TypeAlias = uuid.UUID
 UserCreatedAt: typing.TypeAlias = datetime.datetime
 UserUpdatedAt: typing.TypeAlias = datetime.datetime
 UserLastLogin: typing.TypeAlias = datetime.datetime
@@ -46,17 +50,16 @@ class User(UserBase, table=True):
         default_factory=helpers.generate_fixed_uuid,
         sa_column_kwargs={"unique": True},
     )
-    reset_password_key: UserResetPasswordKey = sqlmodel.Field(
-        index=True,
-        default_factory=helpers.generate_fixed_uuid,
-        sa_column_kwargs={"unique": True},
-    )
     created_at: UserCreatedAt = sqlmodel.Field(default_factory=helpers.get_utcnow)
     updated_at: UserUpdatedAt = sqlmodel.Field(
         default_factory=helpers.get_utcnow,
         sa_column_kwargs={"onupdate": helpers.get_utcnow},
     )
     last_login: UserLastLogin | None = None
+    reset_password_tokens: list["ResetPasswordToken"] = sqlmodel.Relationship(
+        back_populates="user",
+        sa_relationship_kwargs={"lazy": "selectin", "cascade": "all, delete-orphan"},
+    )
 
     @property
     def is_active(self) -> UserIsActive:
@@ -74,7 +77,6 @@ class UserFilters(base.PydanticBaseModel):
     id: UserID | None = None
     email: UserEmail | None = None
     confirmation_email_key: UserConfirmationEmailKey | None = None
-    reset_password_key: UserResetPasswordKey | None = None
 
 
 class UserUpdateAPI(base.PydanticBaseModel):
@@ -87,7 +89,6 @@ class UserUpdate(UserUpdateAPI):
     password: UserPassword | None = None
     confirmed_email: UserConfirmedEmail | None = None
     last_login: UserLastLogin | None = None
-    reset_password_key: UserResetPasswordKey | None = None
 
 
 class UserRead(base.BaseModel):
@@ -105,7 +106,7 @@ class UserChangePassword(base.BaseModel):
 
 
 class UserSetPassword(base.BaseModel):
-    key: UserResetPasswordKey
+    token: "ResetPasswordTokenID"
     password: UserPassword = sqlmodel.Field(
         min_length=settings.USER_PASSWORD_MIN_LENGTH,
         max_length=settings.USER_PASSWORD_MAX_LENGTH,

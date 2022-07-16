@@ -5,6 +5,7 @@ import freezegun
 import pytest
 
 from app.models import user as user_models
+from app.tests.helpers import db
 from app.utils import converters
 
 if typing.TYPE_CHECKING:
@@ -19,9 +20,7 @@ async def test_user_model(session: "conftest.AsyncSession") -> None:
     name = "Test User"
     user = user_models.User(email=email, password=password, name=name)
 
-    session.add(user)
-    await session.commit()
-    await session.refresh(user)
+    await db.save(session, user)
 
     assert user.id
     assert user.email == email
@@ -29,11 +28,11 @@ async def test_user_model(session: "conftest.AsyncSession") -> None:
     assert user.name == name
     assert user.confirmed_email is False
     assert user.confirmation_email_key
-    assert user.reset_password_key
     assert user.created_at == datetime.datetime(2022, 1, 16, 22, 0, 0)
     assert user.updated_at == datetime.datetime(2022, 1, 16, 22, 0, 0)
     assert user.last_login is None
     assert user.is_active is False
+    assert not user.reset_password_tokens
 
 
 @pytest.mark.anyio

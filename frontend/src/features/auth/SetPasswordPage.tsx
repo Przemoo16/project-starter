@@ -16,7 +16,7 @@ import { getSetPasswordSchema } from './validation';
 
 const SetPasswordPage = () => {
   const { t } = useTranslation();
-  const { key } = useParams();
+  const { token } = useParams();
   const { accountPasswordMinLength, accountPasswordMaxLength } = useAppSelector(
     state => state.config
   );
@@ -32,8 +32,8 @@ const SetPasswordPage = () => {
     resolver: yupResolver(getSetPasswordSchema(accountPasswordMinLength, accountPasswordMaxLength)),
   });
 
-  const onSubmit: SubmitHandler<Omit<SetPasswordData, 'key'>> = async values => {
-    dispatch(setPassword({ ...values, key: key || '' }));
+  const onSubmit: SubmitHandler<Omit<SetPasswordData, 'token'>> = async values => {
+    dispatch(setPassword({ ...values, token: token || '' }));
   };
 
   return (

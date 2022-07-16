@@ -253,8 +253,9 @@ sniffio==1.2.0
     #   httpx
 snowballstemmer==2.2.0
     # via pydocstyle
-sqlalchemy==1.4.39
+sqlalchemy==1.4.35
     # via
+    #   -r requirements.in
     #   alembic
     #   sqlmodel
 sqlalchemy2-stubs==0.0.2a24

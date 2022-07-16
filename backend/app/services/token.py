@@ -22,24 +22,27 @@ jwt_db = db.get_jwt_db()
 
 
 class TokenService(base.AppService):
+    def __init__(self, session: db.AsyncSession):
+        super().__init__(session)
+        self.user_service = user_services.UserService(self.session)
+
     async def obtain_tokens(
         self, email: user_models.UserEmail, password: user_models.UserPassword
     ) -> token_models.Tokens:
-        user_service = user_services.UserService(self.session)
         invalid_credentials_exception = token_exceptions.InvalidCredentials()
         user_filters = user_models.UserFilters(email=email)
         try:
-            user = await user_service.get_user(user_filters)
+            user = await self.user_service.get_user(user_filters)
         except user_exceptions.UserNotFoundError as e:
             log.info("User with the email %r not found", email)
             raise invalid_credentials_exception from e
         if not auth.verify_password(password, user.password):
             log.info("Invalid password for user with the email %r", email)
             raise invalid_credentials_exception
-        if not user_service.is_active(user):
+        if not self.user_service.is_active(user):
             raise token_exceptions.InactiveUserError(context={"id": user.id})
         user_update = user_models.UserUpdate(last_login=datetime.datetime.utcnow())
-        updated_user = await user_service.update_user(user, user_update)
+        updated_user = await self.user_service.update_user(user, user_update)
         user_id = str(updated_user.id)
         auth_handler = jwt_auth.AuthJWT()
         return token_models.Tokens(  # nosec
@@ -60,10 +63,9 @@ class TokenService(base.AppService):
             raise token_exceptions.RefreshTokenRequiredError(context=token_context)
         if jwt_config.check_if_token_in_denylist(decoded_token):
             raise token_exceptions.RevokedTokenError(context=token_context)
-        user_service = user_services.UserService(self.session)
         user_filters = user_models.UserFilters(id=decoded_token["sub"])
-        user = await user_service.get_user(user_filters)
-        if not user_service.is_active(user):
+        user = await self.user_service.get_user(user_filters)
+        if not self.user_service.is_active(user):
             raise token_exceptions.InactiveUserError(context={"id": user.id})
         return token_models.AccessToken(  # nosec
             access_token=jwt_auth.AuthJWT().create_access_token(
@@ -81,7 +83,7 @@ class TokenService(base.AppService):
         if jwt_config.check_if_token_in_denylist(decoded_token):
             raise token_exceptions.RevokedTokenError(context=token_context)
         user_filters = user_models.UserFilters(id=decoded_token["sub"])
-        await user_services.UserService(self.session).get_user(user_filters)
+        await self.user_service.get_user(user_filters)
         jti = decoded_token["jti"]
         if not (expiration := decoded_token.get("exp")):
             jwt_db.set(jti, "true")

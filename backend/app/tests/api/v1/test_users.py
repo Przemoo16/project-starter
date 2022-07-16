@@ -4,6 +4,7 @@ from fastapi import status
 import fastapi_jwt_auth as jwt_auth
 import pytest
 
+from app.tests.helpers import reset_password as reset_password_helpers
 from app.tests.helpers import response as response_helpers
 from app.tests.helpers import user as user_helpers
 
@@ -241,7 +242,7 @@ async def test_confirm_email(
 async def test_reset_password(
     async_client: "conftest.TestClient", session: "conftest.AsyncSession"
 ) -> None:
-    user = await user_helpers.create_user(session=session)
+    user = await user_helpers.create_active_user(session=session)
     request_data = {"email": user.email}
 
     response = await async_client.post(
@@ -284,8 +285,15 @@ async def test_reset_password_user_not_found(
 async def test_set_password(
     async_client: "conftest.TestClient", session: "conftest.AsyncSession"
 ) -> None:
-    user = await user_helpers.create_user(session=session)
-    request_data = {"key": str(user.reset_password_key), "password": "plain_password"}
+    user = await user_helpers.create_active_user(session=session)
+    token = await reset_password_helpers.create_reset_password_token(
+        session, user_id=user.id
+    )
+
+    request_data = {
+        "token": str(token.id),
+        "password": "plain_password",
+    }
 
     response = await async_client.post(
         f"{API_URL}/users/password/set", json=request_data

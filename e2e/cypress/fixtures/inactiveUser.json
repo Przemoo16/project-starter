@@ -2,6 +2,5 @@
   "name": "Inactive user",
   "email": "inactiveUser@email.com",
   "password": "testPassword123",
-  "confirmationEmailKey": "6d555ddc-6145-4836-9d2b-48693674e286",
-  "resetPasswordKey": "1bdb1bfc-0e53-4faf-8221-4ad2eb0ba93d"
+  "confirmationEmailKey": "6d555ddc-6145-4836-9d2b-48693674e286"
 }

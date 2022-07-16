@@ -30,7 +30,7 @@ def test_to_pydantic_email() -> None:
     [
         ("confirmed_email", "confirmedEmail"),
         ("confirmation_email_key", "confirmationEmailKey"),
-        ("reset_password_key", "resetPasswordKey"),
+        ("reset_password_token", "resetPasswordToken"),
         ("LastUserLogin", "lastUserLogin"),
         ("password", "password"),
     ],

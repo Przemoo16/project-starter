@@ -1,15 +1,15 @@
+import datetime
 import typing
 from unittest import mock
 
 import freezegun
 import pytest
-from sqlalchemy import exc
-import sqlmodel
 
 from app.exceptions.http import user as user_exceptions
 from app.models import pagination
 from app.models import user as user_models
 from app.services import user as user_services
+from app.tests.helpers import reset_password as reset_password_helpers
 from app.tests.helpers import user as user_helpers
 from app.utils import converters
 
@@ -202,7 +202,10 @@ async def test_user_service_confirm_email_already_confirmed(
 
 
 @pytest.mark.anyio
-@mock.patch("app.services.user.settings.ACCOUNT_ACTIVATION_DAYS", new=2)
+@mock.patch(
+    "app.services.user.settings.CONFIRMATION_EMAIL_KEY_EXPIRES",
+    new=datetime.timedelta(days=2),
+)
 async def test_user_service_confirm_email_time_expired(
     session: "conftest.AsyncSession",
 ) -> None:
@@ -219,119 +222,44 @@ async def test_user_service_confirm_email_time_expired(
 
 
 @pytest.mark.anyio
+@mock.patch("app.services.reset_password.ResetPasswordService.create_token")
 @mock.patch("app.services.user.user_tasks.send_email_to_reset_password.delay")
 async def test_user_service_reset_password(
     mock_send_email: mock.MagicMock,
+    mock_create_token: mock.AsyncMock,
     session: "conftest.AsyncSession",
 ) -> None:
-    user = await user_helpers.create_user(session=session)
+    user = await user_helpers.create_active_user(session=session)
+    token = await reset_password_helpers.create_reset_password_token(
+        session=session, user_id=user.id
+    )
+    mock_create_token.return_value = token
 
-    user_services.UserService(session).reset_password(user)
+    await user_services.UserService(session).reset_password(user)
 
-    mock_send_email.assert_called_once_with(user.email, user.reset_password_key)
+    mock_send_email.assert_called_once_with(user.email, token.id)
 
 
 @pytest.mark.anyio
+@mock.patch("app.services.reset_password.ResetPasswordService.get_valid_token")
+@mock.patch("app.services.reset_password.ResetPasswordService.force_to_expire")
 async def test_user_service_set_password(
+    mock_force_to_expire: mock.AsyncMock,
+    mock_get_valid_token: mock.AsyncMock,
     session: "conftest.AsyncSession",
 ) -> None:
     current_password = "hashed_password"
-    user = await user_helpers.create_user(session=session, password=current_password)
-    current_reset_password_key = user.reset_password_key
+    user = await user_helpers.create_active_user(
+        session=session, password=current_password
+    )
+    token = await reset_password_helpers.create_reset_password_token(
+        session, user_id=user.id
+    )
+    mock_get_valid_token.return_value = token
     new_plain_password = "plain_password"
 
-    await user_services.UserService(session).set_password(user, new_plain_password)
+    await user_services.UserService(session).set_password(token.id, new_plain_password)
 
     assert user.password != current_password
     assert user.password != new_plain_password
-    assert user.reset_password_key != current_reset_password_key
-
-
-@pytest.mark.anyio
-async def test_user_crud_create(session: "conftest.AsyncSession") -> None:
-    user_create = user_models.UserCreate(
-        email=converters.to_pydantic_email("test@email.com"),
-        password="hashed_password",
-        name="Test User",
-    )
-
-    created_user = await user_services.UserCRUD(session).create(user_create)
-
-    assert created_user.email == user_create.email
-    assert created_user.password == user_create.password
-    assert created_user.name == user_create.name
-    statement = sqlmodel.select(user_models.User).where(
-        user_models.User.id == created_user.id
-    )
-    assert (await session.execute(statement)).scalar_one()
-
-
-@pytest.mark.anyio
-async def test_user_crud_read_many(session: "conftest.AsyncSession") -> None:
-    await user_helpers.create_user(session=session)
-    user_2 = await user_helpers.create_user(session=session)
-    user_3 = await user_helpers.create_user(session=session)
-    await user_helpers.create_user(session=session)
-    user_filters = user_models.UserFilters()
-
-    retrieved_users = await user_services.UserCRUD(session).read_many(
-        user_filters, pagination.Pagination(offset=1, limit=2)
-    )
-
-    assert retrieved_users == [user_2, user_3]
-
-
-@pytest.mark.anyio
-async def test_user_crud_read_one(session: "conftest.AsyncSession") -> None:
-    await user_helpers.create_user(session=session, email="test@email.com")
-    user_2 = await user_helpers.create_user(session=session, email="test2@email.com")
-    user_filters = user_models.UserFilters(id=user_2.id, email=user_2.email)
-
-    retrieved_user = await user_services.UserCRUD(session).read_one(user_filters)
-
-    assert retrieved_user == user_2
-
-
-@pytest.mark.anyio
-async def test_user_crud_update(session: "conftest.AsyncSession") -> None:
-    user = await user_helpers.create_user(session=session, name="Test User")
-    user_update = user_models.UserUpdate(name="Updated Name", confirmed_email=True)
-
-    updated_user = await user_services.UserCRUD(session).update(user, user_update)
-
-    assert updated_user.name == user_update.name
-    assert updated_user.confirmed_email is True
-    assert updated_user.password == user.password
-    # pylint: disable=singleton-comparison
-    statement = sqlmodel.select(user_models.User).where(
-        user_models.User.name == user_update.name,
-        user_models.User.confirmed_email == True,  # noqa: E712
-    )
-    assert (await session.execute(statement)).scalar_one()
-
-
-@pytest.mark.anyio
-async def test_user_crud_delete(session: "conftest.AsyncSession") -> None:
-    user = await user_helpers.create_user(session=session)
-
-    await user_services.UserCRUD(session).delete(user)
-
-    with pytest.raises(exc.NoResultFound):
-        statement = sqlmodel.select(user_models.User).where(
-            user_models.User.id == user.id
-        )
-        (await session.execute(statement)).scalar_one()
-
-
-@pytest.mark.anyio
-async def test_user_crud_count(
-    session: "conftest.AsyncSession",
-) -> None:
-    await user_helpers.create_user(session=session)
-    await user_helpers.create_user(session=session)
-    await user_helpers.create_user(session=session)
-    user_filters = user_models.UserFilters()
-
-    num_users = await user_services.UserCRUD(session).count(user_filters)
-
-    assert num_users == 3
+    mock_force_to_expire.assert_called_once_with(token)

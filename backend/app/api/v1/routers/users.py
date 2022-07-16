@@ -6,13 +6,12 @@ from fastapi import responses, status
 import fastapi_jwt_auth as jwt_auth
 
 from app.api.deps import user as user_deps
-from app.config import db, general
+from app.config import db
+from app.exceptions.http import reset_password as reset_password_exceptions
 from app.exceptions.http import user as user_exceptions
 from app.models import message
 from app.models import user as user_models
 from app.services import user as user_services
-
-settings = general.get_settings()
 
 router = fastapi.APIRouter()
 
@@ -144,7 +143,7 @@ async def reset_password(
     except user_exceptions.UserNotFoundError:
         log.info("Message has not been sent because user not found")
     else:
-        user_service.reset_password(user_db)
+        await user_service.reset_password(user_db)
     return {
         "message": "If provided valid email, the email to reset password has been sent"
     }
@@ -154,14 +153,15 @@ async def reset_password(
     "/password/set",
     response_class=responses.Response,
     status_code=status.HTTP_204_NO_CONTENT,
-    responses={**user_exceptions.UserNotFoundError().doc},
+    responses={
+        **reset_password_exceptions.ResetPasswordTokenNotFound().doc,
+        **reset_password_exceptions.ResetPasswordTokenExpired().doc,
+    },
 )
 async def set_password(
     set_password_model: user_models.UserSetPassword,
     session: db.AsyncSession = fastapi.Depends(db.get_session),
 ) -> typing.Any:
-    user_service = user_services.UserService(session)
-    user_db = await user_service.get_user(
-        user_models.UserFilters(reset_password_key=set_password_model.key)
+    await user_services.UserService(session).set_password(
+        set_password_model.token, set_password_model.password
     )
-    await user_service.set_password(user_db, set_password_model.password)

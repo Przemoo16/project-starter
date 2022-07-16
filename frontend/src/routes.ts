@@ -58,7 +58,7 @@ export const routes: RouteDefinition[] = [
   },
   {
     title: 'Set password',
-    path: '/set-password/:key',
+    path: '/set-password/:token',
     requiresAuth: false,
     layout: AuthLayout,
     content: LazyPages.SetPasswordPage,

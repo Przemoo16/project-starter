@@ -12,7 +12,7 @@ def test_send_email_to_confirm_email(
     key = converters.to_uuid("1dd53909-fcda-4c72-afcd-1bf4886389f8")
     email = converters.to_pydantic_email("test@email.com")
 
-    task = user.send_email_to_confirm_email.apply(args=(email, key))
+    task = user.send_email_to_confirm_email.apply(kwargs={"email": email, "key": key})
 
     assert task.status == "SUCCESS"
     mock_send_email.assert_called_once()
@@ -23,10 +23,12 @@ def test_send_email_to_confirm_email(
 def test_send_email_to_reset_password(
     mock_send_email: mock.MagicMock, _: mock.MagicMock
 ) -> None:
-    key = converters.to_uuid("1dd53909-fcda-4c72-afcd-1bf4886389f8")
+    token = converters.to_uuid("1dd53909-fcda-4c72-afcd-1bf4886389f8")
     email = converters.to_pydantic_email("test@email.com")
 
-    task = user.send_email_to_reset_password.apply(args=(email, key))
+    task = user.send_email_to_reset_password.apply(
+        kwargs={"email": email, "token": token}
+    )
 
     assert task.status == "SUCCESS"
     mock_send_email.assert_called_once()
