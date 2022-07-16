@@ -59,6 +59,14 @@ class UserService(base.AppService):
             filters_data = filters.dict(exclude_unset=True)
             raise user_exceptions.UserNotFoundError(context=filters_data) from e
 
+    async def get_active_user(
+        self, filters: user_models.UserFilters
+    ) -> user_models.User:
+        user = await self.get_user(filters)
+        if not user.is_active:
+            raise user_exceptions.InactiveUserError(context={"id": user.id})
+        return user
+
     async def update_user(
         self, user_db: user_models.User, user_update: user_models.UserUpdate
     ) -> user_models.User:
@@ -68,10 +76,6 @@ class UserService(base.AppService):
 
     async def delete_user(self, user: user_models.User) -> None:
         await self.crud.delete(user)
-
-    @staticmethod
-    def is_active(user: user_models.User) -> bool:
-        return user.is_active
 
     async def count_users(
         self, filters: user_models.UserFilters

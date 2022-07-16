@@ -44,9 +44,8 @@ async def get_current_user(
 
 async def get_current_active_user(
     user: user_models.User = fastapi.Depends(get_current_user),
-    session: db.AsyncSession = fastapi.Depends(db.get_session),
 ) -> user_models.User:
-    if not user_services.UserService(session).is_active(user):
+    if not user.is_active:
         raise user_exceptions.InactiveUserError(context={"id": user.id})
     return user
 

@@ -97,6 +97,32 @@ async def test_user_service_get_user_not_found(
 
 
 @pytest.mark.anyio
+async def test_user_service_get_active_user(session: "conftest.AsyncSession") -> None:
+    user = await user_helpers.create_active_user(
+        session=session, email="test@email.com"
+    )
+    user_filters = user_models.UserFilters(id=user.id, email=user.email)
+
+    retrieved_user = await user_services.UserService(session).get_active_user(
+        user_filters
+    )
+
+    assert retrieved_user == user
+
+
+@pytest.mark.anyio
+async def test_user_service_get_active_user_inactive(
+    session: "conftest.AsyncSession",
+) -> None:
+    user = await user_helpers.create_user(session=session, email="test@email.com")
+    user_filters = user_models.UserFilters(id=user.id, email=user.email)
+
+    with pytest.raises(user_exceptions.InactiveUserError) as exc_info:
+        await user_services.UserService(session).get_active_user(user_filters)
+    assert exc_info.value.context == {"id": user.id}
+
+
+@pytest.mark.anyio
 async def test_user_service_update_user(session: "conftest.AsyncSession") -> None:
     user = await user_helpers.create_user(session=session, name="Test User")
     user_update = user_models.UserUpdate(name="Updated Name", confirmed_email=True)

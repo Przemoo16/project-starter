@@ -24,13 +24,11 @@ settings = general.get_settings()
 
 @pytest.mark.anyio
 @freezegun.freeze_time("2022-02-05 18:30:00")
-@mock.patch("app.services.user.UserService.get_user")
-@mock.patch("app.services.user.UserService.is_active", return_value=True)
+@mock.patch("app.services.user.UserService.get_active_user")
 @mock.patch("app.services.user.UserService.update_user")
 async def test_token_service_obtain_tokens(
     mock_update_user: mock.AsyncMock,
-    _: mock.MagicMock,
-    mock_get_user: mock.AsyncMock,
+    mock_get_active_user: mock.AsyncMock,
     session: "conftest.AsyncSession",
 ) -> None:
     user = await user_helpers.create_active_user(
@@ -38,7 +36,7 @@ async def test_token_service_obtain_tokens(
         email="test@email.com",
         password="$2b$12$q8JcpltDZkSLOdMuPyt/jORzExLKp9HsKgCoFJQ1IzzITc2/Pg42q",
     )
-    mock_get_user.return_value = user
+    mock_get_active_user.return_value = user
 
     with freezegun.freeze_time("2022-02-05 18:00:00"):
         tokens = await token_services.TokenService(session).obtain_tokens(
@@ -56,71 +54,45 @@ async def test_token_service_obtain_tokens(
 
 @pytest.mark.anyio
 @mock.patch(
-    "app.services.user.UserService.get_user",
+    "app.services.user.UserService.get_active_user",
     side_effect=user_exceptions.UserNotFoundError,
 )
 async def test_token_service_obtain_tokens_user_not_found(
-    _: mock.AsyncMock,
-    session: "conftest.AsyncSession",
+    _: mock.AsyncMock, session: "conftest.AsyncSession"
 ) -> None:
     email = converters.to_pydantic_email("test@email.com")
 
-    with pytest.raises(token_exceptions.InvalidCredentials):
+    with pytest.raises(token_exceptions.InvalidCredentialsError):
         await token_services.TokenService(session).obtain_tokens(
             email=email, password="plain_password"
         )
 
 
 @pytest.mark.anyio
-@mock.patch("app.services.user.UserService.get_user")
+@mock.patch("app.services.user.UserService.get_active_user")
 async def test_token_service_obtain_tokens_invalid_password(
-    mock_get_user: mock.AsyncMock, session: "conftest.AsyncSession"
+    mock_get_active_user: mock.AsyncMock, session: "conftest.AsyncSession"
 ) -> None:
     user = await user_helpers.create_active_user(
         session,
         email="test@email.com",
         password="$2b$12$q8JcpltDZkSLOdMuPyt/jORzExLKp9HsKgCoFJQ1IzzITc2/Pg42q",
     )
-    mock_get_user.return_value = user
+    mock_get_active_user.return_value = user
 
-    with pytest.raises(token_exceptions.InvalidCredentials):
+    with pytest.raises(token_exceptions.InvalidCredentialsError):
         await token_services.TokenService(session).obtain_tokens(
             email=user.email, password="invalid_password"
         )
 
 
 @pytest.mark.anyio
-@mock.patch("app.services.user.UserService.get_user")
-@mock.patch("app.services.user.UserService.is_active", return_value=False)
-async def test_token_service_obtain_tokens_inactive_user(
-    _: mock.MagicMock,
-    mock_get_user: mock.AsyncMock,
-    session: "conftest.AsyncSession",
-) -> None:
-    user = await user_helpers.create_user(
-        session,
-        email="test@email.com",
-        password="$2b$12$q8JcpltDZkSLOdMuPyt/jORzExLKp9HsKgCoFJQ1IzzITc2/Pg42q",
-    )
-    mock_get_user.return_value = user
-
-    with pytest.raises(token_exceptions.InactiveUserError) as exc_info:
-        await token_services.TokenService(session).obtain_tokens(
-            email=user.email, password="plain_password"
-        )
-    assert exc_info.value.context == {"id": user.id}
-
-
-@pytest.mark.anyio
-@mock.patch("app.services.user.UserService.get_user")
-@mock.patch("app.services.user.UserService.is_active", return_value=True)
+@mock.patch("app.services.user.UserService.get_active_user")
 async def test_token_service_refresh_token(
-    _: mock.MagicMock,
-    mock_get_user: mock.AsyncMock,
-    session: "conftest.AsyncSession",
+    mock_get_active_user: mock.AsyncMock, session: "conftest.AsyncSession"
 ) -> None:
     user = await user_helpers.create_active_user(session)
-    mock_get_user.return_value = user
+    mock_get_active_user.return_value = user
     refresh_token = jwt_auth.AuthJWT().create_refresh_token(str(user.id))
 
     token = await token_services.TokenService(session).refresh_token(
@@ -166,21 +138,6 @@ async def test_token_service_refresh_revoked_token(
     with pytest.raises(token_exceptions.RevokedTokenError) as exc_info:
         await token_services.TokenService(session).refresh_token(token=token)
     assert exc_info.value.context == {"token": token}
-
-
-@pytest.mark.anyio
-@mock.patch("app.services.user.UserService.get_user")
-@mock.patch("app.services.user.UserService.is_active", return_value=False)
-async def test_token_service_refresh_token_inactive_user(
-    _: mock.MagicMock, mock_get_user: mock.AsyncMock, session: "conftest.AsyncSession"
-) -> None:
-    user = await user_helpers.create_user(session)
-    mock_get_user.return_value = user
-    token = jwt_auth.AuthJWT().create_refresh_token(str(user.id))
-
-    with pytest.raises(token_exceptions.InactiveUserError) as exc_info:
-        await token_services.TokenService(session).refresh_token(token=token)
-    assert exc_info.value.context == {"id": user.id}
 
 
 @pytest.mark.anyio

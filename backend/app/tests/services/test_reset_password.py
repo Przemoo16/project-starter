@@ -71,7 +71,7 @@ async def test_reset_password_service_get_token_not_found(
     token_filters = reset_password_models.ResetPasswordTokenFilters(id=wrong_id)
 
     with pytest.raises(
-        reset_password_exceptions.ResetPasswordTokenNotFound
+        reset_password_exceptions.ResetPasswordTokenNotFoundError
     ) as exc_info:
         await reset_password_services.ResetPasswordService(session).get_token(
             token_filters
@@ -103,7 +103,9 @@ async def test_reset_password_service_get_valid_token_expired(
     )
     token_filters = reset_password_models.ResetPasswordTokenFilters(id=token.id)
 
-    with pytest.raises(reset_password_exceptions.ResetPasswordTokenExpired) as exc_info:
+    with pytest.raises(
+        reset_password_exceptions.ResetPasswordTokenExpiredError
+    ) as exc_info:
         await reset_password_services.ResetPasswordService(session).get_valid_token(
             token_filters
         )

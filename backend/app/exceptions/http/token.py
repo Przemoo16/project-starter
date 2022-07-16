@@ -3,7 +3,7 @@ from fastapi import status
 from app.exceptions.http import base
 
 
-class InvalidCredentials(base.HTTPException):
+class InvalidCredentialsError(base.HTTPException):
     def __init__(
         self, detail: base.Detail = None, context: base.Context = None
     ) -> None:
@@ -21,15 +21,6 @@ class RevokedTokenError(base.HTTPException):
         status_code = status.HTTP_401_UNAUTHORIZED
         headers = {"WWW-Authenticate": "Bearer"}
         super().__init__(status_code, detail, context, headers)
-
-
-class InactiveUserError(base.HTTPException):
-    def __init__(
-        self, detail: base.Detail = None, context: base.Context = None
-    ) -> None:
-        detail = "User is inactive"
-        status_code = status.HTTP_403_FORBIDDEN
-        super().__init__(status_code, detail, context)
 
 
 class InvalidTokenError(base.HTTPException):
