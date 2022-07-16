@@ -141,6 +141,11 @@ async def test_token_service_refresh_revoked_token(
 
 
 @pytest.mark.anyio
+@freezegun.freeze_time("2022-02-06 12:30:00")
+@mock.patch(
+    "app.services.token.settings.AUTHJWT_ACCESS_TOKEN_EXPIRES",
+    new=datetime.timedelta(minutes=30),
+)
 @mock.patch("app.services.user.UserService.get_user")
 @mock.patch("app.services.token.jwt_db.setex")
 async def test_token_service_revoke_access_token(
@@ -153,10 +158,16 @@ async def test_token_service_revoke_access_token(
 
     await token_services.TokenService(session).revoke_token(token=token)
 
-    mock_redis_setex.assert_called_once()
+    jti = token_helpers.decode_token(token)["jti"]
+    mock_redis_setex.assert_called_once_with(jti, 60 * 30, "true")
 
 
 @pytest.mark.anyio
+@freezegun.freeze_time("2022-02-06 12:30:00")
+@mock.patch(
+    "app.services.token.settings.AUTHJWT_REFRESH_TOKEN_EXPIRES",
+    new=datetime.timedelta(days=1),
+)
 @mock.patch("app.services.user.UserService.get_user")
 @mock.patch("app.services.token.jwt_db.setex")
 async def test_token_service_revoke_refresh_token(
@@ -169,7 +180,8 @@ async def test_token_service_revoke_refresh_token(
 
     await token_services.TokenService(session).revoke_token(token=token)
 
-    mock_redis_setex.assert_called_once()
+    jti = token_helpers.decode_token(token)["jti"]
+    mock_redis_setex.assert_called_once_with(jti, 60 * 60 * 24, "true")
 
 
 @pytest.mark.anyio
@@ -227,29 +239,3 @@ async def test_token_service_revoke_token_missing_expiration(
     await token_services.TokenService(session).revoke_token(token=token)
 
     mock_redis_set.assert_called_with(jti, "true")
-
-
-@freezegun.freeze_time("2022-02-06 12:30:00")
-def test_get_remaining_expiration() -> None:
-    exp = int(converters.to_utc_timestamp(datetime.datetime(2022, 2, 6, 13, 0, 0)))
-
-    remaining_expiration = (
-        token_services._get_remaining_expiration(  # pylint: disable=protected-access
-            exp
-        )
-    )
-
-    assert remaining_expiration == 1800
-
-
-@freezegun.freeze_time("2022-02-06 12:30:00")
-def test_get_remaining_expiration_already_expired() -> None:
-    exp = int(converters.to_utc_timestamp(datetime.datetime(2022, 2, 6, 12, 0, 0)))
-
-    remaining_expiration = (
-        token_services._get_remaining_expiration(  # pylint: disable=protected-access
-            exp
-        )
-    )
-
-    assert remaining_expiration == 1
