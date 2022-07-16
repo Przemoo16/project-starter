@@ -69,6 +69,6 @@ class ResetPasswordCRUD(base.AppCRUD):
             sqlmodel.select(self.model), filters
         )
         order_by_statement = where_statement.order_by(
-            sqlmodel.col(self.model.expire_at).desc()
+            sqlmodel.col(self.model.expire_at).desc()  # pylint: disable=no-member
         )
         return (await self.session.execute(order_by_statement)).scalar()
