@@ -17,8 +17,8 @@ router = fastapi.APIRouter()
     "/",
     response_model=token_models.Tokens,
     responses={
-        **token_exceptions.InvalidCredentials().doc,
-        **token_exceptions.InactiveUserError().doc,
+        **token_exceptions.InvalidCredentialsError().doc,
+        **user_exceptions.InactiveUserError().doc,
     },
 )
 async def obtain_tokens(
@@ -33,7 +33,7 @@ async def obtain_tokens(
     "/refresh",
     response_model=token_models.AccessToken,
     responses={
-        **token_exceptions.InactiveUserError().doc,
+        **user_exceptions.InactiveUserError().doc,
         **user_exceptions.UserNotFoundError().doc,
         **token_exceptions.InvalidTokenError().doc,
         **token_exceptions.RefreshTokenRequiredError().doc,

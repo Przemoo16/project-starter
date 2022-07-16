@@ -3,7 +3,7 @@ from fastapi import status
 from app.exceptions.http import base
 
 
-class ResetPasswordTokenNotFound(base.HTTPException):
+class ResetPasswordTokenNotFoundError(base.HTTPException):
     def __init__(
         self, detail: base.Detail = None, context: base.Context = None
     ) -> None:
@@ -12,7 +12,7 @@ class ResetPasswordTokenNotFound(base.HTTPException):
         super().__init__(status_code, detail, context)
 
 
-class ResetPasswordTokenExpired(base.HTTPException):
+class ResetPasswordTokenExpiredError(base.HTTPException):
     def __init__(
         self, detail: base.Detail = None, context: base.Context = None
     ) -> None:

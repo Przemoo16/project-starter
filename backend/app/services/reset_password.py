@@ -34,7 +34,7 @@ class ResetPasswordService(base.AppService):
             return await self.crud.read_one(filters)
         except exc.NoResultFound as e:
             filters_data = filters.dict(exclude_unset=True)
-            raise reset_password_exceptions.ResetPasswordTokenNotFound(
+            raise reset_password_exceptions.ResetPasswordTokenNotFoundError(
                 context=filters_data
             ) from e
 
@@ -43,7 +43,7 @@ class ResetPasswordService(base.AppService):
     ) -> reset_password_models.ResetPasswordToken:
         token = await self.get_token(filters)
         if token.is_expired:
-            raise reset_password_exceptions.ResetPasswordTokenExpired(
+            raise reset_password_exceptions.ResetPasswordTokenExpiredError(
                 context={"id": token.id}
             )
         return token

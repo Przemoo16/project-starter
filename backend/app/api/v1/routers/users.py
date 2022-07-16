@@ -154,8 +154,8 @@ async def reset_password(
     response_class=responses.Response,
     status_code=status.HTTP_204_NO_CONTENT,
     responses={
-        **reset_password_exceptions.ResetPasswordTokenNotFound().doc,
-        **reset_password_exceptions.ResetPasswordTokenExpired().doc,
+        **reset_password_exceptions.ResetPasswordTokenNotFoundError().doc,
+        **reset_password_exceptions.ResetPasswordTokenExpiredError().doc,
     },
 )
 async def set_password(

@@ -29,18 +29,16 @@ class TokenService(base.AppService):
     async def obtain_tokens(
         self, email: user_models.UserEmail, password: user_models.UserPassword
     ) -> token_models.Tokens:
-        invalid_credentials_exception = token_exceptions.InvalidCredentials()
+        invalid_credentials_exception = token_exceptions.InvalidCredentialsError()
         user_filters = user_models.UserFilters(email=email)
         try:
-            user = await self.user_service.get_user(user_filters)
+            user = await self.user_service.get_active_user(user_filters)
         except user_exceptions.UserNotFoundError as e:
             log.info("User with the email %r not found", email)
             raise invalid_credentials_exception from e
         if not auth.verify_password(password, user.password):
             log.info("Invalid password for user with the email %r", email)
             raise invalid_credentials_exception
-        if not self.user_service.is_active(user):
-            raise token_exceptions.InactiveUserError(context={"id": user.id})
         user_update = user_models.UserUpdate(last_login=datetime.datetime.utcnow())
         updated_user = await self.user_service.update_user(user, user_update)
         user_id = str(updated_user.id)
@@ -64,9 +62,7 @@ class TokenService(base.AppService):
         if jwt_config.check_if_token_in_denylist(decoded_token):
             raise token_exceptions.RevokedTokenError(context=token_context)
         user_filters = user_models.UserFilters(id=decoded_token["sub"])
-        user = await self.user_service.get_user(user_filters)
-        if not self.user_service.is_active(user):
-            raise token_exceptions.InactiveUserError(context={"id": user.id})
+        user = await self.user_service.get_active_user(user_filters)
         return token_models.AccessToken(  # nosec
             access_token=jwt_auth.AuthJWT().create_access_token(
                 str(user.id), fresh=False
