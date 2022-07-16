@@ -289,3 +289,21 @@ async def test_user_service_set_password(
     assert user.password != current_password
     assert user.password != new_plain_password
     mock_force_to_expire.assert_called_once_with(token)
+
+
+@pytest.mark.anyio
+@mock.patch("app.services.reset_password.ResetPasswordService.get_valid_token")
+async def test_user_service_set_password_inactive_user(
+    mock_get_valid_token: mock.AsyncMock, session: "conftest.AsyncSession"
+) -> None:
+    user = await user_helpers.create_user(session=session, password="hashed_password")
+    token = await reset_password_helpers.create_reset_password_token(
+        session, user_id=user.id
+    )
+    mock_get_valid_token.return_value = token
+
+    with pytest.raises(user_exceptions.InactiveUserError) as exc_info:
+        await user_services.UserService(session).set_password(
+            token.id, "plain_password"
+        )
+    assert exc_info.value.context == {"id": user.id}

@@ -20,4 +20,11 @@ VALUES
         current_timestamp,
         current_timestamp,
         '57de5b88-c657-4f66-b445-e45bcceeb32d'
+    ),
+    (
+        '68e79dff-b5bf-47ed-a94e-7a79f55520a2',
+        current_timestamp + (30 || ' minutes') :: interval,
+        current_timestamp,
+        current_timestamp,
+        '69426239-4798-4acb-9e7c-8a2b6a8697f4'
     );

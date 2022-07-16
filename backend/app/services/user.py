@@ -115,8 +115,11 @@ class UserService(base.AppService):
     ) -> None:
         token_filters = reset_password_models.ResetPasswordTokenFilters(id=token)
         token_db = await self.reset_password_service.get_valid_token(token_filters)
+        user = token_db.user
+        if not user.is_active:
+            raise user_exceptions.InactiveUserError(context={"id": user.id})
         user_update = user_models.UserUpdate(password=auth.hash_password(password))
-        await self.crud.update(token_db.user, user_update)
+        await self.crud.update(user, user_update)
         await self.reset_password_service.force_to_expire(token_db)
 
 

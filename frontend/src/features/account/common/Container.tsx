@@ -7,6 +7,7 @@ interface SectionContainerProps {
 
 export const SectionContainer = ({ children }: SectionContainerProps) => (
   <Box
+    component="section"
     sx={{
       display: 'flex',
       flexDirection: 'column',
