@@ -3,7 +3,7 @@ describe("Set password page", () => {
     cy.fixture("../fixtures/activeUser.json")
       .as("userData")
       .then((data) => {
-        cy.visit(`/set-password/${data.resetPasswordKey}`);
+        cy.visit(`/set-password/${data.resetPasswordToken}`);
       });
   });
 
@@ -61,8 +61,8 @@ describe("Set password page", () => {
     cy.get("[id$=helper-text]").should("have.text", "Password doesn't match");
   });
 
-  it("displays proper message when set password with invalid key", () => {
-    cy.visit("/set-password/invalid-key");
+  it("displays proper message when set password with invalid token", () => {
+    cy.visit("/set-password/e19edcd4-1fcb-4e70-86c7-e83c8aec7f06");
     cy.fixture("../fixtures/activeUser.json")
       .as("userData")
       .then((data) => {
@@ -75,6 +75,23 @@ describe("Set password page", () => {
     cy.get("[role=alert]").should(
       "have.text",
       "We couldn't changed your password. Please check if the provided link is correct"
+    );
+  });
+
+  it("displays proper message when set password with expired token", () => {
+    cy.fixture("../fixtures/activeUser.json")
+      .as("userData")
+      .then((data) => {
+        cy.visit(`/set-password/${data.expiredResetPasswordToken}`);
+        cy.get("[data-testid=passwordInput]").type(data.password);
+        cy.get("[data-testid=repeatPasswordInput]").type(data.password);
+      });
+
+    cy.get("[data-testid=submitButton]").click();
+
+    cy.get("[role=alert]").should(
+      "have.text",
+      "We couldn't changed your password. Provided link expired"
     );
   });
 

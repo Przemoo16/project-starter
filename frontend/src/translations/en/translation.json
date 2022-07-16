@@ -44,6 +44,7 @@
     "resetPasswordError": "We couldn't reset your password",
     "resetPasswordSuccess": "We've sent you an e-mail with instructions on how to reset your password",
     "resetPasswordTitle": "Reset your password",
+    "resetPasswordTokenExpired": "We couldn't changed your password. Provided link expired",
     "sendEmailButton": "Send email",
     "setPasswordButton": "Set password",
     "setPasswordError": "We couldn't changed your password. Please check if the provided link is correct",

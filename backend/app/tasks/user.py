@@ -8,7 +8,7 @@ from app.services import email as email_services
 from app.utils.translation import gettext_lazy as _
 
 if typing.TYPE_CHECKING:
-    from app.models import user
+    from app.models import reset_password, user
 
 
 log = logging.getLogger(__name__)
@@ -38,9 +38,9 @@ def send_email_to_confirm_email(
 
 @celery.shared_task
 def send_email_to_reset_password(
-    email: "user.UserEmail", key: "user.UserResetPasswordKey"
+    email: "user.UserEmail", token: "reset_password.ResetPasswordToken"
 ) -> None:
-    link = settings.RESET_PASSWORD_URL.format(key=key)
+    link = settings.RESET_PASSWORD_URL.format(token=token)
     subject = _("Reset password")
     message_text = _("Click the link to reset your password: %(link)s") % {"link": link}
     message_html = email_services.load_template(

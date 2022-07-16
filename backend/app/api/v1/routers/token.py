@@ -3,14 +3,12 @@ import typing
 import fastapi
 from fastapi import responses, status
 
-from app.config import db, general
+from app.config import db
 from app.exceptions.http import token as token_exceptions
 from app.exceptions.http import user as user_exceptions
 from app.models import token as token_models
 from app.models import user as user_models
 from app.services import token as token_services
-
-settings = general.get_settings()
 
 router = fastapi.APIRouter()
 

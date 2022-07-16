@@ -124,9 +124,8 @@ async def test_reset_password_flow(async_client: "conftest.TestClient") -> None:
     # Create a user
     email = "test@email.com"
     password = "plain_password"
-    reset_password_key = converters.to_uuid("1dd53909-fcda-4c72-afcd-1bf4886389f8")
-    confirmation_email_key = reset_password_key
-    with mock.patch("uuid.uuid4", return_value=reset_password_key):
+    confirmation_email_key = converters.to_uuid("1dd53909-fcda-4c72-afcd-1bf4886389f8")
+    with mock.patch("uuid.uuid4", return_value=confirmation_email_key):
         response = await async_client.post(
             f"{API_URL}/users",
             json={"email": email, "password": password, "name": "Test User"},
@@ -143,19 +142,46 @@ async def test_reset_password_flow(async_client: "conftest.TestClient") -> None:
 
     assert response.status_code == 204
 
-    # Reset password
-    response = await async_client.post(
-        f"{API_URL}/users/password/reset",
-        json={"email": email},
-    )
+    # Reset password generate first token
+    reset_password_token_1 = converters.to_uuid("3c1cf7f7-33cd-492f-b9b1-75bebf2752d1")
+    with mock.patch("uuid.uuid4", return_value=reset_password_token_1):
+        response = await async_client.post(
+            f"{API_URL}/users/password/reset",
+            json={"email": email},
+        )
 
     assert response.status_code == 202
 
-    # Set new password
-    new_password = "new_password"
+    # Reset password generate second token
+    reset_password_token_2 = converters.to_uuid("858de17d-2e7c-4728-9870-ee5d986debba")
+    with mock.patch("uuid.uuid4", return_value=reset_password_token_2):
+        response = await async_client.post(
+            f"{API_URL}/users/password/reset",
+            json={"email": email},
+        )
+
+    assert response.status_code == 202
+
+    # Set new password with first token
+    new_password_first_token = "new_password_first_token"
     response = await async_client.post(
         f"{API_URL}/users/password/set",
-        json={"key": str(reset_password_key), "password": new_password},
+        json={
+            "token": str(reset_password_token_1),
+            "password": new_password_first_token,
+        },
+    )
+
+    assert response.status_code == 422
+
+    # Set new password with second token
+    new_password_second_token = "new_password_second_token"
+    response = await async_client.post(
+        f"{API_URL}/users/password/set",
+        json={
+            "token": str(reset_password_token_2),
+            "password": new_password_second_token,
+        },
     )
 
     assert response.status_code == 204
@@ -163,8 +189,17 @@ async def test_reset_password_flow(async_client: "conftest.TestClient") -> None:
     # Authorize the user
     response = await async_client.post(
         f"{API_URL}/token",
-        data={"username": email, "password": new_password},
+        data={"username": email, "password": new_password_second_token},
         follow_redirects=True,
     )
 
     assert response.status_code == 200
+
+    # Set new password with already used token
+    another_new_password = "another_new_password"
+    response = await async_client.post(
+        f"{API_URL}/users/password/set",
+        json={"token": str(reset_password_token_2), "password": another_new_password},
+    )
+
+    assert response.status_code == 422

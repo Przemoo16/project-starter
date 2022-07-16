@@ -18,6 +18,8 @@ import { history } from '../../services/history';
 import { handleError } from '../../services/utils';
 import { notifyError, notifySuccess } from '../../ui-components/store';
 
+const RESET_PASSWORD_TOKEN_EXPIRED_CASE = 'ResetPasswordTokenExpired';
+
 interface AuthState {
   account: Account | null;
   loginPending: boolean;
@@ -197,8 +199,16 @@ function* setPasswordSaga() {
       yield put(authActions.setPasswordSuccess());
       history.push('/login');
     } catch (e) {
-      yield put(notifyError(t('auth.setPasswordError')));
-      yield put(authActions.setPasswordFailure({ errors: handleError(e) }));
+      const error = e as AxiosError<ErrorResponse>;
+      if (
+        error.response?.status === 422 &&
+        error.response?.data.case === RESET_PASSWORD_TOKEN_EXPIRED_CASE
+      ) {
+        yield put(notifyError(t('auth.resetPasswordTokenExpired')));
+      } else {
+        yield put(notifyError(t('auth.setPasswordError')));
+      }
+      yield put(authActions.setPasswordFailure({ errors: handleError(error) }));
     }
   });
 }

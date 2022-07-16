@@ -1,16 +1,22 @@
 import datetime
 import logging
+import typing
 
 from sqlalchemy import exc
 
 from app.config import general
 from app.exceptions.http import user as user_exceptions
-from app.models import helpers
 from app.models import pagination as pagination_models
+from app.models import reset_password as reset_password_models
 from app.models import user as user_models
 from app.services import base
+from app.services import reset_password as reset_password_services
 from app.tasks import user as user_tasks
 from app.utils import auth
+
+if typing.TYPE_CHECKING:
+
+    from app.config import db
 
 log = logging.getLogger(__name__)
 
@@ -18,10 +24,17 @@ settings = general.get_settings()
 
 
 class UserService(base.AppService):
+    def __init__(self, session: "db.AsyncSession"):
+        super().__init__(session)
+        self.reset_password_service = reset_password_services.ResetPasswordService(
+            self.session
+        )
+        self.crud = UserCRUD(self.session)
+
     async def create_user(self, user: user_models.UserCreate) -> user_models.User:
         user.password = auth.hash_password(user.password)
         try:
-            user_db = await UserCRUD(self.session).create(user)
+            user_db = await self.crud.create(user)
         except exc.IntegrityError as e:
             raise user_exceptions.UserAlreadyExistsError(
                 context={"email": user.email}
@@ -37,11 +50,11 @@ class UserService(base.AppService):
         filters: user_models.UserFilters,
         pagination: pagination_models.Pagination = pagination_models.Pagination(),
     ) -> list[user_models.User]:
-        return await UserCRUD(self.session).read_many(filters, pagination)
+        return await self.crud.read_many(filters, pagination)
 
     async def get_user(self, filters: user_models.UserFilters) -> user_models.User:
         try:
-            return await UserCRUD(self.session).read_one(filters)
+            return await self.crud.read_one(filters)
         except exc.NoResultFound as e:
             filters_data = filters.dict(exclude_unset=True)
             raise user_exceptions.UserNotFoundError(context=filters_data) from e
@@ -51,10 +64,10 @@ class UserService(base.AppService):
     ) -> user_models.User:
         if user_update.password:
             user_update.password = auth.hash_password(user_update.password)
-        return await UserCRUD(self.session).update(user_db, user_update)
+        return await self.crud.update(user_db, user_update)
 
     async def delete_user(self, user: user_models.User) -> None:
-        await UserCRUD(self.session).delete(user)
+        await self.crud.delete(user)
 
     @staticmethod
     def is_active(user: user_models.User) -> bool:
@@ -63,7 +76,7 @@ class UserService(base.AppService):
     async def count_users(
         self, filters: user_models.UserFilters
     ) -> pagination_models.TotalResults:
-        return await UserCRUD(self.session).count(filters)
+        return await self.crud.count(filters)
 
     async def change_password(
         self,
@@ -74,7 +87,7 @@ class UserService(base.AppService):
         if not auth.verify_password(current_password, user.password):
             raise user_exceptions.InvalidPasswordError()
         user_update = user_models.UserUpdate(password=auth.hash_password(new_password))
-        await UserCRUD(self.session).update(user, user_update)
+        await self.crud.update(user, user_update)
 
     async def confirm_email(self, user: user_models.User) -> None:
         if not _can_confirm_email(user):
@@ -82,34 +95,32 @@ class UserService(base.AppService):
                 context={"confirmation_email_key": user.confirmation_email_key}
             )
         user_update = user_models.UserUpdate(confirmed_email=True)
-        await UserCRUD(self.session).update(user, user_update)
+        await self.crud.update(user, user_update)
 
-    @staticmethod
-    def reset_password(user: user_models.User) -> None:
-        user_tasks.send_email_to_reset_password.delay(
-            user.email, user.reset_password_key
+    async def reset_password(self, user: user_models.User) -> None:
+        token = await self.reset_password_service.create_token(
+            reset_password_models.ResetPasswordTokenCreate(user_id=user.id)
         )
+        user_tasks.send_email_to_reset_password.delay(user.email, token.id)
         log.info("The task to send email to reset password has been invoked")
 
     async def set_password(
         self,
-        user: user_models.User,
+        token: reset_password_models.ResetPasswordTokenID,
         password: user_models.UserPassword,
     ) -> None:
-        user_update = user_models.UserUpdate(
-            password=auth.hash_password(password),
-            reset_password_key=helpers.generate_fixed_uuid(),
-        )
-        await UserCRUD(self.session).update(user, user_update)
+        token_filters = reset_password_models.ResetPasswordTokenFilters(id=token)
+        token_db = await self.reset_password_service.get_valid_token(token_filters)
+        user_update = user_models.UserUpdate(password=auth.hash_password(password))
+        await self.crud.update(token_db.user, user_update)
+        await self.reset_password_service.force_to_expire(token_db)
 
 
 def _can_confirm_email(user: user_models.User) -> bool:
     if user.confirmed_email:
         log.info("Email already confirmed")
         return False
-    expiration_date = user.created_at + datetime.timedelta(
-        days=settings.ACCOUNT_ACTIVATION_DAYS
-    )
+    expiration_date = user.created_at + settings.CONFIRMATION_EMAIL_KEY_EXPIRES
     if expiration_date < datetime.datetime.utcnow():
         log.info("Confirmation email expired")
         return False
@@ -117,28 +128,4 @@ def _can_confirm_email(user: user_models.User) -> bool:
 
 
 class UserCRUD(base.AppCRUD):
-    async def create(self, user: user_models.UserCreate) -> user_models.User:
-        return await self._create(user_models.User, user)
-
-    async def read_many(
-        self,
-        filters: user_models.UserFilters,
-        pagination: pagination_models.Pagination = pagination_models.Pagination(),
-    ) -> list[user_models.User]:
-        return await self._read_many(user_models.User, filters, pagination)
-
-    async def read_one(self, filters: user_models.UserFilters) -> user_models.User:
-        return await self._read_one(user_models.User, filters)
-
-    async def update(
-        self, user_db: user_models.User, user_update: user_models.UserUpdate
-    ) -> user_models.User:
-        return await self._update(user_db, user_update)
-
-    async def delete(self, user: user_models.User) -> None:
-        await self._delete(user)
-
-    async def count(
-        self, filters: user_models.UserFilters
-    ) -> pagination_models.TotalResults:
-        return await self._count(user_models.User, filters)
+    model = user_models.User

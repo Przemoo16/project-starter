@@ -4,8 +4,6 @@ import fastapi_jwt_auth as jwt_auth
 
 from app.config import db, general
 
-settings = general.get_settings()
-
 jwt_db = db.get_jwt_db()
 
 

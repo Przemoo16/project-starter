@@ -19,6 +19,7 @@ python-multipart
 redis
 requests
 sentry-sdk
+sqlalchemy<1.4.36 # TODO: https://github.com/tiangolo/sqlmodel/issues/315
 sqlmodel
 starlette
 uvicorn[standard]
