@@ -14,7 +14,7 @@ if typing.TYPE_CHECKING:
     from app.tests import conftest
 
 
-class TestModel(base_models.BaseModel, table=True):
+class DummyModel(base_models.BaseModel, table=True):
     id: uuid.UUID = sqlmodel.Field(
         primary_key=True, default_factory=helpers.generate_fixed_uuid, nullable=False
     )
@@ -23,37 +23,37 @@ class TestModel(base_models.BaseModel, table=True):
     city: str = "New York"
 
 
-class TestModelFilters(base_models.PydanticBaseModel):
+class DummyModelFilters(base_models.PydanticBaseModel):
     name: str | None = None
     age: int | None = None
     city: str | None = None
 
 
-class TestModelUpdate(base_models.PydanticBaseModel):
+class DummyModelUpdate(base_models.PydanticBaseModel):
     name: str | None = None
     age: int | None = None
     city: str | None = None
 
 
-class TestCRUD(base_services.AppCRUD):
-    model = TestModel
+class DummyCRUD(base_services.AppCRUD):
+    model = DummyModel
 
 
 async def create_entry(
     session: "conftest.AsyncSession", name: str, age: int
-) -> TestModel:
-    entry = TestModel(name=name, age=age)
+) -> DummyModel:
+    entry = DummyModel(name=name, age=age)
     return await db.save(session, entry)
 
 
 @pytest.mark.anyio
 async def test_app_crud_create(session: "conftest.AsyncSession") -> None:
-    model_create = TestModel(name="Test Entry", age=25)
-    created_entry = await TestCRUD(session).create(model_create)
+    model_create = DummyModel(name="Test Entry", age=25)
+    created_entry = await DummyCRUD(session).create(model_create)
 
     assert created_entry.name == model_create.name
     assert created_entry.age == model_create.age
-    statement = sqlmodel.select(TestModel).where(TestModel.name == created_entry.name)
+    statement = sqlmodel.select(DummyModel).where(DummyModel.name == created_entry.name)
     assert (await session.execute(statement)).scalar_one()
 
 
@@ -63,9 +63,9 @@ async def test_app_crud_read_many(session: "conftest.AsyncSession") -> None:
     entry_2 = await create_entry(session, name="Test Entry 2", age=25)
     entry_3 = await create_entry(session, name="Test Entry 3", age=25)
     entry_4 = await create_entry(session, name="Test Entry 4", age=25)
-    filters = TestModelFilters()
+    filters = DummyModelFilters()
 
-    retrieved_entries = await TestCRUD(session).read_many(
+    retrieved_entries = await DummyCRUD(session).read_many(
         filters, pagination.Pagination()
     )
 
@@ -78,9 +78,9 @@ async def test_app_crud_read_many_pagination(session: "conftest.AsyncSession") -
     entry_2 = await create_entry(session, name="Test Entry 2", age=25)
     entry_3 = await create_entry(session, name="Test Entry 3", age=25)
     await create_entry(session, name="Test Entry 4", age=25)
-    filters = TestModelFilters()
+    filters = DummyModelFilters()
 
-    retrieved_entries = await TestCRUD(session).read_many(
+    retrieved_entries = await DummyCRUD(session).read_many(
         filters, pagination.Pagination(offset=1, limit=2)
     )
 
@@ -92,9 +92,9 @@ async def test_app_crud_read_one(session: "conftest.AsyncSession") -> None:
     await create_entry(session, name="Test Entry 1", age=25)
     await create_entry(session, name="Test Entry 2", age=27)
     entry = await create_entry(session, name="Test Entry 2", age=25)
-    entry_filters = TestModelFilters(name="Test Entry 2", age=25)
+    entry_filters = DummyModelFilters(name="Test Entry 2", age=25)
 
-    retrieved_entry = await TestCRUD(session).read_one(entry_filters)
+    retrieved_entry = await DummyCRUD(session).read_one(entry_filters)
 
     assert retrieved_entry == entry
 
@@ -103,15 +103,15 @@ async def test_app_crud_read_one(session: "conftest.AsyncSession") -> None:
 async def test_app_crud_update(session: "conftest.AsyncSession") -> None:
     await create_entry(session, name="Test Entry 1", age=25)
     entry = await create_entry(session, name="Test Entry 2", age=25)
-    entry_update = TestModelUpdate(name="Updated Entry", age=30)
+    entry_update = DummyModelUpdate(name="Updated Entry", age=30)
 
-    updated_entry = await TestCRUD(session).update(entry, entry_update)
+    updated_entry = await DummyCRUD(session).update(entry, entry_update)
 
     assert updated_entry.name == entry_update.name
     assert updated_entry.age == entry_update.age
-    statement = sqlmodel.select(TestModel).where(
-        TestModel.name == entry_update.name,
-        TestModel.age == entry_update.age,
+    statement = sqlmodel.select(DummyModel).where(
+        DummyModel.name == entry_update.name,
+        DummyModel.age == entry_update.age,
     )
     assert (await session.execute(statement)).scalar_one()
 
@@ -120,10 +120,10 @@ async def test_app_crud_update(session: "conftest.AsyncSession") -> None:
 async def test_app_crud_delete(session: "conftest.AsyncSession") -> None:
     entry = await create_entry(session, name="Test Entry", age=25)
 
-    await TestCRUD(session).delete(entry)
+    await DummyCRUD(session).delete(entry)
 
     with pytest.raises(exc.NoResultFound):
-        statement = sqlmodel.select(TestModel).where(TestModel.name == entry.name)
+        statement = sqlmodel.select(DummyModel).where(DummyModel.name == entry.name)
         (await session.execute(statement)).scalar_one()
 
 
@@ -134,9 +134,9 @@ async def test_app_crud_count(
     await create_entry(session, name="Test Entry 1", age=25)
     await create_entry(session, name="Test Entry 2", age=25)
     await create_entry(session, name="Test Entry 3", age=25)
-    entry_filters = TestModelFilters()
+    entry_filters = DummyModelFilters()
 
-    num_users = await TestCRUD(session).count(entry_filters)
+    num_users = await DummyCRUD(session).count(entry_filters)
 
     assert num_users == 3
 
@@ -147,14 +147,14 @@ async def test_build_where_statement(
 ) -> None:
     name = "Test Entry"
     age = 25
-    entry_filters = TestModelFilters(name=name, age=age)
+    entry_filters = DummyModelFilters(name=name, age=age)
 
-    filters_statement = TestCRUD(session).build_where_statement(
-        sqlmodel.select(TestModel), entry_filters
+    filters_statement = DummyCRUD(session).build_where_statement(
+        sqlmodel.select(DummyModel), entry_filters
     )
 
     assert str(filters_statement) == str(
-        sqlmodel.select(TestModel)
-        .where(TestModel.name == name)
-        .where(TestModel.age == age)
+        sqlmodel.select(DummyModel)
+        .where(DummyModel.name == name)
+        .where(DummyModel.age == age)
     )

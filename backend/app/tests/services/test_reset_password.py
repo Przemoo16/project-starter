@@ -99,7 +99,7 @@ async def test_reset_password_service_get_valid_token_expired(
     session: "conftest.AsyncSession",
 ) -> None:
     token = await reset_password_helpers.create_reset_password_token(
-        session=session, expire_at=datetime.datetime(2022, 7, 15, 13, 0, 0)
+        session=session, expire_at=datetime.datetime(2023, 7, 15, 12, 0, 0)
     )
     token_filters = reset_password_models.ResetPasswordTokenFilters(id=token.id)
 
