@@ -114,16 +114,17 @@ async def get_user(
     status_code=status.HTTP_204_NO_CONTENT,
     responses={
         **user_exceptions.UserNotFoundError().doc,
-        **user_exceptions.ConfirmationEmailError().doc,
+        **user_exceptions.EmailAlreadyConfirmedError().doc,
+        **user_exceptions.EmailConfirmationTokenExpiredError().doc,
     },
 )
 async def confirm_email(
-    key: user_models.UserConfirmationEmailKey = fastapi.Body(embed=True),
+    token: user_models.UserEmailConfirmationToken = fastapi.Body(embed=True),
     session: db.AsyncSession = fastapi.Depends(db.get_session),
 ) -> typing.Any:
     user_service = user_services.UserService(session)
     user_db = await user_service.get_user(
-        user_models.UserFilters(confirmation_email_key=key)
+        user_models.UserFilters(email_confirmation_token=token)
     )
     await user_service.confirm_email(user_db)
 

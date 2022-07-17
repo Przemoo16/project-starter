@@ -48,10 +48,19 @@ class InvalidPasswordError(base.HTTPException):
         super().__init__(status_code, detail, context)
 
 
-class ConfirmationEmailError(base.HTTPException):
+class EmailAlreadyConfirmedError(base.HTTPException):
     def __init__(
         self, detail: base.Detail = None, context: base.Context = None
     ) -> None:
-        detail = "Cannot confirm user email"
+        detail = "Email has already been confirmed"
+        status_code = status.HTTP_422_UNPROCESSABLE_ENTITY
+        super().__init__(status_code, detail, context)
+
+
+class EmailConfirmationTokenExpiredError(base.HTTPException):
+    def __init__(
+        self, detail: base.Detail = None, context: base.Context = None
+    ) -> None:
+        detail = "Email confirmation token expired"
         status_code = status.HTTP_422_UNPROCESSABLE_ENTITY
         super().__init__(status_code, detail, context)

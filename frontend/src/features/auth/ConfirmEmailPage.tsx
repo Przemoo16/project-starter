@@ -12,22 +12,21 @@ import { authActions } from './store';
 
 const ConfirmEmailPage = () => {
   const { t } = useTranslation();
-  const { key } = useParams();
+  const { token } = useParams();
   const dispatch = useAppDispatch();
   const { confirmEmail } = authActions;
-  const { confirmEmailPending, errors } = useAppSelector(state => state.auth);
+  const { confirmEmailMessage } = useAppSelector(state => state.auth);
 
   useEffect(() => {
-    dispatch(confirmEmail({ key: key || '' }));
-  }, [dispatch, confirmEmail, key]);
+    dispatch(confirmEmail({ token: token || '' }));
+  }, [dispatch, confirmEmail, token]);
 
   return (
     <PageContainer icon={EmailOutlinedIcon} title={t('auth.confirmEmailTitle')}>
       <ContentContainer>
-        {confirmEmailPending && <AppLoader />}
-        <Paragraph align="center" sx={{ mt: 2 }} data-testid="confirmEmailMessage">
-          {!confirmEmailPending && !errors && t('auth.confirmEmailSuccess')}
-          {!confirmEmailPending && errors && t('auth.confirmEmailError')}
+        {!confirmEmailMessage && <AppLoader />}
+        <Paragraph align="center" data-testid="confirmEmailMessage">
+          {confirmEmailMessage}
         </Paragraph>
         <LinksContainer>
           <Link to="/login" data-testid="loginLink">

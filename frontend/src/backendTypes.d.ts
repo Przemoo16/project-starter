@@ -29,7 +29,7 @@ export interface LoginData {
 }
 
 export interface ConfirmEmailData {
-  key: string;
+  token: string;
 }
 
 export interface ResetPasswordData {

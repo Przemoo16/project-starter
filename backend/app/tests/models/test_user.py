@@ -27,7 +27,7 @@ async def test_user_model(session: "conftest.AsyncSession") -> None:
     assert user.password == password
     assert user.name == name
     assert user.confirmed_email is False
-    assert user.confirmation_email_key
+    assert user.email_confirmation_token
     assert user.created_at == datetime.datetime(2022, 1, 16, 22, 0, 0)
     assert user.updated_at == datetime.datetime(2022, 1, 16, 22, 0, 0)
     assert user.last_login is None

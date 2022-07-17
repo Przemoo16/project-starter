@@ -18,9 +18,9 @@ settings = general.get_settings()
 
 @celery.shared_task
 def send_email_to_confirm_email(
-    email: "user.UserEmail", key: "user.UserConfirmationEmailKey"
+    email: "user.UserEmail", token: "user.UserEmailConfirmationToken"
 ) -> None:
-    link = settings.CONFIRM_EMAIL_URL.format(key=key)
+    link = settings.CONFIRM_EMAIL_URL.format(token=token)
     subject = _("Confirm email")
     message_text = _("Click the link to confirm your email: %(link)s") % {"link": link}
     message_html = email_services.load_template(

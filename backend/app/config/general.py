@@ -23,8 +23,8 @@ class Security(pydantic.BaseSettings):
     AUTHJWT_ALGORITHM: str = "HS256"
     AUTHJWT_DECODE_ALGORITHMS: set[str] = {"HS256"}
     AUTHJWT_DATABASE_URL: pydantic.RedisDsn
-    CONFIRMATION_EMAIL_KEY_EXPIRES: datetime.timedelta = datetime.timedelta(days=7)
-    RESET_PASSWORD_TOKEN_EXPIRES: datetime.timedelta = datetime.timedelta(minutes=30)
+    EMAIL_CONFIRMATION_TOKEN_EXPIRES: datetime.timedelta = datetime.timedelta(days=7)
+    RESET_PASSWORD_TOKEN_EXPIRES: datetime.timedelta = datetime.timedelta(hours=3)
     USER_PASSWORD_MIN_LENGTH: int = 8
     USER_PASSWORD_MAX_LENGTH: int = 32
     CONFIRM_EMAIL_URL: pydantic.AnyHttpUrl

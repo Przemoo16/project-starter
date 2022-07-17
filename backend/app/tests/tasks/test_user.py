@@ -12,13 +12,15 @@ def test_send_email_to_confirm_email(
     mock_build_message: mock.MagicMock,
     _: mock.MagicMock,
 ) -> None:
-    key = converters.to_uuid("1dd53909-fcda-4c72-afcd-1bf4886389f8")
+    token = converters.to_uuid("1dd53909-fcda-4c72-afcd-1bf4886389f8")
     email_str = "test@email.com"
     email = converters.to_pydantic_email(email_str)
     message = "Message"
     mock_build_message.return_value = message
 
-    task = user.send_email_to_confirm_email.apply(kwargs={"email": email, "key": key})
+    task = user.send_email_to_confirm_email.apply(
+        kwargs={"email": email, "token": token}
+    )
 
     assert task.status == "SUCCESS"
     mock_send_email.assert_called_once_with(message, email_str)

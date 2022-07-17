@@ -5,7 +5,7 @@ INSERT INTO
         email,
         password,
         confirmed_email,
-        confirmation_email_key,
+        email_confirmation_token,
         created_at,
         updated_at,
         last_login
@@ -31,5 +31,16 @@ VALUES
         '6d555ddc-6145-4836-9d2b-48693674e286',
         current_timestamp,
         current_timestamp,
+        NULL
+    ),
+    (
+        '59bba00f-1e50-48ec-a3e2-fd28918abaa8',
+        'Old inactive user',
+        'oldInactiveUser@email.com',
+        '$2b$12$EkoW7QChZ7IlWhvi.BCkQuguYD6MBIV.erOeeSvD5QCUPamjGrRdC',
+        FALSE,
+        'e71b6758-aa3a-4fd4-ad8e-daeccee29c6f',
+        current_timestamp - (30 || ' days') :: interval,
+        current_timestamp - (30 || ' days') :: interval,
         NULL
     );

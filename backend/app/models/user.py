@@ -18,7 +18,7 @@ UserEmail: typing.TypeAlias = pydantic.EmailStr
 UserPassword: typing.TypeAlias = str
 UserName: typing.TypeAlias = str
 UserConfirmedEmail: typing.TypeAlias = bool
-UserConfirmationEmailKey: typing.TypeAlias = uuid.UUID
+UserEmailConfirmationToken: typing.TypeAlias = uuid.UUID
 UserCreatedAt: typing.TypeAlias = datetime.datetime
 UserUpdatedAt: typing.TypeAlias = datetime.datetime
 UserLastLogin: typing.TypeAlias = datetime.datetime
@@ -45,7 +45,7 @@ class User(UserBase, table=True):
         primary_key=True, default_factory=helpers.generate_fixed_uuid, nullable=False
     )
     confirmed_email: UserConfirmedEmail = False
-    confirmation_email_key: UserConfirmationEmailKey = sqlmodel.Field(
+    email_confirmation_token: UserEmailConfirmationToken = sqlmodel.Field(
         index=True,
         default_factory=helpers.generate_fixed_uuid,
         sa_column_kwargs={"unique": True},
@@ -76,7 +76,7 @@ class UserCreate(UserBase):
 class UserFilters(base.PydanticBaseModel):
     id: UserID | None = None
     email: UserEmail | None = None
-    confirmation_email_key: UserConfirmationEmailKey | None = None
+    email_confirmation_token: UserEmailConfirmationToken | None = None
 
 
 class UserUpdateAPI(base.PydanticBaseModel):
