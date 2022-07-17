@@ -1,13 +1,14 @@
 import typing
 from unittest import mock
 
+import fastapi
 import fastapi_jwt_auth as jwt_auth
 from fastapi_jwt_auth import exceptions
 import pytest
+from starlette import datastructures
 
 from app.api.deps import user as user_deps
 from app.exceptions.http import user as user_exceptions
-from app.tests.helpers import auth as auth_helpers
 from app.tests.helpers import user as user_helpers
 from app.utils import converters
 
@@ -18,9 +19,15 @@ if typing.TYPE_CHECKING:
 @pytest.mark.anyio
 async def test_get_current_user(session: "conftest.AsyncSession") -> None:
     user = await user_helpers.create_user(session=session)
-    auth_handler = auth_helpers.create_auth_handler(user.id)
+    token = jwt_auth.AuthJWT().create_access_token(str(user.id))
+    request = fastapi.Request(
+        scope={
+            "type": "http",
+            "headers": datastructures.Headers({"Authorization": f"Bearer {token}"}).raw,
+        }
+    )
 
-    current_user = await user_deps.get_current_user(session, auth_handler)
+    current_user = await user_deps.get_current_user(session, jwt_auth.AuthJWT(request))
 
     assert current_user == user
 
