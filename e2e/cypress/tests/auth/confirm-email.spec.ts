@@ -35,6 +35,20 @@ describe("Confirm email page", () => {
     );
   });
 
+  it("displays proper message when confirm already confirmed email", () => {
+    cy.fixture("../fixtures/activeUser.json")
+      .as("userData")
+      .then((data) => {
+        cy.visit(`/confirm-email/${data.emailConfirmationToken}`);
+      });
+
+    cy.get("[data-testid=appLoader]").should("not.exist");
+    cy.get("[data-testid=confirmEmailMessage]").should(
+      "have.text",
+      "The email has been already confirmed."
+    );
+  });
+
   it("enables to confirm email", () => {
     cy.fixture("../fixtures/inactiveUser.json")
       .as("userData")
@@ -46,26 +60,6 @@ describe("Confirm email page", () => {
     cy.get("[data-testid=confirmEmailMessage]").should(
       "have.text",
       "Your email has been confirmed. You can now log in to your account."
-    );
-  });
-
-  it("displays proper message when confirm already confirmed email", () => {
-    cy.fixture("../fixtures/inactiveUser.json")
-      .as("userData")
-      .then((data) => {
-        cy.visit(`/confirm-email/${data.emailConfirmationToken}`);
-      });
-
-    cy.fixture("../fixtures/inactiveUser.json")
-      .as("userData")
-      .then((data) => {
-        cy.visit(`/confirm-email/${data.emailConfirmationToken}`);
-      });
-
-    cy.get("[data-testid=appLoader]").should("not.exist");
-    cy.get("[data-testid=confirmEmailMessage]").should(
-      "have.text",
-      "The email has been already confirmed."
     );
   });
 });
