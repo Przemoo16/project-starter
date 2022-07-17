@@ -11,7 +11,6 @@ from app.exceptions.http import auth as auth_exceptions
 from app.exceptions.http import user as user_exceptions
 from app.models import auth as auth_models
 from app.models import user as user_models
-from app.services import base
 from app.services import user as user_services
 from app.utils import auth, converters
 
@@ -21,9 +20,9 @@ settings = general.get_settings()
 jwt_db = db.get_jwt_db()
 
 
-class AuthService(base.AppService):
+class AuthService:
     def __init__(self, session: db.AsyncSession):
-        super().__init__(session)
+        self.session = session
         self.user_service = user_services.UserService(self.session)
 
     async def obtain_tokens(

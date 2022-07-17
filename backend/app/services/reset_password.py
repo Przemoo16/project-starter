@@ -13,9 +13,9 @@ if typing.TYPE_CHECKING:
     from app.config import db
 
 
-class ResetPasswordService(base.AppService):
+class ResetPasswordService:
     def __init__(self, session: "db.AsyncSession"):
-        super().__init__(session)
+        self.session = session
         self.crud = ResetPasswordCRUD(self.session)
 
     async def create_token(
