@@ -1,16 +1,25 @@
 import typing
 
-import fastapi
-import fastapi_jwt_auth as jwt_auth
-from starlette import datastructures
+from jose import jwt
+
+from app.config import general
+
+settings = general.get_settings()
 
 
-def create_auth_handler(subject: typing.Any) -> jwt_auth.AuthJWT:
-    token = jwt_auth.AuthJWT().create_access_token(str(subject))
-    request = fastapi.Request(
-        scope={
-            "type": "http",
-            "headers": datastructures.Headers({"Authorization": f"Bearer {token}"}).raw,
-        }
+def decode_token(
+    token: str, options: dict[str, typing.Any] | None = None
+) -> dict[str, typing.Any]:
+    return dict(
+        jwt.decode(
+            token=token,
+            key=settings.AUTHJWT_SECRET_KEY,
+            algorithms=settings.AUTHJWT_DECODE_ALGORITHMS,
+            options=options,
+        )
     )
-    return jwt_auth.AuthJWT(request)
+
+
+def is_token_fresh(token: str) -> bool:
+    decoded_token = decode_token(token=token, options={"verify_exp": False})
+    return decoded_token["fresh"]
