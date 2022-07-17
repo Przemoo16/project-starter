@@ -11,17 +11,11 @@ if typing.TYPE_CHECKING:
     from app.config import db
 
 
-class DBSessionContext:
+class AppCRUD:  # TODO: Fix typing
+    model = base.BaseModel
+
     def __init__(self, session: "db.AsyncSession"):
         self.session = session
-
-
-class AppService(DBSessionContext):
-    pass
-
-
-class AppCRUD(DBSessionContext):  # TODO: Fix typing
-    model = base.BaseModel
 
     async def create(self, entry: base.BaseModel) -> typing.Any:
         db_entry = self.model.from_orm(entry)

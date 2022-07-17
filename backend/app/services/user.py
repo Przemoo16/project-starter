@@ -23,9 +23,9 @@ log = logging.getLogger(__name__)
 settings = general.get_settings()
 
 
-class UserService(base.AppService):
+class UserService:
     def __init__(self, session: "db.AsyncSession"):
-        super().__init__(session)
+        self.session = session
         self.reset_password_service = reset_password_services.ResetPasswordService(
             self.session
         )

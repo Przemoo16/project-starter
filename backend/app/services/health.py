@@ -1,4 +1,5 @@
 import socket
+import typing
 
 from kombu import exceptions as kombu_exceptions
 import redis
@@ -9,14 +10,19 @@ import sqlmodel
 from app.config import general
 from app.exceptions.http import health as health_exceptions
 from app.models import user as user_models
-from app.services import base
 from app.tasks import health as health_tasks
+
+if typing.TYPE_CHECKING:
+    from app.config import db
 
 settings = general.get_settings()
 
 
-class HealthService(base.AppService):
+class HealthService:
     OK_FLAG = "OK"
+
+    def __init__(self, session: "db.AsyncSession"):
+        self.session = session
 
     async def check_health(self) -> None:
         healths = {
