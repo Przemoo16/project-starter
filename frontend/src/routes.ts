@@ -42,7 +42,7 @@ export const routes: RouteDefinition[] = [
   },
   {
     title: 'Confirm email',
-    path: '/confirm-email/:key',
+    path: '/confirm-email/:token',
     requiresAuth: false,
     layout: AuthLayout,
     content: LazyPages.ConfirmEmailPage,

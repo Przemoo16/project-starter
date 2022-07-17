@@ -154,13 +154,13 @@ resource "aws_elastic_beanstalk_environment" "web" {
   setting {
     namespace = "aws:elasticbeanstalk:application:environment"
     name      = "CONFIRM_EMAIL_URL"
-    value     = "https://${var.domain_name}/confirm-email/{key}"
+    value     = "https://${var.domain_name}/confirm-email/{token}"
   }
 
   setting {
     namespace = "aws:elasticbeanstalk:application:environment"
     name      = "RESET_PASSWORD_URL"
-    value     = "https://${var.domain_name}/set-password/{key}"
+    value     = "https://${var.domain_name}/set-password/{token}"
   }
 
   setting {

@@ -228,7 +228,7 @@ async def test_confirm_email(
     async_client: "conftest.TestClient", session: "conftest.AsyncSession"
 ) -> None:
     user = await user_helpers.create_user(session=session)
-    request_data = {"key": str(user.confirmation_email_key)}
+    request_data = {"token": str(user.email_confirmation_token)}
 
     response = await async_client.post(
         f"{API_URL}/users/email-confirmation", json=request_data

@@ -19,8 +19,10 @@ async def test_confirm_email_flow(async_client: "conftest.TestClient") -> None:
     # Create a user
     email = "test@email.com"
     password = "plain_password"
-    confirmation_email_key = converters.to_uuid("1dd53909-fcda-4c72-afcd-1bf4886389f8")
-    with mock.patch("uuid.uuid4", return_value=confirmation_email_key):
+    email_confirmation_token = converters.to_uuid(
+        "1dd53909-fcda-4c72-afcd-1bf4886389f8"
+    )
+    with mock.patch("uuid.uuid4", return_value=email_confirmation_token):
         response = await async_client.post(
             f"{API_URL}/users",
             json={"email": email, "password": password, "name": "Test User"},
@@ -41,7 +43,7 @@ async def test_confirm_email_flow(async_client: "conftest.TestClient") -> None:
     # Confirm email
     response = await async_client.post(
         f"{API_URL}/users/email-confirmation",
-        json={"key": str(confirmation_email_key)},
+        json={"token": str(email_confirmation_token)},
     )
 
     assert response.status_code == 204
@@ -61,8 +63,10 @@ async def test_change_password_flow(async_client: "conftest.TestClient") -> None
     # Create a user
     email = "test@email.com"
     password = "plain_password"
-    confirmation_email_key = converters.to_uuid("1dd53909-fcda-4c72-afcd-1bf4886389f8")
-    with mock.patch("uuid.uuid4", return_value=confirmation_email_key):
+    email_confirmation_token = converters.to_uuid(
+        "1dd53909-fcda-4c72-afcd-1bf4886389f8"
+    )
+    with mock.patch("uuid.uuid4", return_value=email_confirmation_token):
         response = await async_client.post(
             f"{API_URL}/users",
             json={"email": email, "password": password, "name": "Test User"},
@@ -74,7 +78,7 @@ async def test_change_password_flow(async_client: "conftest.TestClient") -> None
     # Confirm email
     response = await async_client.post(
         f"{API_URL}/users/email-confirmation",
-        json={"key": str(confirmation_email_key)},
+        json={"token": str(email_confirmation_token)},
     )
 
     assert response.status_code == 204
@@ -124,8 +128,10 @@ async def test_reset_password_flow(async_client: "conftest.TestClient") -> None:
     # Create a user
     email = "test@email.com"
     password = "plain_password"
-    confirmation_email_key = converters.to_uuid("1dd53909-fcda-4c72-afcd-1bf4886389f8")
-    with mock.patch("uuid.uuid4", return_value=confirmation_email_key):
+    email_confirmation_token = converters.to_uuid(
+        "1dd53909-fcda-4c72-afcd-1bf4886389f8"
+    )
+    with mock.patch("uuid.uuid4", return_value=email_confirmation_token):
         response = await async_client.post(
             f"{API_URL}/users",
             json={"email": email, "password": password, "name": "Test User"},
@@ -137,7 +143,7 @@ async def test_reset_password_flow(async_client: "conftest.TestClient") -> None:
     # Confirm email
     response = await async_client.post(
         f"{API_URL}/users/email-confirmation",
-        json={"key": str(confirmation_email_key)},
+        json={"token": str(email_confirmation_token)},
     )
 
     assert response.status_code == 204

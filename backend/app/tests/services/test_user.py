@@ -35,7 +35,7 @@ async def test_user_service_create_user(
     assert created_user.password != password
     assert created_user.name == user_create.name
     mock_send_email.assert_called_once_with(
-        created_user.email, created_user.confirmation_email_key
+        created_user.email, created_user.email_confirmation_token
     )
 
 
@@ -220,19 +220,17 @@ async def test_user_service_confirm_email_already_confirmed(
 ) -> None:
     user = await user_helpers.create_user(session=session, confirmed_email=True)
 
-    with pytest.raises(user_exceptions.ConfirmationEmailError) as exc_info:
+    with pytest.raises(user_exceptions.EmailAlreadyConfirmedError) as exc_info:
         await user_services.UserService(session).confirm_email(user)
-    assert exc_info.value.context == {
-        "confirmation_email_key": user.confirmation_email_key
-    }
+    assert exc_info.value.context == {"id": user.email_confirmation_token}
 
 
 @pytest.mark.anyio
 @mock.patch(
-    "app.services.user.settings.CONFIRMATION_EMAIL_KEY_EXPIRES",
+    "app.services.user.settings.EMAIL_CONFIRMATION_TOKEN_EXPIRES",
     new=datetime.timedelta(days=2),
 )
-async def test_user_service_confirm_email_time_expired(
+async def test_user_service_confirm_email_token_expired(
     session: "conftest.AsyncSession",
 ) -> None:
 
@@ -240,11 +238,11 @@ async def test_user_service_confirm_email_time_expired(
         user = await user_helpers.create_user(session=session)
 
     with freezegun.freeze_time("2023-01-05 10:00:00"):
-        with pytest.raises(user_exceptions.ConfirmationEmailError) as exc_info:
+        with pytest.raises(
+            user_exceptions.EmailConfirmationTokenExpiredError
+        ) as exc_info:
             await user_services.UserService(session).confirm_email(user)
-        assert exc_info.value.context == {
-            "confirmation_email_key": user.confirmation_email_key
-        }
+        assert exc_info.value.context == {"id": user.email_confirmation_token}
 
 
 @pytest.mark.anyio

@@ -18,6 +18,8 @@ import { history } from '../../services/history';
 import { handleError } from '../../services/utils';
 import { notifyError, notifySuccess } from '../../ui-components/store';
 
+const EMAIL_ALREADY_CONFIRMED_CASE = 'EmailAlreadyConfirmedError';
+const EMAIL_CONFIRMATION_TOKEN_EXPIRED_CASE = 'EmailConfirmationTokenExpiredError';
 const RESET_PASSWORD_TOKEN_EXPIRED_CASE = 'ResetPasswordTokenExpiredError';
 
 interface AuthState {
@@ -26,7 +28,7 @@ interface AuthState {
   registerPending: boolean;
   resetPasswordPending: boolean;
   setPasswordPending: boolean;
-  confirmEmailPending: boolean;
+  confirmEmailMessage: string;
   errors: ErrorResponse | null;
 }
 
@@ -36,7 +38,7 @@ const initialState: AuthState = {
   registerPending: false,
   resetPasswordPending: false,
   setPasswordPending: false,
-  confirmEmailPending: false,
+  confirmEmailMessage: '',
   errors: null,
 };
 
@@ -103,16 +105,17 @@ export const authSlice = createSlice({
       state.errors = payload.errors;
     },
     confirmEmail(state, action: PayloadAction<ConfirmEmailData>) {
-      state.confirmEmailPending = true;
+      state.confirmEmailMessage = '';
       state.errors = null;
     },
     confirmEmailSuccess(state) {
-      state.confirmEmailPending = false;
       state.errors = null;
     },
     confirmEmailFailure(state, { payload }: PayloadAction<{ errors: ErrorResponse }>) {
-      state.confirmEmailPending = false;
       state.errors = payload.errors;
+    },
+    setConfirmEmailMessage(state, { payload }: PayloadAction<{ message: string }>) {
+      state.confirmEmailMessage = payload.message;
     },
   },
 });
@@ -206,7 +209,7 @@ function* setPasswordSaga() {
         error.response?.status === 422 &&
         error.response?.data.case === RESET_PASSWORD_TOKEN_EXPIRED_CASE
       ) {
-        yield put(notifyError(t('auth.resetPasswordTokenExpired')));
+        yield put(notifyError(t('auth.resetPasswordLinkExpired')));
       } else {
         yield put(notifyError(t('auth.setPasswordError')));
       }
@@ -220,7 +223,24 @@ function* confirmEmailSaga() {
     try {
       yield backend.confirmEmail(payload);
       yield put(authActions.confirmEmailSuccess());
+      yield put(authActions.setConfirmEmailMessage({ message: t('auth.confirmEmailSuccess') }));
     } catch (e) {
+      const error = e as AxiosError<ErrorResponse>;
+      if (
+        error.response?.status === 422 &&
+        error.response?.data.case === EMAIL_ALREADY_CONFIRMED_CASE
+      ) {
+        yield put(authActions.setConfirmEmailMessage({ message: t('auth.emailAlreadyConfirmed') }));
+      } else if (
+        error.response?.status === 422 &&
+        error.response?.data.case === EMAIL_CONFIRMATION_TOKEN_EXPIRED_CASE
+      ) {
+        yield put(
+          authActions.setConfirmEmailMessage({ message: t('auth.confirmEmailLinkExpired') })
+        );
+      } else {
+        yield put(authActions.setConfirmEmailMessage({ message: t('auth.confirmEmailError') }));
+      }
       yield put(authActions.confirmEmailFailure({ errors: handleError(e) }));
     }
   });

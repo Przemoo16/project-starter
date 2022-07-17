@@ -40,7 +40,7 @@ class UserService:
                 context={"email": user.email}
             ) from e
         user_tasks.send_email_to_confirm_email.delay(
-            user_db.email, user_db.confirmation_email_key
+            user_db.email, user_db.email_confirmation_token
         )
         log.info("The task to send email to confirm email has been invoked")
         return user_db
@@ -94,10 +94,11 @@ class UserService:
         await self.crud.update(user, user_update)
 
     async def confirm_email(self, user: user_models.User) -> None:
-        if not _can_confirm_email(user):
-            raise user_exceptions.ConfirmationEmailError(
-                context={"confirmation_email_key": user.confirmation_email_key}
-            )
+        context = {"id": user.email_confirmation_token}
+        if user.confirmed_email:
+            raise user_exceptions.EmailAlreadyConfirmedError(context=context)
+        if _token_expired(user):
+            raise user_exceptions.EmailConfirmationTokenExpiredError(context=context)
         user_update = user_models.UserUpdate(confirmed_email=True)
         await self.crud.update(user, user_update)
 
@@ -123,15 +124,9 @@ class UserService:
         await self.reset_password_service.force_to_expire(token_db)
 
 
-def _can_confirm_email(user: user_models.User) -> bool:
-    if user.confirmed_email:
-        log.info("Email already confirmed")
-        return False
-    expiration_date = user.created_at + settings.CONFIRMATION_EMAIL_KEY_EXPIRES
-    if expiration_date < datetime.datetime.utcnow():
-        log.info("Confirmation email expired")
-        return False
-    return True
+def _token_expired(user: user_models.User) -> bool:
+    expiration_date = user.created_at + settings.EMAIL_CONFIRMATION_TOKEN_EXPIRES
+    return expiration_date < datetime.datetime.utcnow()
 
 
 class UserCRUD(base.AppCRUD):
