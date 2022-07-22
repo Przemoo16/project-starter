@@ -4,7 +4,7 @@ interface JsonMap {
   [key: string]: AnyJson;
 }
 
-interface ErrorResponse {
+export interface ErrorResponse {
   case: string;
   detail: string;
   context: JsonMap | JsonMap[] | null;
