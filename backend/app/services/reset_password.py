@@ -9,14 +9,12 @@ from app.models import reset_password as reset_password_models
 from app.services import base
 
 if typing.TYPE_CHECKING:
-
     from app.config import db
 
 
 class ResetPasswordService:
     def __init__(self, session: "db.AsyncSession"):
-        self.session = session
-        self.crud = ResetPasswordCRUD(self.session)
+        self.crud = ResetPasswordCRUD(session)
 
     async def create_token(
         self, token: reset_password_models.ResetPasswordTokenCreate
