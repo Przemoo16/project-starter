@@ -2,7 +2,7 @@ import logging
 import typing
 
 import fastapi
-from fastapi import responses, status
+from fastapi import status
 import fastapi_jwt_auth as jwt_auth
 
 from app.api.deps import user as user_deps
@@ -59,7 +59,6 @@ async def update_me(
 
 @router.delete(
     "/me",
-    response_class=responses.Response,
     status_code=status.HTTP_204_NO_CONTENT,
     responses=user_deps.INACTIVE_USER_RESPONSES,
 )
@@ -74,7 +73,6 @@ async def delete_me(
 
 @router.post(
     "/me/password",
-    response_class=responses.Response,
     status_code=status.HTTP_204_NO_CONTENT,
     responses={
         **user_deps.INACTIVE_USER_RESPONSES,
@@ -110,7 +108,6 @@ async def get_user(
 
 @router.post(
     "/email-confirmation",
-    response_class=responses.Response,
     status_code=status.HTTP_204_NO_CONTENT,
     responses={
         **user_exceptions.UserNotFoundError().doc,
@@ -156,7 +153,6 @@ async def reset_password(
 
 @router.post(
     "/password/set",
-    response_class=responses.Response,
     status_code=status.HTTP_204_NO_CONTENT,
     responses={
         **user_exceptions.InactiveUserError().doc,
