@@ -43,7 +43,7 @@ async def test_get_current_user_without_jwt(session: "conftest.AsyncSession") ->
 @pytest.mark.anyio
 @mock.patch("fastapi_jwt_auth.AuthJWT.jwt_required")
 async def test_get_current_user_empty_jwt_subject(
-    session: "conftest.AsyncSession",
+    _: mock.MagicMock, session: "conftest.AsyncSession"
 ) -> None:
     auth_handler = jwt_auth.AuthJWT()
 
