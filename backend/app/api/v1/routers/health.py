@@ -1,7 +1,7 @@
 import typing
 
 import fastapi
-from fastapi import responses, status
+from fastapi import status
 
 from app.config import db
 from app.exceptions.http import health as health_exceptions
@@ -12,7 +12,6 @@ router = fastapi.APIRouter()
 
 @router.get(
     "/",
-    response_class=responses.Response,
     status_code=status.HTTP_204_NO_CONTENT,
     responses={**health_exceptions.HealthError().doc},
 )
