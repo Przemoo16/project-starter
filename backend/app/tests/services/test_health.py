@@ -15,15 +15,7 @@ if typing.TYPE_CHECKING:
 
 
 @pytest.mark.anyio
-@mock.patch("app.services.health.HealthService._execute_test_clause")
-@mock.patch("redis.Redis.ping")
-@mock.patch("app.services.health.health_tasks.check_health.delay")
-async def test_health_service_check_health(
-    mock_check_health_task: mock.MagicMock,  # pylint: disable=unused-argument
-    mock_redis: mock.MagicMock,  # pylint: disable=unused-argument
-    mock_execute_test_clause: mock.AsyncMock,  # pylint: disable=unused-argument
-    session: "conftest.AsyncSession",
-) -> None:
+async def test_health_service_check_health(session: "conftest.AsyncSession") -> None:
     await health_services.HealthService(session).check_health()
 
 
