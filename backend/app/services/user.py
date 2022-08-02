@@ -24,11 +24,10 @@ settings = general.get_settings()
 
 class UserService:
     def __init__(self, session: "db.AsyncSession"):
-        self.session = session
+        self.crud = UserCRUD(session)
         self.reset_password_service = reset_password_services.ResetPasswordService(
-            self.session
+            session
         )
-        self.crud = UserCRUD(self.session)
 
     async def create_user(self, user: user_models.UserCreate) -> user_models.User:
         user.password = auth.hash_password(user.password)

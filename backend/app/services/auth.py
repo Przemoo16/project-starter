@@ -22,8 +22,7 @@ jwt_db = db.get_jwt_db()
 
 class AuthService:
     def __init__(self, session: db.AsyncSession):
-        self.session = session
-        self.user_service = user_services.UserService(self.session)
+        self.user_service = user_services.UserService(session)
 
     async def obtain_tokens(
         self, email: user_models.UserEmail, password: user_models.UserPassword
