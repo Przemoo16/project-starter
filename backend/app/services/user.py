@@ -15,7 +15,6 @@ from app.tasks import user as user_tasks
 from app.utils import auth
 
 if typing.TYPE_CHECKING:
-
     from app.config import db
 
 log = logging.getLogger(__name__)
