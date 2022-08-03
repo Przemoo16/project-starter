@@ -15,9 +15,7 @@ import { theme } from './ui-components/theme';
 
 const store = createStore();
 
-const container = document.getElementById('root');
-const root = createRoot(container!);
-root.render(
+createRoot(document.getElementById('root') as HTMLElement).render(
   <StrictMode>
     <ReduxProvider store={store}>
       <ThemeProvider theme={theme}>

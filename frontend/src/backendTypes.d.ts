@@ -1,4 +1,4 @@
-interface JsonArray extends Array<AnyJson> {}
+interface JsonArray extends Array<AnyJson> {} // eslint-disable-line @typescript-eslint/no-empty-interface
 type AnyJson = boolean | number | string | null | JsonArray | JsonMap;
 interface JsonMap {
   [key: string]: AnyJson;

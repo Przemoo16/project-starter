@@ -168,7 +168,7 @@ function* registerSaga() {
 }
 
 function* logoutSaga() {
-  const badTokenChannel = channel<any>();
+  const badTokenChannel = channel<string>();
   backend.listenOnInvalidTokens(async () => badTokenChannel.put(''));
   yield takeEvery(badTokenChannel, function* () {
     yield put(authActions.logout());
