@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   defaultNamespace: 'translation',
   createOldCatalogs: false,
   locales: ['en'],

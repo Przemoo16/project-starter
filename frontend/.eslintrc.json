@@ -1,11 +1,14 @@
 {
   "parser": "@typescript-eslint/parser",
-  "extends": ["react-app", "react-app/jest"],
-  "plugins": ["simple-import-sort"],
+  "extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended"],
+  "plugins": ["@typescript-eslint", "simple-import-sort"],
   "rules": {
+    "@typescript-eslint/no-empty-function": "off",
+    "@typescript-eslint/no-explicit-any": "warn",
+    "@typescript-eslint/no-unused-vars": "off",
     "no-unused-vars": "off",
-    "@typescript-eslint/no-unused-vars": "error",
     "simple-import-sort/imports": "error",
     "simple-import-sort/exports": "error"
-  }
+  },
+  "root": true
 }
