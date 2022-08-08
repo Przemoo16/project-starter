@@ -170,7 +170,7 @@ describe("Account page", () => {
   it("displays proper message when current password is invalid", () => {
     cy.login();
     cy.visit("/account");
-    cy.get("[data-testid=currentPasswordInput]").type("invalid");
+    cy.get("[data-testid=currentPasswordInput]").type("inv-pass");
     cy.get("[data-testid=newPasswordInput]").type(NEW_PASSWORD);
     cy.get("[data-testid=repeatNewPasswordInput]").type(NEW_PASSWORD);
 
@@ -259,7 +259,7 @@ describe("Account page", () => {
     cy.login();
     cy.visit("/account");
     cy.get("[data-testid=deleteAccountButton]").click();
-    cy.get("[data-testid=passwordInput]").type("invalid");
+    cy.get("[data-testid=passwordInput]").type("inv-pass");
 
     cy.get("[data-testid=confirmDeleteAccountButton]").click();
 
