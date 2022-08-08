@@ -1,7 +1,7 @@
 {
-  "name": "Active user",
-  "email": "activeUser@email.com",
-  "password": "testPassword123",
+  "name": "Active",
+  "email": "active@email.com",
+  "password": "pass-123",
   "emailConfirmationToken": "324b6c77-00a5-45a2-a909-385260da67a0",
   "resetPasswordToken": "6ce7ff1d-94bd-49cb-8eef-bf2b69b183a4",
   "expiredResetPasswordToken": "d0c703d1-839f-424e-8efd-163a05a26466"

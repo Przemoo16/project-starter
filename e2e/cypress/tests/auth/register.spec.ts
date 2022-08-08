@@ -149,9 +149,7 @@ describe("Register page", () => {
         cy.get("[data-testid=nameInput]").type(data.name);
         cy.get("[data-testid=emailInput]").type(data.email);
         cy.get("[data-testid=passwordInput]").type(data.password);
-        cy.get("[data-testid=repeatPasswordInput]").type(
-          `${data.password}-not-match`
-        );
+        cy.get("[data-testid=repeatPasswordInput]").type(`${data.password}@`);
       });
 
     cy.get("[data-testid=submitButton]").click();

@@ -51,9 +51,7 @@ describe("Set password page", () => {
       .as("userData")
       .then((data) => {
         cy.get("[data-testid=passwordInput]").type(data.password);
-        cy.get("[data-testid=repeatPasswordInput]").type(
-          `${data.password}-not-match`
-        );
+        cy.get("[data-testid=repeatPasswordInput]").type(`${data.password}@`);
       });
 
     cy.get("[data-testid=submitButton]").click();

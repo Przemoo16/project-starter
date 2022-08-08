@@ -1,4 +1,4 @@
-const NEW_PASSWORD = "new-password";
+const NEW_PASSWORD = "new-pass";
 
 describe("Account page", () => {
   it("redirects user who is not log in", () => {
@@ -68,7 +68,7 @@ describe("Account page", () => {
     cy.login();
     cy.visit("/account");
     cy.get("[data-testid=nameInput]").clear();
-    cy.get("[data-testid=nameInput]").type("Updated User Name");
+    cy.get("[data-testid=nameInput]").type("Updated");
 
     cy.get("[data-testid=updateAccountDetailsButton]").click();
 
@@ -160,9 +160,7 @@ describe("Account page", () => {
         cy.get("[data-testid=currentPasswordInput]").type(data.password);
       });
     cy.get("[data-testid=newPasswordInput]").type(NEW_PASSWORD);
-    cy.get("[data-testid=repeatNewPasswordInput]").type(
-      `${NEW_PASSWORD}-not-match`
-    );
+    cy.get("[data-testid=repeatNewPasswordInput]").type(`${NEW_PASSWORD}@`);
 
     cy.get("[data-testid=changePasswordButton]").click();
 
@@ -172,7 +170,7 @@ describe("Account page", () => {
   it("displays proper message when current password is invalid", () => {
     cy.login();
     cy.visit("/account");
-    cy.get("[data-testid=currentPasswordInput]").type("Invalid password");
+    cy.get("[data-testid=currentPasswordInput]").type("invalid");
     cy.get("[data-testid=newPasswordInput]").type(NEW_PASSWORD);
     cy.get("[data-testid=repeatNewPasswordInput]").type(NEW_PASSWORD);
 
@@ -261,7 +259,7 @@ describe("Account page", () => {
     cy.login();
     cy.visit("/account");
     cy.get("[data-testid=deleteAccountButton]").click();
-    cy.get("[data-testid=passwordInput]").type("Invalid password");
+    cy.get("[data-testid=passwordInput]").type("invalid");
 
     cy.get("[data-testid=confirmDeleteAccountButton]").click();
 
