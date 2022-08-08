@@ -22,7 +22,7 @@ describe("Confirm email page", () => {
   });
 
   it("displays proper message when confirm email with expired token", () => {
-    cy.fixture("../fixtures/oldInactiveUser.json")
+    cy.fixture("../fixtures/expiredInactiveUser.json")
       .as("userData")
       .then((data) => {
         cy.visit(`/confirm-email/${data.emailConfirmationToken}`);

@@ -83,7 +83,7 @@ describe("Login page", () => {
       .then((data) => {
         cy.get("[data-testid=emailInput]").type(data.email);
       });
-    cy.get("[data-testid=passwordInput]").type("Invalid password");
+    cy.get("[data-testid=passwordInput]").type("invalid");
 
     cy.get("[data-testid=submitButton]").click();
 
