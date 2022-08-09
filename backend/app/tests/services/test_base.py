@@ -51,6 +51,19 @@ async def test_app_crud_create(session: "conftest.AsyncSession") -> None:
     model_create = DummyModel(name="Test Entry", age=25)
     created_entry = await DummyCRUD(session).create(model_create)
 
+    assert created_entry._sa_instance_state.expired  # pylint: disable=protected-access
+    statement = sqlmodel.select(DummyModel).where(DummyModel.name == model_create.name)
+    assert (await session.execute(statement)).scalar_one()
+
+
+@pytest.mark.anyio
+async def test_app_crud_create_refresh(session: "conftest.AsyncSession") -> None:
+    model_create = DummyModel(name="Test Entry", age=25)
+    created_entry = await DummyCRUD(session).create(model_create, refresh=True)
+
+    assert (
+        not created_entry._sa_instance_state.expired  # pylint: disable=protected-access
+    )
     assert created_entry.name == model_create.name
     assert created_entry.age == model_create.age
     statement = sqlmodel.select(DummyModel).where(DummyModel.name == created_entry.name)
@@ -107,6 +120,25 @@ async def test_app_crud_update(session: "conftest.AsyncSession") -> None:
 
     updated_entry = await DummyCRUD(session).update(entry, entry_update)
 
+    assert updated_entry._sa_instance_state.expired  # pylint: disable=protected-access
+    statement = sqlmodel.select(DummyModel).where(
+        DummyModel.name == entry_update.name,
+        DummyModel.age == entry_update.age,
+    )
+    assert (await session.execute(statement)).scalar_one()
+
+
+@pytest.mark.anyio
+async def test_app_crud_update_refresh(session: "conftest.AsyncSession") -> None:
+    await create_entry(session, name="Test Entry 1", age=25)
+    entry = await create_entry(session, name="Test Entry 2", age=25)
+    entry_update = DummyModelUpdate(name="Updated Entry", age=30)
+
+    updated_entry = await DummyCRUD(session).update(entry, entry_update, refresh=True)
+
+    assert (
+        not updated_entry._sa_instance_state.expired  # pylint: disable=protected-access
+    )
     assert updated_entry.name == entry_update.name
     assert updated_entry.age == entry_update.age
     statement = sqlmodel.select(DummyModel).where(

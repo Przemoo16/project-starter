@@ -23,7 +23,7 @@ class ResetPasswordService:
             reset_password_models.ResetPasswordTokenFilters(user_id=token.user_id)
         ):
             await self.force_to_expire(latest_token)
-        return await self.crud.create(token)
+        return await self.crud.create(token, refresh=True)
 
     async def get_token(
         self, filters: reset_password_models.ResetPasswordTokenFilters

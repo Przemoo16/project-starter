@@ -17,9 +17,9 @@ class AppCRUD:  # TODO: Fix typing
     def __init__(self, session: "db.AsyncSession"):
         self.session = session
 
-    async def create(self, entry: base.BaseModel) -> typing.Any:
+    async def create(self, entry: base.BaseModel, refresh: bool = False) -> typing.Any:
         db_entry = self.model.from_orm(entry)
-        return await self._save(db_entry)
+        return await self._save(db_entry, refresh)
 
     async def read_many(
         self,
@@ -38,12 +38,15 @@ class AppCRUD:  # TODO: Fix typing
         return (await self.session.execute(statement)).scalar_one()
 
     async def update(
-        self, db_entry: base.BaseModel, entry: base.PydanticBaseModel
+        self,
+        db_entry: base.BaseModel,
+        entry: base.PydanticBaseModel,
+        refresh: bool = False,
     ) -> typing.Any:
         data = entry.dict(exclude_unset=True)
         for key, value in data.items():
             setattr(db_entry, key, value)
-        return await self._save(db_entry)
+        return await self._save(db_entry, refresh)
 
     async def delete(self, entry: base.BaseModel) -> None:
         await self.session.delete(entry)
@@ -58,10 +61,12 @@ class AppCRUD:  # TODO: Fix typing
         where_statement = self.build_where_statement(select_statament, entry)
         return (await self.session.execute(where_statement)).scalar_one()
 
-    async def _save(self, entry: base.BaseModel) -> typing.Any:
+    async def _save(self, entry: base.BaseModel, refresh: bool = False) -> typing.Any:
         self.session.add(entry)
         await self.session.commit()
-        await self.session.refresh(entry)
+        self.session.expire(entry)
+        if refresh:
+            await self.session.refresh(entry)
         return entry
 
     def build_where_statement(

@@ -34,19 +34,22 @@ async def test_reset_password_service_create_token(
 async def test_reset_password_service_create_token_already_exists(
     session: "conftest.AsyncSession",
 ) -> None:
+    reset_password_service = reset_password_services.ResetPasswordService(session)
     user = await user_helpers.create_active_user(session)
     token = await reset_password_helpers.create_reset_password_token(
         session, user_id=user.id
     )
+    token_id = token.id
 
     token_create = reset_password_models.ResetPasswordTokenCreate(user_id=user.id)
 
-    created_token = await reset_password_services.ResetPasswordService(
-        session
-    ).create_token(token_create)
+    created_token = await reset_password_service.create_token(token_create)
 
     assert created_token.user_id == user.id
-    assert token.expire_at == datetime.datetime(2023, 7, 15, 13, 00, 0)
+    token_db = await reset_password_service.get_token(
+        reset_password_models.ResetPasswordTokenFilters(id=token_id)
+    )
+    assert token_db.expire_at == datetime.datetime(2023, 7, 15, 13, 00, 0)
 
 
 @pytest.mark.anyio
@@ -117,11 +120,16 @@ async def test_reset_password_service_get_valid_token_expired(
 async def test_reset_password_service_force_to_expire(
     session: "conftest.AsyncSession",
 ) -> None:
+    reset_password_service = reset_password_services.ResetPasswordService(session)
     token = await reset_password_helpers.create_reset_password_token(session)
+    token_id = token.id
 
-    await reset_password_services.ResetPasswordService(session).force_to_expire(token)
+    await reset_password_service.force_to_expire(token)
 
-    assert token.expire_at == datetime.datetime(2023, 7, 15, 13, 00, 0)
+    token_db = await reset_password_service.get_token(
+        reset_password_models.ResetPasswordTokenFilters(id=token_id)
+    )
+    assert token_db.expire_at == datetime.datetime(2023, 7, 15, 13, 00, 0)
 
 
 @pytest.mark.anyio
