@@ -1,7 +1,7 @@
 import logging
 
 import fastapi
-import fastapi_jwt_auth as jwt_auth
+import fastapi_paseto_auth as paseto_auth
 
 from app.config import db
 from app.exceptions.http import user as user_exceptions
@@ -24,7 +24,7 @@ ALL_RESPONSES = {
 
 async def get_current_user(
     session: db.AsyncSession = fastapi.Depends(db.get_session),
-    Authorize: jwt_auth.AuthJWT = fastapi.Depends(),
+    Authorize: paseto_auth.AuthPASETO = fastapi.Depends(),
     token: str = fastapi.Depends(auth.oauth2_scheme),  # pylint: disable=unused-argument
 ) -> user_models.User:
     """
@@ -33,8 +33,8 @@ async def get_current_user(
     # oauth2_scheme dependency is only there to ensure the API documentation gets
     # generated correctly.
     """
-    Authorize.jwt_required()
-    user_id = Authorize.get_jwt_subject()
+    Authorize.paseto_required()
+    user_id = Authorize.get_subject()
     if not user_id:
         log.info("User ID not found in the JWT subject")
         raise user_exceptions.UserNotFoundError()

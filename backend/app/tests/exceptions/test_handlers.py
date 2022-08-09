@@ -1,7 +1,7 @@
 import fastapi
 from fastapi import exceptions as fastapi_exceptions
 from fastapi import status
-from fastapi_jwt_auth import exceptions as jwt_exceptions
+from fastapi_paseto_auth import exceptions as paseto_exceptions
 import orjson
 from pydantic import error_wrappers, errors
 from starlette import exceptions as starlette_exceptions
@@ -47,12 +47,12 @@ def test_request_validation_exception_handler() -> None:
     }
 
 
-def test_authjwt_exception_handler() -> None:
+def test_authpaseto_exception_handler() -> None:
     status_code = status.HTTP_422_UNPROCESSABLE_ENTITY
     detail = "Missing access token"
-    exception = jwt_exceptions.AccessTokenRequired(status_code, message=detail)
+    exception = paseto_exceptions.AccessTokenRequired(status_code, message=detail)
 
-    response = handlers.authjwt_exception_handler(
+    response = handlers.authpaseto_exception_handler(
         fastapi.Request(scope={"type": "http"}), exception
     )
 

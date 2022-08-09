@@ -14,15 +14,15 @@ class App(pydantic.BaseSettings):
 class Security(pydantic.BaseSettings):
     TOKEN_URL: str = "/token"
     REFRESH_TOKEN_URL: str = f"/{TOKEN_URL}/refresh"
-    AUTHJWT_SECRET_KEY: str
-    AUTHJWT_ACCESS_TOKEN_EXPIRES: datetime.timedelta = datetime.timedelta(minutes=30)
-    AUTHJWT_REFRESH_TOKEN_EXPIRES: datetime.timedelta = datetime.timedelta(days=1)
-    AUTHJWT_DENYLIST_ENABLED: bool = True
-    AUTHJWT_DENYLIST_TOKEN_CHECKS: set[str] = {"access", "refresh"}
-    AUTHJWT_TOKEN_LOCATION: set[str] = {"headers"}
-    AUTHJWT_ALGORITHM: str = "HS256"
-    AUTHJWT_DECODE_ALGORITHMS: set[str] = {"HS256"}
-    AUTHJWT_DATABASE_URL: pydantic.RedisDsn
+    AUTHPASETO_SECRET_KEY: str
+    # TODO: Use timedelta for expirations after the
+    # https://github.com/Chloe-ko/fastapi-paseto-auth/pull/1 will be merged
+    AUTHPASETO_ACCESS_TOKEN_EXPIRES: int = 30 * 60
+    AUTHPASETO_REFRESH_TOKEN_EXPIRES: int = 24 * 60 * 60
+    AUTHPASETO_DENYLIST_ENABLED: bool = True
+    AUTHPASETO_DENYLIST_TOKEN_CHECKS: set[str] = {"access", "refresh"}
+    AUTHPASETO_TOKEN_LOCATION: set[str] = {"headers"}
+    AUTHPASETO_DATABASE_URL: pydantic.RedisDsn
     EMAIL_CONFIRMATION_TOKEN_EXPIRES: datetime.timedelta = datetime.timedelta(days=7)
     RESET_PASSWORD_TOKEN_EXPIRES: datetime.timedelta = datetime.timedelta(hours=3)
     USER_PASSWORD_MIN_LENGTH: int = 8

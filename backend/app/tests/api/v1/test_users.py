@@ -2,7 +2,7 @@ import typing
 from unittest import mock
 
 from fastapi import status
-import fastapi_jwt_auth as jwt_auth
+import fastapi_paseto_auth as paseto_auth
 import pytest
 
 from app.exceptions.http import user as user_exceptions
@@ -50,7 +50,7 @@ async def test_get_me(
     async_client: "conftest.TestClient", session: "conftest.AsyncSession"
 ) -> None:
     user = await user_helpers.create_active_user(session=session)
-    token = jwt_auth.AuthJWT().create_access_token(str(user.id))
+    token = paseto_auth.AuthPASETO().create_access_token(str(user.id))
     headers = {"Authorization": f"Bearer {token}"}
 
     response = await async_client.get(f"{API_URL}/users/me", headers=headers)
@@ -71,7 +71,7 @@ async def test_get_me_inactive_user(
     async_client: "conftest.TestClient", session: "conftest.AsyncSession"
 ) -> None:
     user = await user_helpers.create_user(session=session)
-    token = jwt_auth.AuthJWT().create_access_token(str(user.id))
+    token = paseto_auth.AuthPASETO().create_access_token(str(user.id))
     headers = {"Authorization": f"Bearer {token}"}
 
     response = await async_client.get(f"{API_URL}/users/me", headers=headers)
@@ -89,7 +89,7 @@ async def test_update_me(
     user = await user_helpers.create_active_user(session=session, name="Test User")
     mock_update_user.return_value = user
     request_data = {"name": "Updated Name"}
-    token = jwt_auth.AuthJWT().create_access_token(str(user.id))
+    token = paseto_auth.AuthPASETO().create_access_token(str(user.id))
     headers = {"Authorization": f"Bearer {token}"}
 
     response = await async_client.patch(
@@ -113,7 +113,7 @@ async def test_update_me_inactive_user(
 ) -> None:
     user = await user_helpers.create_user(session=session)
     request_data = {"name": "Updated Name"}
-    token = jwt_auth.AuthJWT().create_access_token(str(user.id))
+    token = paseto_auth.AuthPASETO().create_access_token(str(user.id))
     headers = {"Authorization": f"Bearer {token}"}
 
     response = await async_client.patch(
@@ -131,7 +131,7 @@ async def test_delete_me(
     session: "conftest.AsyncSession",
 ) -> None:
     user = await user_helpers.create_active_user(session=session)
-    token = jwt_auth.AuthJWT().create_access_token(str(user.id), fresh=True)
+    token = paseto_auth.AuthPASETO().create_access_token(str(user.id), fresh=True)
     headers = {"Authorization": f"Bearer {token}"}
 
     response = await async_client.delete(f"{API_URL}/users/me", headers=headers)
@@ -145,7 +145,7 @@ async def test_delete_me_inactive_user(
     async_client: "conftest.TestClient", session: "conftest.AsyncSession"
 ) -> None:
     user = await user_helpers.create_user(session=session)
-    token = jwt_auth.AuthJWT().create_access_token(str(user.id))
+    token = paseto_auth.AuthPASETO().create_access_token(str(user.id))
     headers = {"Authorization": f"Bearer {token}"}
 
     response = await async_client.delete(f"{API_URL}/users/me", headers=headers)
@@ -158,7 +158,7 @@ async def test_delete_me_no_fresh_token(
     async_client: "conftest.TestClient", session: "conftest.AsyncSession"
 ) -> None:
     user = await user_helpers.create_active_user(session=session)
-    token = jwt_auth.AuthJWT().create_access_token(str(user.id), fresh=False)
+    token = paseto_auth.AuthPASETO().create_access_token(str(user.id), fresh=False)
     headers = {"Authorization": f"Bearer {token}"}
 
     response = await async_client.delete(f"{API_URL}/users/me", headers=headers)
@@ -181,7 +181,7 @@ async def test_change_my_password(
         ),
     )
     request_data = {"currentPassword": "plain_password", "newPassword": "new_password"}
-    token = jwt_auth.AuthJWT().create_access_token(str(user.id))
+    token = paseto_auth.AuthPASETO().create_access_token(str(user.id))
     headers = {"Authorization": f"Bearer {token}"}
 
     response = await async_client.post(
@@ -204,7 +204,7 @@ async def test_change_my_password_inactive_user(
         ),
     )
     request_data = {"currentPassword": "plain_password", "newPassword": "new_password"}
-    token = jwt_auth.AuthJWT().create_access_token(str(user.id))
+    token = paseto_auth.AuthPASETO().create_access_token(str(user.id))
     headers = {"Authorization": f"Bearer {token}"}
 
     response = await async_client.post(
@@ -223,7 +223,7 @@ async def test_get_user(
 ) -> None:
     user = await user_helpers.create_active_user(session=session)
     mock_get_user.return_value = user
-    token = jwt_auth.AuthJWT().create_access_token(str(user.id))
+    token = paseto_auth.AuthPASETO().create_access_token(str(user.id))
     headers = {"Authorization": f"Bearer {token}"}
 
     response = await async_client.get(f"{API_URL}/users/{user.id}", headers=headers)
@@ -244,7 +244,7 @@ async def test_get_user_inactive_user(
     async_client: "conftest.TestClient", session: "conftest.AsyncSession"
 ) -> None:
     user = await user_helpers.create_user(session=session)
-    token = jwt_auth.AuthJWT().create_access_token(str(user.id))
+    token = paseto_auth.AuthPASETO().create_access_token(str(user.id))
     headers = {"Authorization": f"Bearer {token}"}
 
     response = await async_client.get(f"{API_URL}/users/{user.id}", headers=headers)
