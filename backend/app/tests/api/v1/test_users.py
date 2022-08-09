@@ -175,7 +175,10 @@ async def test_change_my_password(
 ) -> None:
     user = await user_helpers.create_active_user(
         session=session,
-        password="$2b$12$q8JcpltDZkSLOdMuPyt/jORzExLKp9HsKgCoFJQ1IzzITc2/Pg42q",
+        password=(
+            "$argon2id$v=19$m=65536,t=3,p=4$AoDw3nvPea/VGiNkzPn/Pw$grh02g7mdXN47S8kSt2P"
+            "Vmv52AAt7wisY63TPS80qMo"
+        ),
     )
     request_data = {"currentPassword": "plain_password", "newPassword": "new_password"}
     token = jwt_auth.AuthJWT().create_access_token(str(user.id))
@@ -195,7 +198,10 @@ async def test_change_my_password_inactive_user(
 ) -> None:
     user = await user_helpers.create_user(
         session=session,
-        password="$2b$12$q8JcpltDZkSLOdMuPyt/jORzExLKp9HsKgCoFJQ1IzzITc2/Pg42q",
+        password=(
+            "$argon2id$v=19$m=65536,t=3,p=4$AoDw3nvPea/VGiNkzPn/Pw$grh02g7mdXN47S8kSt2P"
+            "Vmv52AAt7wisY63TPS80qMo"
+        ),
     )
     request_data = {"currentPassword": "plain_password", "newPassword": "new_password"}
     token = jwt_auth.AuthJWT().create_access_token(str(user.id))

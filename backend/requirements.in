@@ -10,7 +10,7 @@ gunicorn
 jinja2
 kombu
 orjson
-passlib[bcrypt]
+passlib[argon2]
 psycopg2-binary
 pydantic[email]
 pyhumps

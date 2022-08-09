@@ -50,7 +50,7 @@ oauth2_scheme = OAuth2PasswordBearer(
     refreshUrl=f"{settings.API_URL}/{settings.REFRESH_TOKEN_URL}",
 )
 
-pwd_context = context.CryptContext(schemes=["bcrypt"], deprecated="auto")
+pwd_context = context.CryptContext(schemes=["argon2"], deprecated="auto")
 
 
 def hash_password(password: str) -> str:

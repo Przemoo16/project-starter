@@ -178,7 +178,10 @@ async def test_user_service_count_users(
 async def test_user_service_change_password(
     session: "conftest.AsyncSession",
 ) -> None:
-    old_hashed_password = "$2b$12$q8JcpltDZkSLOdMuPyt/jORzExLKp9HsKgCoFJQ1IzzITc2/Pg42q"
+    old_hashed_password = (
+        "$argon2id$v=19$m=65536,t=3,p=4$AoDw3nvPea/VGiNkzPn/Pw$grh02g7mdXN47S8kSt2P"
+        "Vmv52AAt7wisY63TPS80qMo"
+    )
     user = await user_helpers.create_user(session=session, password=old_hashed_password)
     new_password = "new_password"
 
@@ -196,7 +199,10 @@ async def test_user_service_change_password_invalid_password(
 ) -> None:
     user = await user_helpers.create_user(
         session=session,
-        password="$2b$12$q8JcpltDZkSLOdMuPyt/jORzExLKp9HsKgCoFJQ1IzzITc2/Pg42q",
+        password=(
+            "$argon2id$v=19$m=65536,t=3,p=4$AoDw3nvPea/VGiNkzPn/Pw$grh02g7mdXN47S8kSt2P"
+            "Vmv52AAt7wisY63TPS80qMo"
+        ),
     )
 
     with pytest.raises(user_exceptions.InvalidPasswordError):
