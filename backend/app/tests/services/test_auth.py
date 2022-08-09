@@ -34,7 +34,10 @@ async def test_auth_service_obtain_tokens(
     user = await user_helpers.create_active_user(
         session,
         email="test@email.com",
-        password="$2b$12$q8JcpltDZkSLOdMuPyt/jORzExLKp9HsKgCoFJQ1IzzITc2/Pg42q",
+        password=(
+            "$argon2id$v=19$m=65536,t=3,p=4$AoDw3nvPea/VGiNkzPn/Pw$grh02g7mdXN47S8kSt2P"
+            "Vmv52AAt7wisY63TPS80qMo"
+        ),
     )
     mock_get_active_user.return_value = user
 
@@ -76,7 +79,10 @@ async def test_auth_service_obtain_tokens_invalid_password(
     user = await user_helpers.create_active_user(
         session,
         email="test@email.com",
-        password="$2b$12$q8JcpltDZkSLOdMuPyt/jORzExLKp9HsKgCoFJQ1IzzITc2/Pg42q",
+        password=(
+            "$argon2id$v=19$m=65536,t=3,p=4$AoDw3nvPea/VGiNkzPn/Pw$grh02g7mdXN47S8kSt2P"
+            "Vmv52AAt7wisY63TPS80qMo"
+        ),
     )
     mock_get_active_user.return_value = user
 
