@@ -32,7 +32,7 @@ class UserService:
     async def create_user(self, user: user_models.UserCreate) -> user_models.User:
         user.password = auth.hash_password(user.password)
         try:
-            user_db = await self.crud.create(user)
+            user_db = await self.crud.create(user, refresh=True)
         except exc.IntegrityError as e:
             raise user_exceptions.UserAlreadyExistsError(
                 context={"email": user.email}
@@ -70,7 +70,7 @@ class UserService:
     ) -> user_models.User:
         if user_update.password:
             user_update.password = auth.hash_password(user_update.password)
-        return await self.crud.update(user_db, user_update)
+        return await self.crud.update(user_db, user_update, refresh=True)
 
     async def delete_user(self, user: user_models.User) -> None:
         await self.crud.delete(user)

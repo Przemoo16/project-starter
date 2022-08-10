@@ -178,19 +178,20 @@ async def test_user_service_count_users(
 async def test_user_service_change_password(
     session: "conftest.AsyncSession",
 ) -> None:
+    user_service = user_services.UserService(session)
     old_hashed_password = (
         "$argon2id$v=19$m=65536,t=3,p=4$AoDw3nvPea/VGiNkzPn/Pw$grh02g7mdXN47S8kSt2P"
         "Vmv52AAt7wisY63TPS80qMo"
     )
     user = await user_helpers.create_user(session=session, password=old_hashed_password)
+    user_id = user.id
     new_password = "new_password"
 
-    await user_services.UserService(session).change_password(
-        user, "plain_password", new_password
-    )
+    await user_service.change_password(user, "plain_password", new_password)
 
-    assert user.password != old_hashed_password
-    assert user.password != new_password
+    user_db = await user_service.get_user(user_models.UserFilters(id=user_id))
+    assert user_db.password != old_hashed_password
+    assert user_db.password != new_password
 
 
 @pytest.mark.anyio
@@ -213,11 +214,14 @@ async def test_user_service_change_password_invalid_password(
 
 @pytest.mark.anyio
 async def test_user_service_confirm_email(session: "conftest.AsyncSession") -> None:
+    user_service = user_services.UserService(session)
     user = await user_helpers.create_user(session=session)
+    user_id = user.id
 
-    await user_services.UserService(session).confirm_email(user)
+    await user_service.confirm_email(user)
 
-    assert user.confirmed_email is True
+    user_db = await user_service.get_user(user_models.UserFilters(id=user_id))
+    assert user_db.confirmed_email is True
 
 
 @pytest.mark.anyio
@@ -278,20 +282,23 @@ async def test_user_service_set_password(
     mock_get_valid_token: mock.AsyncMock,
     session: "conftest.AsyncSession",
 ) -> None:
+    user_service = user_services.UserService(session)
     current_password = "hashed_password"
     user = await user_helpers.create_active_user(
         session=session, password=current_password
     )
+    user_id = user.id
     token = await reset_password_helpers.create_reset_password_token(
-        session, user_id=user.id
+        session, user_id=user_id
     )
     mock_get_valid_token.return_value = token
     new_plain_password = "plain_password"
 
-    await user_services.UserService(session).set_password(token.id, new_plain_password)
+    await user_service.set_password(token.id, new_plain_password)
 
-    assert user.password != current_password
-    assert user.password != new_plain_password
+    user_db = await user_service.get_user(user_models.UserFilters(id=user_id))
+    assert user_db.password != current_password
+    assert user_db.password != new_plain_password
     mock_force_to_expire.assert_called_once_with(token)
 
 
