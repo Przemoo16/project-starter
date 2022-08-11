@@ -2,7 +2,7 @@ import typing
 from unittest import mock
 
 from fastapi import status
-import fastapi_jwt_auth as jwt_auth
+import fastapi_paseto_auth as paseto_auth
 import pytest
 
 from app.models import auth as auth_models
@@ -19,8 +19,8 @@ async def test_obtain_tokens(
     mock_obtain_tokens: mock.AsyncMock, async_client: "conftest.TestClient"
 ) -> None:
     user_id = "1dd53909-fcda-4c72-afcd-1bf4886389f8"
-    access_token = jwt_auth.AuthJWT().create_access_token(user_id)
-    refresh_token = jwt_auth.AuthJWT().create_refresh_token(user_id)
+    access_token = paseto_auth.AuthPASETO().create_access_token(user_id)
+    refresh_token = paseto_auth.AuthPASETO().create_refresh_token(user_id)
     token_type = "bearer"
     mock_obtain_tokens.return_value = auth_models.AuthTokens(
         access_token=access_token, refresh_token=refresh_token, token_type=token_type
@@ -44,12 +44,12 @@ async def test_refresh_token(
     mock_refresh_token: mock.AsyncMock, async_client: "conftest.TestClient"
 ) -> None:
     user_id = "1dd53909-fcda-4c72-afcd-1bf4886389f8"
-    access_token = jwt_auth.AuthJWT().create_access_token(user_id)
+    access_token = paseto_auth.AuthPASETO().create_access_token(user_id)
     token_type = "bearer"
     mock_refresh_token.return_value = auth_models.AccessToken(
         access_token=access_token, token_type=token_type
     )
-    token = jwt_auth.AuthJWT().create_refresh_token(user_id)
+    token = paseto_auth.AuthPASETO().create_refresh_token(user_id)
     request_data = {"token": token}
 
     response = await async_client.post(f"{API_URL}/token/refresh", json=request_data)
@@ -66,7 +66,7 @@ async def test_revoke_token(
     _: mock.AsyncMock, async_client: "conftest.TestClient"
 ) -> None:
     user_id = "1dd53909-fcda-4c72-afcd-1bf4886389f8"
-    token = jwt_auth.AuthJWT().create_access_token(user_id)
+    token = paseto_auth.AuthPASETO().create_access_token(user_id)
     request_data = {"token": token}
 
     response = await async_client.post(f"{API_URL}/token/revoke", json=request_data)

@@ -1,9 +1,8 @@
 import typing
-from unittest import mock
 
 import fastapi
-import fastapi_jwt_auth as jwt_auth
-from fastapi_jwt_auth import exceptions
+import fastapi_paseto_auth as paseto_auth
+from fastapi_paseto_auth import exceptions
 import pytest
 from starlette import datastructures
 
@@ -19,7 +18,7 @@ if typing.TYPE_CHECKING:
 @pytest.mark.anyio
 async def test_get_current_user(session: "conftest.AsyncSession") -> None:
     user = await user_helpers.create_user(session=session)
-    token = jwt_auth.AuthJWT().create_access_token(str(user.id))
+    token = paseto_auth.AuthPASETO().create_access_token(str(user.id))
     request = fastapi.Request(
         scope={
             "type": "http",
@@ -27,28 +26,40 @@ async def test_get_current_user(session: "conftest.AsyncSession") -> None:
         }
     )
 
-    current_user = await user_deps.get_current_user(session, jwt_auth.AuthJWT(request))
+    current_user = await user_deps.get_current_user(
+        session, paseto_auth.AuthPASETO(request)
+    )
 
     assert current_user == user
 
 
 @pytest.mark.anyio
-async def test_get_current_user_without_jwt(session: "conftest.AsyncSession") -> None:
-    auth_handler = jwt_auth.AuthJWT()
+async def test_get_current_user_without_token(session: "conftest.AsyncSession") -> None:
+    request = fastapi.Request(
+        scope={
+            "type": "http",
+            "headers": datastructures.Headers().raw,
+        }
+    )
 
     with pytest.raises(exceptions.MissingTokenError):
-        await user_deps.get_current_user(session, auth_handler)
+        await user_deps.get_current_user(session, paseto_auth.AuthPASETO(request))
 
 
 @pytest.mark.anyio
-@mock.patch("fastapi_jwt_auth.AuthJWT.jwt_required")
-async def test_get_current_user_empty_jwt_subject(
-    _: mock.MagicMock, session: "conftest.AsyncSession"
+async def test_get_current_user_empty_token_subject(
+    session: "conftest.AsyncSession",
 ) -> None:
-    auth_handler = jwt_auth.AuthJWT()
+    token = paseto_auth.AuthPASETO().create_access_token("")
+    request = fastapi.Request(
+        scope={
+            "type": "http",
+            "headers": datastructures.Headers({"Authorization": f"Bearer {token}"}).raw,
+        }
+    )
 
     with pytest.raises(user_exceptions.UserNotFoundError):
-        await user_deps.get_current_user(session, auth_handler)
+        await user_deps.get_current_user(session, paseto_auth.AuthPASETO(request))
 
 
 @pytest.mark.anyio

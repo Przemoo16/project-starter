@@ -1,3 +1,7 @@
+import fastapi_paseto_auth as paseto_auth
+import pytest
+
+from app.exceptions.app import auth as auth_exceptions
 from app.utils import auth
 
 
@@ -31,3 +35,33 @@ def test_verify_password_wrong_password() -> None:
     verified_password = auth.verify_password(password, hashed_password)
 
     assert verified_password is False
+
+
+def test_decode_token() -> None:
+    subject = "payload"
+    token = paseto_auth.AuthPASETO().create_access_token(subject)
+
+    decoded_token = auth.decode_token(token)
+
+    assert decoded_token.payload["sub"] == subject
+
+
+def test_decode_token_error() -> None:
+    with pytest.raises(auth_exceptions.TokenDecodingError):
+        auth.decode_token("invalid_token")
+
+
+def test_is_token_fresh() -> None:
+    token = paseto_auth.AuthPASETO().create_access_token("payload", fresh=True)
+
+    fresh = auth.is_token_fresh(token)
+
+    assert fresh
+
+
+def test_is_token_fresh_no_fresh() -> None:
+    token = paseto_auth.AuthPASETO().create_access_token("payload")
+
+    fresh = auth.is_token_fresh(token)
+
+    assert not fresh

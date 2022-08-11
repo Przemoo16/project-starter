@@ -28,5 +28,5 @@ async def get_session() -> typing.AsyncGenerator[
 
 
 @functools.lru_cache
-def get_jwt_db() -> redis.Redis:  # type: ignore
-    return redis.Redis.from_url(settings.AUTHJWT_DATABASE_URL, decode_responses=True)
+def get_paseto_token_db() -> redis.Redis:  # type: ignore
+    return redis.Redis.from_url(settings.AUTHPASETO_DATABASE_URL, decode_responses=True)

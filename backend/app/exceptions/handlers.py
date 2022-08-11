@@ -2,7 +2,7 @@ import typing
 
 from fastapi import exceptions as fastapi_exceptions
 from fastapi import status
-from fastapi_jwt_auth import exceptions as jwt_exceptions
+from fastapi_paseto_auth import exceptions as paseto_exceptions
 from starlette import exceptions as starlette_exceptions
 
 from app.exceptions.http import base
@@ -29,11 +29,11 @@ def init_handlers(app: "fastapi.FastAPI") -> None:  # pragma: no cover
     ) -> responses.ORJSONResponse:
         return request_validation_exception_handler(request, exc)
 
-    @app.exception_handler(jwt_exceptions.AuthJWTException)
-    async def custom_authjwt_exception_handler(
-        request: "fastapi.Request", exc: jwt_exceptions.AuthJWTException
+    @app.exception_handler(paseto_exceptions.AuthPASETOException)
+    async def custom_authpaseto_exception_handler(
+        request: "fastapi.Request", exc: paseto_exceptions.AuthPASETOException
     ) -> responses.ORJSONResponse:
-        return authjwt_exception_handler(request, exc)
+        return authpaseto_exception_handler(request, exc)
 
     @app.exception_handler(base.HTTPException)
     async def custom_app_http_exception_handler(
@@ -64,8 +64,8 @@ def request_validation_exception_handler(
     )
 
 
-def authjwt_exception_handler(
-    _: "fastapi.Request", exc: jwt_exceptions.AuthJWTException
+def authpaseto_exception_handler(
+    _: "fastapi.Request", exc: paseto_exceptions.AuthPASETOException
 ) -> responses.ORJSONResponse:
     return responses.ORJSONResponse(
         status_code=exc.status_code,
