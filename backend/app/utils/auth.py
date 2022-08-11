@@ -78,9 +78,8 @@ def decode_token(
     decoding_key = pyseto.Key.new(
         version=version, purpose=purpose.value, key=settings.AUTHPASETO_SECRET_KEY
     )
-    paseto = pyseto.Paseto.new()
     try:
-        return paseto.decode(token=token, keys=decoding_key, deserializer=json)
+        return pyseto.decode(keys=decoding_key, token=token, deserializer=json)
     except (pyseto.VerifyError, pyseto.DecryptError, pyseto.SignError, ValueError) as e:
         raise auth_exceptions.TokenDecodingError from e
 
