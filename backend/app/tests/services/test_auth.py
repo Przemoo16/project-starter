@@ -160,7 +160,7 @@ async def test_auth_service_revoke_access_token(
 
     await auth_services.AuthService(session).revoke_token(token=token)
 
-    jti = auth_utils.decode_token(token).payload["jti"]
+    jti = auth_utils.decode_token_payload(token)["jti"]
     mock_redis_setex.assert_called_once_with(jti, expires_seconds, "true")
 
 
@@ -181,7 +181,7 @@ async def test_auth_service_revoke_refresh_token(
 
     await auth_services.AuthService(session).revoke_token(token=token)
 
-    jti = auth_utils.decode_token(token).payload["jti"]
+    jti = auth_utils.decode_token_payload(token)["jti"]
     mock_redis_setex.assert_called_once_with(jti, expires_seconds, "true")
 
 
@@ -234,5 +234,5 @@ async def test_auth_service_revoke_token_missing_expiration(
 
     await auth_services.AuthService(session).revoke_token(token=token)
 
-    jti = auth_utils.decode_token(token).payload["jti"]
+    jti = auth_utils.decode_token_payload(token)["jti"]
     mock_redis_set.assert_called_with(jti, "true")

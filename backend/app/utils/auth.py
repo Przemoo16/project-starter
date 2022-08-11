@@ -1,5 +1,6 @@
 import enum
 import json
+import typing
 
 from fastapi import exceptions, security, status
 from fastapi.openapi import models
@@ -84,8 +85,17 @@ def decode_token(
         raise auth_exceptions.TokenDecodingError from e
 
 
+def decode_token_payload(
+    token: str, version: int = 4, purpose: TokenPurpose = TokenPurpose.LOCAL
+) -> dict[str, typing.Any]:
+    payload = decode_token(token, version, purpose).payload
+    # Improve typing by ensuring that payload is always a dictionary
+    assert isinstance(payload, dict)  # nosec
+    return payload
+
+
 def is_token_fresh(
     token: str, version: int = 4, purpose: TokenPurpose = TokenPurpose.LOCAL
 ) -> bool:
-    decoded_token = decode_token(token, version, purpose)
-    return decoded_token.payload["fresh"]
+    payload = decode_token_payload(token, version, purpose)
+    return payload["fresh"]
