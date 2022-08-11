@@ -38,17 +38,27 @@ def test_verify_password_wrong_password() -> None:
 
 
 def test_decode_token() -> None:
-    subject = "payload"
+    subject = "test-subject"
     token = paseto_auth.AuthPASETO().create_access_token(subject)
 
     decoded_token = auth.decode_token(token)
 
+    assert isinstance(decoded_token.payload, dict)
     assert decoded_token.payload["sub"] == subject
 
 
 def test_decode_token_error() -> None:
     with pytest.raises(auth_exceptions.TokenDecodingError):
         auth.decode_token("invalid_token")
+
+
+def test_decode_token_payload() -> None:
+    subject = "test-subject"
+    token = paseto_auth.AuthPASETO().create_access_token(subject)
+
+    payload = auth.decode_token_payload(token)
+
+    assert payload["sub"] == subject
 
 
 def test_is_token_fresh() -> None:

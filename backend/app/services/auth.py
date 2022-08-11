@@ -53,7 +53,7 @@ class AuthService:
     ) -> auth_models.AccessToken:
         token_context = {"token": token}
         try:
-            payload = auth_utils.decode_token(token).payload
+            payload = auth_utils.decode_token_payload(token)
         except auth_app_aceptions.TokenDecodingError as e:
             raise auth_http_exceptions.InvalidTokenError(context=token_context) from e
         if payload["type"] != "refresh":
@@ -72,7 +72,7 @@ class AuthService:
     async def revoke_token(self, token: auth_models.AuthToken) -> None:
         token_context = {"token": token}
         try:
-            payload = auth_utils.decode_token(token).payload
+            payload = auth_utils.decode_token_payload(token)
         except auth_app_aceptions.TokenDecodingError as e:
             raise auth_http_exceptions.InvalidTokenError(context=token_context) from e
         if auth_config.check_if_token_in_denylist(payload):
