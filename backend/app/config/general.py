@@ -15,10 +15,8 @@ class Security(pydantic.BaseSettings):
     TOKEN_URL: str = "/token"
     REFRESH_TOKEN_URL: str = f"/{TOKEN_URL}/refresh"
     AUTHPASETO_SECRET_KEY: str
-    # TODO: Use timedelta for expirations after the
-    # https://github.com/Chloe-ko/fastapi-paseto-auth/pull/1 will be merged
-    AUTHPASETO_ACCESS_TOKEN_EXPIRES: int = 30 * 60
-    AUTHPASETO_REFRESH_TOKEN_EXPIRES: int = 24 * 60 * 60
+    AUTHPASETO_ACCESS_TOKEN_EXPIRES: datetime.timedelta = datetime.timedelta(minutes=30)
+    AUTHPASETO_REFRESH_TOKEN_EXPIRES: datetime.timedelta = datetime.timedelta(days=1)
     AUTHPASETO_DENYLIST_ENABLED: bool = True
     AUTHPASETO_DENYLIST_TOKEN_CHECKS: set[str] = {"access", "refresh"}
     AUTHPASETO_TOKEN_LOCATION: set[str] = {"headers"}

@@ -81,7 +81,7 @@ fastapi==0.79.0
     # via
     #   -r requirements.in
     #   fastapi-paseto-auth
-fastapi-paseto-auth==0.5.3
+fastapi-paseto-auth==0.5.4
     # via -r requirements.in
 flake8==5.0.4
     # via
