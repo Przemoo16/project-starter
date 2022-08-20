@@ -76,7 +76,7 @@ export const Snackbar = () => {
       );
       dispatch(clearNotifications());
     }
-  }, [notifications, enqueueSnackbar, dispatch, clearNotifications]);
+  }, [notifications]);
 
   return <></>;
 };
