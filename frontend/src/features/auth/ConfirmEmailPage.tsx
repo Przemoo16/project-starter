@@ -19,7 +19,7 @@ const ConfirmEmailPage = () => {
 
   useEffect(() => {
     dispatch(confirmEmail({ token: token || '' }));
-  }, [dispatch, confirmEmail, token]);
+  }, []);
 
   return (
     <PageContainer icon={EmailOutlinedIcon} title={t('auth.confirmEmailTitle')}>

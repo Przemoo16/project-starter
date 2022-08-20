@@ -32,6 +32,8 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
     <Box
       sx={{
         display: 'flex',
+        flexDirection: 'column',
+        minHeight: '100vh',
       }}
     >
       <AppBar onOpen={handleOpenDrawer} drawerWidth={DRAWER_WIDTH} />
@@ -40,11 +42,11 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
         component="main"
         maxWidth="lg"
         sx={{
-          minHeight: '100vh',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
+          flexGrow: 1,
         }}
       >
         <Toolbar />
@@ -55,16 +57,15 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
             flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
-            flexGrow: 1,
             my: 5,
           }}
         >
           {children}
         </Box>
-        <Box component="footer" sx={{ mb: 3 }}>
-          <Copyright />
-        </Box>
       </Container>
+      <Box component="footer" sx={{ mb: 3 }}>
+        <Copyright />
+      </Box>
     </Box>
   );
 };
