@@ -16,17 +16,21 @@ import { authActions } from '../auth/store';
 
 interface AccountState {
   updateAccountDetailsPending: boolean;
+  updateAccountDetailsErrors: ErrorResponse | null;
   changePasswordPending: boolean;
+  changePasswordErrors: ErrorResponse | null;
   deleteAccountPending: boolean;
-  errors: ErrorResponse | null;
+  deleteAccountErrors: ErrorResponse | null;
   deleteAccountModalOpen: boolean;
 }
 
 const initialState: AccountState = {
   updateAccountDetailsPending: false,
+  updateAccountDetailsErrors: null,
   changePasswordPending: false,
+  changePasswordErrors: null,
   deleteAccountPending: false,
-  errors: null,
+  deleteAccountErrors: null,
   deleteAccountModalOpen: false,
 };
 
@@ -36,39 +40,39 @@ export const accountSlice = createSlice({
   reducers: {
     updateAccountDetails(state, action: PayloadAction<UpdateAccountDetailsData>) {
       state.updateAccountDetailsPending = true;
-      state.errors = null;
+      state.updateAccountDetailsErrors = null;
     },
     updateAccountDetailsSuccess(state) {
       state.updateAccountDetailsPending = false;
-      state.errors = null;
+      state.updateAccountDetailsErrors = null;
     },
     updateAccountDetailsFailure(state, { payload }: PayloadAction<{ errors: ErrorResponse }>) {
       state.updateAccountDetailsPending = false;
-      state.errors = payload.errors;
+      state.updateAccountDetailsErrors = payload.errors;
     },
     changePassword(state, action: PayloadAction<ChangePasswordData>) {
       state.changePasswordPending = true;
-      state.errors = null;
+      state.changePasswordErrors = null;
     },
     changePasswordSuccess(state) {
       state.changePasswordPending = false;
-      state.errors = null;
+      state.changePasswordErrors = null;
     },
     changePasswordFailure(state, { payload }: PayloadAction<{ errors: ErrorResponse }>) {
       state.changePasswordPending = false;
-      state.errors = payload.errors;
+      state.changePasswordErrors = payload.errors;
     },
     deleteAccount(state, action: PayloadAction<LoginData>) {
       state.deleteAccountPending = true;
-      state.errors = null;
+      state.deleteAccountErrors = null;
     },
     deleteAccountSuccess(state) {
       state.deleteAccountPending = false;
-      state.errors = null;
+      state.deleteAccountErrors = null;
     },
     deleteAccountFailure(state, { payload }: PayloadAction<{ errors: ErrorResponse }>) {
       state.deleteAccountPending = false;
-      state.errors = payload.errors;
+      state.deleteAccountErrors = payload.errors;
     },
     openDeleteAccountModal: state => {
       state.deleteAccountModalOpen = true;
