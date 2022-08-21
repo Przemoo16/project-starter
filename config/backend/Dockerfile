@@ -16,4 +16,4 @@ RUN chmod +x /var/scripts/wait-for-it.sh /var/scripts/gunicorn.conf.py /var/scri
 
 COPY ./backend /backend
 
-CMD /var/scripts/run.sh
+CMD ["/var/scripts/run.sh"]

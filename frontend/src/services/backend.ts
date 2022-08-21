@@ -178,4 +178,4 @@ class Backend {
   }
 }
 
-export const backend = new Backend(import.meta.env.API_URL || '/api/v1');
+export const backend = new Backend(import.meta.env.VITE_API_URL || '/api/v1');
