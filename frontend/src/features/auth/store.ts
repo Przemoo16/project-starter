@@ -25,21 +25,29 @@ const RESET_PASSWORD_TOKEN_EXPIRED_CASE = 'ResetPasswordTokenExpiredError';
 interface AuthState {
   account: Account | null;
   loginPending: boolean;
+  loginErrors: ErrorResponse | null;
   registerPending: boolean;
+  registerErrors: ErrorResponse | null;
   resetPasswordPending: boolean;
+  resetPasswordErrors: ErrorResponse | null;
   setPasswordPending: boolean;
+  setPasswordErrors: ErrorResponse | null;
   confirmEmailMessage: string;
-  errors: ErrorResponse | null;
+  confirmEmailErrors: ErrorResponse | null;
 }
 
 const initialState: AuthState = {
   account: null,
   loginPending: true,
+  loginErrors: null,
   registerPending: false,
+  registerErrors: null,
   resetPasswordPending: false,
+  resetPasswordErrors: null,
   setPasswordPending: false,
+  setPasswordErrors: null,
   confirmEmailMessage: '',
-  errors: null,
+  confirmEmailErrors: null,
 };
 
 export const authSlice = createSlice({
@@ -48,71 +56,71 @@ export const authSlice = createSlice({
   reducers: {
     loadAccount(state, { payload }: PayloadAction<{ account: Account | null }>) {
       state.loginPending = false;
-      state.errors = null;
+      state.loginErrors = null;
       state.account = payload.account;
     },
     login(state, action: PayloadAction<LoginData>) {
       state.loginPending = true;
-      state.errors = null;
+      state.loginErrors = null;
     },
     loginSuccess(state, { payload }: PayloadAction<{ account: Account }>) {
       state.loginPending = false;
-      state.errors = null;
+      state.loginErrors = null;
       state.account = payload.account;
     },
     loginFailure(state, { payload }: PayloadAction<{ errors: ErrorResponse }>) {
       state.loginPending = false;
-      state.errors = payload.errors;
+      state.loginErrors = payload.errors;
       state.account = null;
     },
     register(state, action: PayloadAction<RegisterData>) {
       state.registerPending = true;
-      state.errors = null;
+      state.registerErrors = null;
     },
     registerSuccess(state) {
       state.registerPending = false;
-      state.errors = null;
+      state.registerErrors = null;
     },
     registerFailure(state, { payload }: PayloadAction<{ errors: ErrorResponse }>) {
       state.registerPending = false;
-      state.errors = payload.errors;
+      state.registerErrors = payload.errors;
     },
     logout(state) {
       state.account = null;
     },
     resetPassword(state, action: PayloadAction<ResetPasswordData>) {
       state.resetPasswordPending = true;
-      state.errors = null;
+      state.resetPasswordErrors = null;
     },
     resetPasswordSuccess(state) {
       state.resetPasswordPending = false;
-      state.errors = null;
+      state.resetPasswordErrors = null;
     },
     resetPasswordFailure(state, { payload }: PayloadAction<{ errors: ErrorResponse }>) {
       state.resetPasswordPending = false;
-      state.errors = payload.errors;
+      state.resetPasswordErrors = payload.errors;
     },
     setPassword(state, action: PayloadAction<SetPasswordData>) {
       state.setPasswordPending = true;
-      state.errors = null;
+      state.setPasswordErrors = null;
     },
     setPasswordSuccess(state) {
       state.setPasswordPending = false;
-      state.errors = null;
+      state.setPasswordErrors = null;
     },
     setPasswordFailure(state, { payload }: PayloadAction<{ errors: ErrorResponse }>) {
       state.setPasswordPending = false;
-      state.errors = payload.errors;
+      state.setPasswordErrors = payload.errors;
     },
     confirmEmail(state, action: PayloadAction<ConfirmEmailData>) {
       state.confirmEmailMessage = '';
-      state.errors = null;
+      state.confirmEmailErrors = null;
     },
     confirmEmailSuccess(state) {
-      state.errors = null;
+      state.confirmEmailErrors = null;
     },
     confirmEmailFailure(state, { payload }: PayloadAction<{ errors: ErrorResponse }>) {
-      state.errors = payload.errors;
+      state.confirmEmailErrors = payload.errors;
     },
     setConfirmEmailMessage(state, { payload }: PayloadAction<{ message: string }>) {
       state.confirmEmailMessage = payload.message;
