@@ -141,13 +141,13 @@ resource "aws_elastic_beanstalk_environment" "web" {
 
   setting {
     namespace = "aws:elasticbeanstalk:application:environment"
-    name      = "AUTHJWT_SECRET_KEY"
+    name      = "AUTHPASETO_SECRET_KEY"
     value     = var.secret_key
   }
 
   setting {
     namespace = "aws:elasticbeanstalk:application:environment"
-    name      = "AUTHJWT_DATABASE_URL"
+    name      = "AUTHPASETO_DATABASE_URL"
     value     = "redis://${aws_elasticache_replication_group.main.primary_endpoint_address}/1"
   }
 
