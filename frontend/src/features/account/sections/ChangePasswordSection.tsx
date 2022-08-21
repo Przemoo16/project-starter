@@ -41,7 +41,7 @@ export const ChangePasswordSection = () => {
     if (formState.isSubmitSuccessful) {
       reset({ currentPassword: '', newPassword: '', repeatNewPassword: '' });
     }
-  }, [formState.isSubmitSuccessful]);
+  }, [formState.isSubmitSuccessful, reset]);
 
   return (
     <SectionContainer>
