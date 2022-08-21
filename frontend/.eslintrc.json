@@ -1,6 +1,10 @@
 {
   "parser": "@typescript-eslint/parser",
-  "extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended"],
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:react-hooks/recommended"
+  ],
   "plugins": ["@typescript-eslint", "simple-import-sort"],
   "rules": {
     "@typescript-eslint/no-empty-function": "off",
