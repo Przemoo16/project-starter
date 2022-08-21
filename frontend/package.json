@@ -25,6 +25,8 @@
     "@mui/lab": "^5.0.0-alpha.93",
     "@mui/material": "^5.9.3",
     "@reduxjs/toolkit": "^1.8.3",
+    "@sentry/react": "^7.11.1",
+    "@sentry/tracing": "^7.11.1",
     "axios": "^0.27.2",
     "i18next": "^21.8.16",
     "notistack": "^2.0.5",

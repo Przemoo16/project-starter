@@ -4,8 +4,11 @@ import { useTranslation } from 'react-i18next';
 import { Route, Routes } from 'react-router-dom';
 
 import { dashboardRoute, loginRoute, routes } from './routes';
+import { initSentry } from './services/sentry';
 import { useAppSelector } from './services/store';
 import { AuthInfo, EnhancedRoute } from './ui-components/Routing';
+
+initSentry(import.meta.env.VITE_SENTRY_DSN);
 
 const App = () => {
   const { t } = useTranslation();
