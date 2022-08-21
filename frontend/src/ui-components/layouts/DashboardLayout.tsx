@@ -29,43 +29,37 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   };
 
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        minHeight: '100vh',
-      }}
-    >
+    <Box sx={{ display: 'flex', minHeight: '100vh' }}>
       <AppBar onOpen={handleOpenDrawer} drawerWidth={DRAWER_WIDTH} />
       <Drawer open={drawerOpen} onClose={handleCloseDrawer} width={DRAWER_WIDTH} />
       <Container
-        component="main"
         maxWidth="lg"
         sx={{
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
-          flexGrow: 1,
         }}
       >
         <Toolbar />
         <Box
+          component="main"
           sx={{
             width: '100%',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
+            flexGrow: 1,
             my: 5,
           }}
         >
           {children}
         </Box>
+        <Box component="footer" sx={{ mb: 3 }}>
+          <Copyright />
+        </Box>
       </Container>
-      <Box component="footer" sx={{ mb: 3 }}>
-        <Copyright />
-      </Box>
     </Box>
   );
 };
