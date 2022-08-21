@@ -11,4 +11,4 @@ COPY ./frontend/index.html /frontend
 COPY ./frontend/src /frontend/src
 COPY ./frontend/public /frontend/public
 
-CMD yarn dev
+CMD ["yarn", "dev"]

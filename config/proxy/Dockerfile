@@ -24,4 +24,4 @@ COPY ./config/scripts/nginx-template-subst.sh /var/scripts/nginx-template-subst.
 COPY ./config/proxy/run.sh /var/scripts/run.sh
 RUN chmod +x /var/scripts/init-config.sh /var/scripts/init-certs.sh /var/scripts/nginx-template-subst.sh /var/scripts/run.sh
 
-CMD /var/scripts/run.sh
+CMD ["/var/scripts/run.sh"]
