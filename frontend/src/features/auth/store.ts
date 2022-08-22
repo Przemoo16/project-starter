@@ -85,9 +85,7 @@ export const authSlice = createSlice({
       state.registerPending = false;
       state.registerErrors = payload.errors;
     },
-    logout(state) {
-      state.account = null;
-    },
+    logout(state) {},
     resetPassword(state, action: PayloadAction<ResetPasswordData>) {
       state.resetPasswordPending = true;
       state.resetPasswordErrors = null;
