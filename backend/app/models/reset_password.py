@@ -10,13 +10,12 @@ from app.models import user as user_models
 
 settings = general.get_settings()
 
+ResetPasswordTokenID: typing.TypeAlias = uuid.UUID
+ResetPasswordTokenExpireAt: typing.TypeAlias = datetime.datetime
+
 
 def get_expiration_time() -> datetime.datetime:
     return helpers.get_utcnow() + settings.RESET_PASSWORD_TOKEN_EXPIRES
-
-
-ResetPasswordTokenID: typing.TypeAlias = uuid.UUID
-ResetPasswordTokenExpireAt: typing.TypeAlias = datetime.datetime
 
 
 class ResetPasswordTokenBase(base.BaseModel):
