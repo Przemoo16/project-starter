@@ -128,4 +128,4 @@ def _token_expired(user: user_models.User) -> bool:
 
 
 class UserCRUD(base.AppCRUD):
-    model = user_models.User
+    model: type[user_models.User] = user_models.User

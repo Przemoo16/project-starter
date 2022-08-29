@@ -36,7 +36,7 @@ class DummyModelUpdate(base_models.PydanticBaseModel):
 
 
 class DummyCRUD(base_services.AppCRUD):
-    model = DummyModel
+    model: type[DummyModel] = DummyModel
 
 
 async def create_entry(
