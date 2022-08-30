@@ -80,6 +80,7 @@ class UserFilters(base.PydanticBaseModel):
 
 
 class UserUpdateAPI(base.PydanticBaseModel):
+    # FIXME: It is possible to pass `null` as the `name` field and thus break app
     name: UserName | None = sqlmodel.Field(
         default=None, min_length=USER_NAME_MIN_LENGTH, max_length=USER_NAME_MAX_LENGTH
     )
