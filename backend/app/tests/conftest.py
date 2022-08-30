@@ -72,10 +72,10 @@ async def session_fixture(  # pylint: disable=unused-argument
     purge_celery: None,
     flush_redis: None,
 ) -> typing.AsyncGenerator[AsyncSession, None]:
-    async_session = orm.sessionmaker(
+    session_factory = orm.sessionmaker(
         engine, class_=asyncio.AsyncSession, expire_on_commit=False
     )
-    async with async_session() as session:
+    async with session_factory() as session:
         yield session
 
 
