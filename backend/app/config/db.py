@@ -16,7 +16,7 @@ engine = asyncio.create_async_engine(settings.DATABASE_URL)
 # TODO: Change to AsyncSession from the SQLModel when
 # https://github.com/tiangolo/sqlmodel/issues/54 will be resolved.
 # Then replace session.execute with session.exec in the whole codebase.
-async_session = orm.sessionmaker(
+session_factory = orm.sessionmaker(
     engine, class_=asyncio.AsyncSession, expire_on_commit=False
 )
 
@@ -24,7 +24,7 @@ async_session = orm.sessionmaker(
 async def get_session() -> typing.AsyncGenerator[
     AsyncSession, None
 ]:  # pragma: no cover
-    async with async_session() as session:
+    async with session_factory() as session:
         yield session
 
 
