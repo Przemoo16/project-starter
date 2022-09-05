@@ -6,6 +6,7 @@ node_modules/
 # Python
 __pycache__/
 *.py[cod]
+.python-version
 
 # mypy
 .mypy_cache/
