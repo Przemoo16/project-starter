@@ -49,7 +49,9 @@ class Backend {
           'Content-Type': 'multipart/form-data',
         },
       })
-      .then(({ data }) => this.setTokens(data));
+      .then(({ data }) =>
+        this.setTokens({ accessToken: data.access_token, refreshToken: data.refresh_token })
+      );
   }
 
   async register(data: RegisterData) {
@@ -74,7 +76,7 @@ class Backend {
 
   private async refreshTokens(): Promise<void> {
     const {
-      data: { accessToken },
+      data: { access_token: accessToken },
     } = await this.client.request('/token/refresh', {
       method: 'POST',
       data: { token: this.tokenStorage.refreshToken },

@@ -12,8 +12,8 @@ class App(pydantic.BaseSettings):
 
 
 class Security(pydantic.BaseSettings):
-    TOKEN_URL: str = "/token"
-    REFRESH_TOKEN_URL: str = f"/{TOKEN_URL}/refresh"
+    TOKEN_URL: str = "token"
+    REFRESH_TOKEN_URL: str = f"{TOKEN_URL}/refresh"
     AUTHPASETO_SECRET_KEY: str
     AUTHPASETO_ACCESS_TOKEN_EXPIRES: datetime.timedelta = datetime.timedelta(minutes=30)
     AUTHPASETO_REFRESH_TOKEN_EXPIRES: datetime.timedelta = datetime.timedelta(days=1)
