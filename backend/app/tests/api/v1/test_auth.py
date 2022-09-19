@@ -33,9 +33,9 @@ async def test_obtain_tokens(
     tokens = response.json()
 
     assert response.status_code == status.HTTP_200_OK
-    assert tokens["accessToken"] == access_token
-    assert tokens["refreshToken"] == refresh_token
-    assert tokens["tokenType"] == token_type
+    assert tokens["access_token"] == access_token
+    assert tokens["refresh_token"] == refresh_token
+    assert tokens["token_type"] == token_type
 
 
 @pytest.mark.anyio
@@ -56,8 +56,8 @@ async def test_refresh_token(
     token = response.json()
 
     assert response.status_code == status.HTTP_200_OK
-    assert token["accessToken"] == access_token
-    assert token["tokenType"] == token_type
+    assert token["access_token"] == access_token
+    assert token["token_type"] == token_type
 
 
 @pytest.mark.anyio

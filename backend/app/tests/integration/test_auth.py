@@ -99,12 +99,12 @@ async def test_tokens_flow(async_client: "conftest.TestClient") -> None:
     tokens = response.json()
 
     assert response.status_code == 200
-    assert "accessToken" in tokens
-    assert "refreshToken" in tokens
-    assert "tokenType" in tokens
+    assert "access_token" in tokens
+    assert "refresh_token" in tokens
+    assert "token_type" in tokens
 
     # Retrieve the user info
-    access_token = tokens["accessToken"]
+    access_token = tokens["access_token"]
     response = await async_client.get(
         f"{API_URL}/users/me",
         headers={"Authorization": f"Bearer {access_token}"},
@@ -128,18 +128,18 @@ async def test_tokens_flow(async_client: "conftest.TestClient") -> None:
     assert response.status_code == 401
 
     # Refresh access token
-    refresh_token = tokens["refreshToken"]
+    refresh_token = tokens["refresh_token"]
     response = await async_client.post(
         f"{API_URL}/token/refresh", json={"token": refresh_token}
     )
     token = response.json()
 
     assert response.status_code == 200
-    assert "accessToken" in token
-    assert token["tokenType"] == "bearer"
+    assert "access_token" in token
+    assert token["token_type"] == "bearer"
 
     # Retrieve the user info
-    access_token = token["accessToken"]
+    access_token = token["access_token"]
     response = await async_client.get(
         f"{API_URL}/users/me",
         headers={"Authorization": f"Bearer {access_token}"},

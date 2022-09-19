@@ -95,7 +95,7 @@ async def test_change_password_flow(async_client: "conftest.TestClient") -> None
 
     # Change the user password
     new_password = "new_password"
-    access_token = tokens["accessToken"]
+    access_token = tokens["access_token"]
     response = await async_client.post(
         f"{API_URL}/users/me/password",
         headers={"Authorization": f"Bearer {access_token}"},

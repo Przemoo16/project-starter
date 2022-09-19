@@ -3,8 +3,8 @@ import axios, { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse } f
 import { ErrorResponse } from '../../backendTypes';
 
 const TOKEN_EXPIRED_STATUS_CODE = 422;
-const TOKEN_EXPIRED_RESPONSE_CASE = 'JWTDecodeError';
-const TOKEN_EXPIRED_RESPONSE_DETAIL = 'Signature has expired';
+const TOKEN_EXPIRED_RESPONSE_CASE = 'PASETODecodeError';
+const TOKEN_EXPIRED_RESPONSE_DETAIL = 'Token expired.';
 
 export interface Callbacks {
   onUnauthorized: () => Promise<unknown>;
