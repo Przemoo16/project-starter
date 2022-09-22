@@ -4,24 +4,17 @@ dist/
 node_modules/
 
 # Python
-__pycache__/
-*.py[cod]
+*.pyc
 .python-version
-
-# mypy
-.mypy_cache/
 
 # IDE
 .vscode/
-.idea/
 
 # Tests / Coverage reports
 .coverage
 .coveragerc
-.pytest_cache/
-htmlcov/
 
-# dotenv
+# Env
 *.env
 
 # Celery
