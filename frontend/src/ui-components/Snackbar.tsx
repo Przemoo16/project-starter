@@ -72,7 +72,7 @@ export const Snackbar = () => {
           },
           autoHideDuration: duration,
           preventDuplicate: true,
-        })
+        }),
       );
       dispatch(clearNotifications());
     }

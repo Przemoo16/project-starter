@@ -31,7 +31,7 @@ export default defineConfig({
           await truncateUserTable();
           await pool.query(readFileSync(INSERT_USERS_FILE_PATH, "utf8"));
           await pool.query(
-            readFileSync(INSERT_RESET_PASSWORD_TOKENS_FILE_PATH, "utf8")
+            readFileSync(INSERT_RESET_PASSWORD_TOKENS_FILE_PATH, "utf8"),
           );
           return null;
         },

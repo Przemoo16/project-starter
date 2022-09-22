@@ -47,7 +47,7 @@ def purge_celery_fixture() -> typing.Generator[None, None, None]:
     worker.app.control.purge()
 
 
-# TODO: Use one engine in the whole session. The connection cannot be shared by
+# FIXME: Use one engine in the whole session. The connection cannot be shared by
 # many requests: "cannot perform operation: another operation is in progress"
 @pytest.fixture(name="engine")
 def engine_fixture() -> typing.Generator[asyncio.AsyncEngine, None, None]:

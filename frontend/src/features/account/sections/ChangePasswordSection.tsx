@@ -18,7 +18,7 @@ export const ChangePasswordSection = () => {
   const dispatch = useAppDispatch();
   const { changePassword } = accountActions;
   const { accountPasswordMinLength, accountPasswordMaxLength } = useAppSelector(
-    state => state.config
+    state => state.config,
   );
   const { changePasswordPending } = useAppSelector(state => state.account);
   const { control, handleSubmit, reset, formState } = useForm({
@@ -29,7 +29,7 @@ export const ChangePasswordSection = () => {
       repeatNewPassword: '',
     },
     resolver: yupResolver(
-      getChangePasswordSchema(accountPasswordMinLength, accountPasswordMaxLength)
+      getChangePasswordSchema(accountPasswordMinLength, accountPasswordMaxLength),
     ),
   });
 

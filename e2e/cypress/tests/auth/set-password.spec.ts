@@ -30,7 +30,7 @@ describe("Set password page", () => {
 
     cy.get("[id$=helper-text]").should(
       "have.text",
-      "Password must be at least 8 characters"
+      "Password must be at least 8 characters",
     );
   });
 
@@ -42,7 +42,7 @@ describe("Set password page", () => {
 
     cy.get("[id$=helper-text]").should(
       "have.text",
-      "Password can be up to 32 characters"
+      "Password can be up to 32 characters",
     );
   });
 
@@ -72,7 +72,7 @@ describe("Set password page", () => {
 
     cy.get("[role=alert]").should(
       "have.text",
-      "We couldn't changed your password. Please check if the provided link is correct"
+      "We couldn't changed your password. Please check if the provided link is correct",
     );
   });
 
@@ -89,7 +89,7 @@ describe("Set password page", () => {
 
     cy.get("[role=alert]").should(
       "have.text",
-      "The account is inactive. Please activate your account to proceed"
+      "The account is inactive. Please activate your account to proceed",
     );
   });
 
@@ -106,7 +106,7 @@ describe("Set password page", () => {
 
     cy.get("[role=alert]").should(
       "have.text",
-      "We couldn't changed your password. Provided link expired"
+      "We couldn't changed your password. Provided link expired",
     );
   });
 
@@ -122,7 +122,7 @@ describe("Set password page", () => {
 
     cy.get("[role=alert]").should(
       "have.text",
-      "Your password has been changed"
+      "Your password has been changed",
     );
     cy.location("pathname").should("eq", "/login");
   });

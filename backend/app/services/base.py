@@ -11,7 +11,7 @@ if typing.TYPE_CHECKING:
     from app.config import db
 
 
-class AppCRUD:  # TODO: Fix typing
+class AppCRUD:  # FIXME: Fix typing
     model = base.BaseModel
 
     def __init__(self, session: "db.AsyncSession"):
@@ -23,7 +23,7 @@ class AppCRUD:  # TODO: Fix typing
 
     async def read_many(
         self,
-        entry: base.PydanticBaseModel,
+        entry: base.BaseModel,
         pagination: pagination_models.Pagination = pagination_models.Pagination(),
     ) -> list[typing.Any]:
         statement = self.build_where_statement(
@@ -33,14 +33,14 @@ class AppCRUD:  # TODO: Fix typing
             statement = statement.limit(pagination.limit)
         return (await self.session.execute(statement)).scalars().all()
 
-    async def read_one(self, entry: base.PydanticBaseModel) -> typing.Any:
+    async def read_one(self, entry: base.BaseModel) -> typing.Any:
         statement = self.build_where_statement(sqlmodel.select(self.model), entry)
         return (await self.session.execute(statement)).scalar_one()
 
     async def update(
         self,
         db_entry: base.BaseModel,
-        entry: base.PydanticBaseModel,
+        entry: base.BaseModel,
         refresh: bool = False,
     ) -> typing.Any:
         data = entry.dict(exclude_unset=True)
@@ -52,9 +52,7 @@ class AppCRUD:  # TODO: Fix typing
         await self.session.delete(entry)
         await self.session.commit()
 
-    async def count(
-        self, entry: base.PydanticBaseModel
-    ) -> pagination_models.TotalResults:
+    async def count(self, entry: base.BaseModel) -> pagination_models.TotalResults:
         select_statament: expression.SelectOfScalar[typing.Any] = sqlmodel.select(
             [sqlmodel.func.count()]
         ).select_from(self.model)
@@ -72,7 +70,7 @@ class AppCRUD:  # TODO: Fix typing
     def build_where_statement(
         self,
         statement: expression.SelectOfScalar[typing.Any],
-        filters: base.PydanticBaseModel,
+        filters: base.BaseModel,
     ) -> expression.SelectOfScalar[typing.Any]:
         filters_data = filters.dict(exclude_unset=True)
         for attr, value in filters_data.items():

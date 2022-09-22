@@ -13,13 +13,13 @@ describe('AccountMenu component', () => {
     await user.click(screen.getByTestId('accountButton'));
 
     await waitFor(() =>
-      expect(screen.getByTestId('accountMenu')).toHaveStyle({ visibility: 'visible' })
+      expect(screen.getByTestId('accountMenu')).toHaveStyle({ visibility: 'visible' }),
     );
 
     await user.click(screen.getByRole('menu'));
 
     await waitFor(() =>
-      expect(screen.getByTestId('accountMenu')).toHaveStyle({ visibility: 'hidden' })
+      expect(screen.getByTestId('accountMenu')).toHaveStyle({ visibility: 'hidden' }),
     );
   });
 });

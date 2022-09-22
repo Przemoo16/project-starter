@@ -18,7 +18,7 @@ const SetPasswordPage = () => {
   const { t } = useTranslation();
   const { token } = useParams();
   const { accountPasswordMinLength, accountPasswordMaxLength } = useAppSelector(
-    state => state.config
+    state => state.config,
   );
   const { setPasswordPending } = useAppSelector(state => state.auth);
   const dispatch = useAppDispatch();

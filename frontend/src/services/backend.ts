@@ -50,7 +50,7 @@ class Backend {
         },
       })
       .then(({ data }) =>
-        this.setTokens({ accessToken: data.access_token, refreshToken: data.refresh_token })
+        this.setTokens({ accessToken: data.access_token, refreshToken: data.refresh_token }),
       );
   }
 

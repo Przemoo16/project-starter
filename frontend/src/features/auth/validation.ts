@@ -12,7 +12,7 @@ export const getRegisterSchema = (
   nameMinLength: number,
   nameMaxLength: number,
   passwordMinLength: number,
-  passwordMaxLength: number
+  passwordMaxLength: number,
 ) => {
   return yup.object().shape({
     name: yup

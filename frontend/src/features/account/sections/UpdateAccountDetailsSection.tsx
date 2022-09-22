@@ -26,7 +26,7 @@ export const UpdateAccountDetailsSection = () => {
       name: account?.name || '',
     },
     resolver: yupResolver(
-      getUpdateAccountDetailsSchema(accountNameMinLength, accountNameMaxLength)
+      getUpdateAccountDetailsSchema(accountNameMinLength, accountNameMaxLength),
     ),
   });
 

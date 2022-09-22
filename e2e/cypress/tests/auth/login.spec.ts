@@ -7,7 +7,7 @@ describe("Login page", () => {
     cy.get("[data-testid=registerLink]").should(
       "have.attr",
       "href",
-      "/register"
+      "/register",
     );
   });
 
@@ -15,7 +15,7 @@ describe("Login page", () => {
     cy.get("[data-testid=resetPasswordLink]").should(
       "have.attr",
       "href",
-      "/reset-password"
+      "/reset-password",
     );
   });
 
@@ -73,7 +73,7 @@ describe("Login page", () => {
 
     cy.get("[role=alert]").should(
       "have.text",
-      "The account is inactive. Please activate your account to proceed"
+      "The account is inactive. Please activate your account to proceed",
     );
   });
 

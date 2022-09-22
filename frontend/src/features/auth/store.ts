@@ -242,7 +242,7 @@ function* confirmEmailSaga() {
         error.response?.data.case === EMAIL_CONFIRMATION_TOKEN_EXPIRED_CASE
       ) {
         yield put(
-          authActions.setConfirmEmailMessage({ message: t('auth.confirmEmailLinkExpired') })
+          authActions.setConfirmEmailMessage({ message: t('auth.confirmEmailLinkExpired') }),
         );
       } else {
         yield put(authActions.setConfirmEmailMessage({ message: t('auth.confirmEmailError') }));
