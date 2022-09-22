@@ -24,7 +24,7 @@ class ResetPasswordTokenBase(base.BaseModel):
 
 class ResetPasswordToken(ResetPasswordTokenBase, table=True):
     id: ResetPasswordTokenID = sqlmodel.Field(
-        primary_key=True, default_factory=helpers.generate_fixed_uuid, nullable=False
+        primary_key=True, default_factory=helpers.get_uuid4, nullable=False
     )
     expire_at: ResetPasswordTokenExpireAt = sqlmodel.Field(
         default_factory=get_expiration_time
@@ -48,10 +48,10 @@ class ResetPasswordTokenCreate(ResetPasswordTokenBase):
     pass
 
 
-class ResetPasswordTokenFilters(base.PydanticBaseModel):
+class ResetPasswordTokenFilters(base.BaseModel):
     id: ResetPasswordTokenID | None = None
     user_id: user_models.UserID | None = None
 
 
-class ResetPasswordTokenUpdate(base.PydanticBaseModel):
+class ResetPasswordTokenUpdate(base.BaseModel):
     expire_at: ResetPasswordTokenExpireAt | None = None

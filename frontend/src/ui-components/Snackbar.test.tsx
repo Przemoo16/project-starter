@@ -28,7 +28,7 @@ describe('Snackbar component', () => {
       <SnackbarProvider maxSnacks={maxSnacks}>
         <Component />
         <Snackbar />
-      </SnackbarProvider>
+      </SnackbarProvider>,
     );
 
     const button = screen.getByTestId('snackbarButton');
@@ -45,7 +45,7 @@ describe('Snackbar component', () => {
       <SnackbarProvider maxSnacks={2}>
         <Component />
         <Snackbar />
-      </SnackbarProvider>
+      </SnackbarProvider>,
     );
 
     await user.click(screen.getByTestId('snackbarButton'));

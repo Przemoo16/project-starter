@@ -89,7 +89,7 @@ export class RestClient {
         }
 
         return Promise.reject(error);
-      }
+      },
     );
   }
 }

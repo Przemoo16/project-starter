@@ -3,7 +3,7 @@ import decimal
 import typing
 import uuid
 
-import humps
+from humps import main
 import orjson
 import pydantic
 
@@ -17,7 +17,7 @@ def to_pydantic_email(text: str) -> pydantic.EmailStr:
 
 
 def to_camel(text: str) -> str:
-    return humps.camelize(text)
+    return main.camelize(text)
 
 
 def _orjson_default(obj: typing.Any) -> typing.Any:

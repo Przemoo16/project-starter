@@ -28,5 +28,5 @@ createRoot(document.getElementById('root') as HTMLElement).render(
         </HistoryRouter>
       </ThemeProvider>
     </ReduxProvider>
-  </StrictMode>
+  </StrictMode>,
 );

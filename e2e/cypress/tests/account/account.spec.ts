@@ -47,7 +47,7 @@ describe("Account page", () => {
 
     cy.get("[id$=helper-text]").should(
       "have.text",
-      "Name must be at least 4 characters"
+      "Name must be at least 4 characters",
     );
   });
 
@@ -60,7 +60,7 @@ describe("Account page", () => {
 
     cy.get("[id$=helper-text]").should(
       "have.text",
-      "Name can be up to 64 characters"
+      "Name can be up to 64 characters",
     );
   });
 
@@ -74,7 +74,7 @@ describe("Account page", () => {
 
     cy.get("[role=alert]").should(
       "have.text",
-      "Your account details have been updated"
+      "Your account details have been updated",
     );
   });
 
@@ -128,7 +128,7 @@ describe("Account page", () => {
 
     cy.get("[id$=helper-text]").should(
       "have.text",
-      "Password must be at least 8 characters"
+      "Password must be at least 8 characters",
     );
   });
 
@@ -147,7 +147,7 @@ describe("Account page", () => {
 
     cy.get("[id$=helper-text]").should(
       "have.text",
-      "Password can be up to 32 characters"
+      "Password can be up to 32 characters",
     );
   });
 
@@ -194,7 +194,7 @@ describe("Account page", () => {
 
     cy.get("[role=alert]").should(
       "have.text",
-      "Your password has been changed"
+      "Your password has been changed",
     );
   });
 

@@ -13,7 +13,7 @@ repos:
       - id: end-of-file-fixer
       - id: check-added-large-files
   - repo: https://github.com/asottile/pyupgrade
-    rev: v2.37.3
+    rev: v2.38.0
     hooks:
       - id: pyupgrade
         args: [--py310-plus]
@@ -22,7 +22,7 @@ repos:
     hooks:
       - id: isort
   - repo: https://github.com/psf/black
-    rev: 22.6.0
+    rev: 22.8.0
     hooks:
       - id: black
   - repo: https://github.com/pycqa/flake8
@@ -38,28 +38,29 @@ repos:
         args: [--config-file=backend/setup.cfg]
         additional_dependencies:
           [
-            fastapi==0.79.0,
-            fastapi-paseto-auth==0.5.3,
+            fastapi==0.85.0,
+            fastapi-paseto-auth==0.5.5,
             jinja2==3.1.2,
-            sentry-sdk==1.9.3,
-            sqlmodel==0.0.6,
+            pyhumps==3.7.3,
+            sentry-sdk==1.9.8,
+            sqlmodel==0.0.8,
             types-freezegun==1.1.10,
             types-orjson==3.6.2,
             types-python-dateutil==2.8.19,
-            types-redis==4.3.14,
+            types-redis==4.3.20,
           ]
   - repo: https://github.com/pycqa/pylint
-    rev: v2.14.5
+    rev: v2.15.3
     hooks:
       - id: pylint
         args: [--rcfile=backend/setup.cfg]
         additional_dependencies:
           [
-            fastapi==0.79.0,
-            orjson==3.7.11,
-            pydantic==1.9.1,
-            sentry-sdk==1.9.3,
-            sqlmodel==0.0.6,
+            fastapi==0.85.0,
+            orjson==3.8.0,
+            pydantic==1.10.2,
+            sentry-sdk==1.9.8,
+            sqlmodel==0.0.8,
           ]
   - repo: https://github.com/Lucas-C/pre-commit-hooks-bandit
     rev: v1.0.6
@@ -67,13 +68,21 @@ repos:
       - id: python-bandit-vulnerability-check
         args: [--exclude, tests, --recursive, .]
   - repo: https://github.com/pre-commit/mirrors-prettier
-    rev: v2.7.1
+    rev: v3.0.0-alpha.0
     hooks:
       - id: prettier
   - repo: https://github.com/pre-commit/mirrors-eslint
-    rev: v8.21.0
+    rev: v8.23.1
     hooks:
       - id: eslint
         files: \.[jt]sx?$
         types: [file]
         args: ["--fix --ext .js,.jsx,.ts,.tsx"]
+        additional_dependencies:
+          [
+            "@typescript-eslint/eslint-plugin@5.32.0",
+            "@typescript-eslint/parser@5.32.0",
+            eslint@8.21.0,
+            eslint-plugin-react-hooks@4.6.0,
+            eslint-plugin-simple-import-sort@7.0.0,
+          ]

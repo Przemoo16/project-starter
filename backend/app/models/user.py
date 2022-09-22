@@ -42,12 +42,12 @@ class User(UserBase, table=True):
     # For the primary key, nullable has to be explicitly set up to False, otherwise it
     # is set to True and alembic produces unnecessary entries in migrations.
     id: UserID = sqlmodel.Field(
-        primary_key=True, default_factory=helpers.generate_fixed_uuid, nullable=False
+        primary_key=True, default_factory=helpers.get_uuid4, nullable=False
     )
     confirmed_email: UserConfirmedEmail = False
     email_confirmation_token: UserEmailConfirmationToken = sqlmodel.Field(
         index=True,
-        default_factory=helpers.generate_fixed_uuid,
+        default_factory=helpers.get_uuid4,
         sa_column_kwargs={"unique": True},
     )
     created_at: UserCreatedAt = sqlmodel.Field(default_factory=helpers.get_utcnow)
@@ -73,13 +73,13 @@ class UserCreate(UserBase):
     )
 
 
-class UserFilters(base.PydanticBaseModel):
+class UserFilters(base.BaseModel):
     id: UserID | None = None
     email: UserEmail | None = None
     email_confirmation_token: UserEmailConfirmationToken | None = None
 
 
-class UserUpdateAPI(base.PydanticBaseModel):
+class UserUpdateAPI(base.BaseModel):
     # FIXME: It is possible to pass `null` as the `name` field and thus break app
     name: UserName | None = sqlmodel.Field(
         default=None, min_length=USER_NAME_MIN_LENGTH, max_length=USER_NAME_MAX_LENGTH

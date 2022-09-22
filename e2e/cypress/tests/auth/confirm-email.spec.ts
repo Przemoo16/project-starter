@@ -17,7 +17,7 @@ describe("Confirm email page", () => {
     cy.get("[data-testid=appLoader]").should("not.exist");
     cy.get("[data-testid=confirmEmailMessage]").should(
       "have.text",
-      "We couldn't confirm your email. Please check if the provided link is correct."
+      "We couldn't confirm your email. Please check if the provided link is correct.",
     );
   });
 
@@ -31,7 +31,7 @@ describe("Confirm email page", () => {
     cy.get("[data-testid=appLoader]").should("not.exist");
     cy.get("[data-testid=confirmEmailMessage]").should(
       "have.text",
-      "We couldn't confirm your email. Provided link expired."
+      "We couldn't confirm your email. Provided link expired.",
     );
   });
 
@@ -45,7 +45,7 @@ describe("Confirm email page", () => {
     cy.get("[data-testid=appLoader]").should("not.exist");
     cy.get("[data-testid=confirmEmailMessage]").should(
       "have.text",
-      "The email has been already confirmed."
+      "The email has been already confirmed.",
     );
   });
 
@@ -59,7 +59,7 @@ describe("Confirm email page", () => {
     cy.get("[data-testid=appLoader]").should("not.exist");
     cy.get("[data-testid=confirmEmailMessage]").should(
       "have.text",
-      "Your email has been confirmed. You can now log in to your account."
+      "Your email has been confirmed. You can now log in to your account.",
     );
   });
 });

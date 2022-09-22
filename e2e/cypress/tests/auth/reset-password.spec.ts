@@ -40,7 +40,7 @@ describe("Reset password page", () => {
 
     cy.get("[role=alert]").should(
       "have.text",
-      "We've sent you an e-mail with instructions on how to reset your password"
+      "We've sent you an e-mail with instructions on how to reset your password",
     );
     cy.location("pathname").should("eq", "/login");
   });

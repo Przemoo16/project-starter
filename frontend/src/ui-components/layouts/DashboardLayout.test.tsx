@@ -14,7 +14,7 @@ describe('DashboardLayout component', () => {
     await user.click(screen.getByLabelText('open menu'));
 
     await waitFor(() =>
-      expect(screen.getByTestId('drawer')).toHaveStyle({ visibility: 'visible' })
+      expect(screen.getByTestId('drawer')).toHaveStyle({ visibility: 'visible' }),
     );
 
     await user.click(screen.getByTestId('navbar'));

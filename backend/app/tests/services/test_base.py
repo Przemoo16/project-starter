@@ -16,20 +16,20 @@ if typing.TYPE_CHECKING:
 
 class DummyModel(base_models.BaseModel, table=True):
     id: uuid.UUID = sqlmodel.Field(
-        primary_key=True, default_factory=helpers.generate_fixed_uuid, nullable=False
+        primary_key=True, default_factory=helpers.get_uuid4, nullable=False
     )
     name: str
     age: int
     city: str = "New York"
 
 
-class DummyModelFilters(base_models.PydanticBaseModel):
+class DummyModelFilters(base_models.BaseModel):
     name: str | None = None
     age: int | None = None
     city: str | None = None
 
 
-class DummyModelUpdate(base_models.PydanticBaseModel):
+class DummyModelUpdate(base_models.BaseModel):
     name: str | None = None
     age: int | None = None
     city: str | None = None

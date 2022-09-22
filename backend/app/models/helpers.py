@@ -15,16 +15,13 @@ def get_utcnow() -> datetime.datetime:
     return datetime.datetime.utcnow()
 
 
-def generate_fixed_uuid() -> uuid.UUID:
+def get_uuid4() -> uuid.UUID:
     """
-    Make sure that uuid does not start with a leading 0.
+    Generate a random UUID.
 
-    TODO: Remove it when https://github.com/tiangolo/sqlmodel/issues/25 will be solved.
+    It allows deferring initialization of the uuid module, thus mock it in testing.
     """
-    val = uuid.uuid4()
-    while val.hex[0] == "0":
-        val = uuid.uuid4()
-    return val
+    return uuid.uuid4()
 
 
 def orjson_dumps(

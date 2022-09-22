@@ -37,8 +37,8 @@ const RegisterPage = () => {
         accountNameMinLength,
         accountNameMaxLength,
         accountPasswordMinLength,
-        accountPasswordMaxLength
-      )
+        accountPasswordMaxLength,
+      ),
     ),
   });
 

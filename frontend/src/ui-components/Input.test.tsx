@@ -27,7 +27,7 @@ describe('PasswordInput component', () => {
     await user.click(screen.getByLabelText('toggle password visibility'));
 
     await waitFor(() =>
-      expect(screen.getByLabelText('Password')).toHaveAttribute('type', 'password')
+      expect(screen.getByLabelText('Password')).toHaveAttribute('type', 'password'),
     );
     await screen.findByTestId('visibilityIcon');
     await waitFor(() => expect(screen.queryByTestId('visibilityOffIcon')).not.toBeInTheDocument());
