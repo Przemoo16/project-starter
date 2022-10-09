@@ -24,7 +24,7 @@ class ResetPasswordTokenBase(base.BaseModel):
 
 class ResetPasswordToken(ResetPasswordTokenBase, table=True):
     id: ResetPasswordTokenID = sqlmodel.Field(
-        primary_key=True, default_factory=helpers.get_uuid4, nullable=False
+        primary_key=True, default_factory=helpers.get_uuid4
     )
     expire_at: ResetPasswordTokenExpireAt = sqlmodel.Field(
         default_factory=get_expiration_time

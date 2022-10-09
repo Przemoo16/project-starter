@@ -39,11 +39,7 @@ class UserBase(base.BaseModel):
 
 
 class User(UserBase, table=True):
-    # For the primary key, nullable has to be explicitly set up to False, otherwise it
-    # is set to True and alembic produces unnecessary entries in migrations.
-    id: UserID = sqlmodel.Field(
-        primary_key=True, default_factory=helpers.get_uuid4, nullable=False
-    )
+    id: UserID = sqlmodel.Field(primary_key=True, default_factory=helpers.get_uuid4)
     confirmed_email: UserConfirmedEmail = False
     email_confirmation_token: UserEmailConfirmationToken = sqlmodel.Field(
         index=True,
@@ -80,7 +76,9 @@ class UserFilters(base.BaseModel):
 
 
 class UserUpdateAPI(base.BaseModel):
-    # FIXME: It is possible to pass `null` as the `name` field and thus break app
+    # FIXME: It is possible to pass `null` as the `name` field and thus break app.
+    # Use exclude_none when performing update or annotate the field as string and use
+    # a default value if no better solution will be found
     name: UserName | None = sqlmodel.Field(
         default=None, min_length=USER_NAME_MIN_LENGTH, max_length=USER_NAME_MAX_LENGTH
     )

@@ -15,9 +15,7 @@ if typing.TYPE_CHECKING:
 
 
 class DummyModel(base_models.BaseModel, table=True):
-    id: uuid.UUID = sqlmodel.Field(
-        primary_key=True, default_factory=helpers.get_uuid4, nullable=False
-    )
+    id: uuid.UUID = sqlmodel.Field(primary_key=True, default_factory=helpers.get_uuid4)
     name: str
     age: int
     city: str = "New York"
