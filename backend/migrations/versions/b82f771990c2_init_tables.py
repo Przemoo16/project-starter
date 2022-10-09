@@ -1,8 +1,8 @@
 """Init tables
 
-Revision ID: 2ff3b5cdfb59
+Revision ID: b82f771990c2
 Revises: 
-Create Date: 2022-07-17 19:17:30.962767
+Create Date: 2022-10-09 10:57:47.066476
 
 """
 from alembic import op
@@ -13,7 +13,7 @@ import app.models.custom
 
 
 # revision identifiers, used by Alembic.
-revision = '2ff3b5cdfb59'
+revision = 'b82f771990c2'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -26,10 +26,10 @@ def upgrade():
     sa.Column('password', sqlmodel.sql.sqltypes.AutoString(), nullable=False),
     sa.Column('name', sqlmodel.sql.sqltypes.AutoString(length=64), nullable=False),
     sa.Column('id', sqlmodel.sql.sqltypes.GUID(), nullable=False),
-    sa.Column('confirmed_email', sa.Boolean(), nullable=True),
-    sa.Column('email_confirmation_token', sqlmodel.sql.sqltypes.GUID(), nullable=True),
-    sa.Column('created_at', sa.DateTime(), nullable=True),
-    sa.Column('updated_at', sa.DateTime(), nullable=True),
+    sa.Column('confirmed_email', sa.Boolean(), nullable=False),
+    sa.Column('email_confirmation_token', sqlmodel.sql.sqltypes.GUID(), nullable=False),
+    sa.Column('created_at', sa.DateTime(), nullable=False),
+    sa.Column('updated_at', sa.DateTime(), nullable=False),
     sa.Column('last_login', sa.DateTime(), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )
@@ -38,9 +38,9 @@ def upgrade():
     op.create_table('resetpasswordtoken',
     sa.Column('user_id', sqlmodel.sql.sqltypes.GUID(), nullable=False),
     sa.Column('id', sqlmodel.sql.sqltypes.GUID(), nullable=False),
-    sa.Column('expire_at', sa.DateTime(), nullable=True),
-    sa.Column('created_at', sa.DateTime(), nullable=True),
-    sa.Column('updated_at', sa.DateTime(), nullable=True),
+    sa.Column('expire_at', sa.DateTime(), nullable=False),
+    sa.Column('created_at', sa.DateTime(), nullable=False),
+    sa.Column('updated_at', sa.DateTime(), nullable=False),
     sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
