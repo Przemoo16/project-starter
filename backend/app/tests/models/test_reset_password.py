@@ -16,7 +16,7 @@ if typing.TYPE_CHECKING:
 @pytest.mark.anyio
 @freezegun.freeze_time("2023-07-16 16:00:00")
 @mock.patch(
-    "app.services.user.settings.RESET_PASSWORD_TOKEN_EXPIRES",
+    "app.models.user.settings.RESET_PASSWORD_TOKEN_EXPIRES",
     new=datetime.timedelta(minutes=30),
 )
 async def test_reset_password_token_model(session: "conftest.AsyncSession") -> None:

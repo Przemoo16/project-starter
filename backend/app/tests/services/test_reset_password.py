@@ -133,20 +133,20 @@ async def test_reset_password_service_force_to_expire(
 
 
 @pytest.mark.anyio
-async def test_reset_password_crud_read_latest(
+@freezegun.freeze_time("2023-07-15 13:00:00")
+async def test_reset_password_service_force_to_expire_already_expired(
     session: "conftest.AsyncSession",
 ) -> None:
-    user = await user_helpers.create_user(session)
-    await reset_password_helpers.create_reset_password_token(session, user_id=user.id)
-    await reset_password_helpers.create_reset_password_token(session, user_id=user.id)
-    latest_user_token = await reset_password_helpers.create_reset_password_token(
-        session, user_id=user.id
+    expired_datetime = datetime.datetime(2022, 7, 15, 13, 0, 0)
+    reset_password_service = reset_password_services.ResetPasswordService(session)
+    token = await reset_password_helpers.create_reset_password_token(
+        session, expire_at=expired_datetime
     )
-    await reset_password_helpers.create_reset_password_token(session)
-    token_filters = reset_password_models.ResetPasswordTokenFilters(user_id=user.id)
+    token_id = token.id
 
-    retrieved_latest_token = await reset_password_services.ResetPasswordCRUD(
-        session
-    ).read_latest(token_filters)
+    await reset_password_service.force_to_expire(token)
 
-    assert retrieved_latest_token == latest_user_token
+    token_db = await reset_password_service.get_token(
+        reset_password_models.ResetPasswordTokenFilters(id=token_id)
+    )
+    assert token_db.expire_at == expired_datetime
