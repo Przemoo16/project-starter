@@ -24,7 +24,7 @@ settings = general.get_settings()
 
 class UserService:
     def __init__(self, session: "db.AsyncSession"):
-        self.crud = UserCRUD(session)
+        self.crud = base.AppCRUD(user_models.User, session)
         self.reset_password_service = reset_password_services.ResetPasswordService(
             session
         )
@@ -48,7 +48,7 @@ class UserService:
         filters: user_models.UserFilters,
         pagination: pagination_models.Pagination = pagination_models.Pagination(),
     ) -> list[user_models.User]:
-        return await self.crud.read_many(filters, pagination)
+        return await self.crud.read_many(filters, pagination=pagination)
 
     async def get_user(self, filters: user_models.UserFilters) -> user_models.User:
         try:
@@ -125,7 +125,3 @@ class UserService:
 def _token_expired(user: user_models.User) -> bool:
     expiration_date = user.created_at + settings.EMAIL_CONFIRMATION_TOKEN_EXPIRES
     return expiration_date < datetime.datetime.utcnow()
-
-
-class UserCRUD(base.AppCRUD):
-    model: type[user_models.User] = user_models.User

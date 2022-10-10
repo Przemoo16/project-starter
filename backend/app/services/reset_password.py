@@ -2,10 +2,10 @@ import datetime
 import typing
 
 from sqlalchemy import exc
-import sqlmodel
 
 from app.exceptions.http import reset_password as reset_password_exceptions
 from app.models import reset_password as reset_password_models
+from app.models import sorting as sorting_models
 from app.services import base
 
 if typing.TYPE_CHECKING:
@@ -14,15 +14,21 @@ if typing.TYPE_CHECKING:
 
 class ResetPasswordService:
     def __init__(self, session: "db.AsyncSession"):
-        self.crud = ResetPasswordCRUD(session)
+        self.crud = base.AppCRUD(reset_password_models.ResetPasswordToken, session)
 
     async def create_token(
         self, token: reset_password_models.ResetPasswordTokenCreate
     ) -> reset_password_models.ResetPasswordToken:
-        if latest_token := await self.crud.read_latest(
-            reset_password_models.ResetPasswordTokenFilters(user_id=token.user_id)
-        ):
-            await self.force_to_expire(latest_token)
+        sorting = sorting_models.Sorting(
+            column=reset_password_models.ResetPasswordToken.expire_at,
+            way=sorting_models.SortingWay.DESC,
+        )
+        sorted_tokens = await self.crud.read_many(
+            reset_password_models.ResetPasswordTokenFilters(user_id=token.user_id),
+            sorting=sorting,
+        )
+        if sorted_tokens:
+            await self.force_to_expire(sorted_tokens[0])
         return await self.crud.create(token, refresh=True)
 
     async def get_token(
@@ -49,24 +55,11 @@ class ResetPasswordService:
     async def force_to_expire(
         self, token: reset_password_models.ResetPasswordToken
     ) -> None:
+        if token.is_expired:
+            return
         await self.crud.update(
             token,
             reset_password_models.ResetPasswordTokenUpdate(
                 expire_at=datetime.datetime.utcnow()
             ),
         )
-
-
-class ResetPasswordCRUD(base.AppCRUD):
-    model = reset_password_models.ResetPasswordToken
-
-    async def read_latest(
-        self, filters: reset_password_models.ResetPasswordTokenFilters
-    ) -> reset_password_models.ResetPasswordToken | None:
-        where_statement = self.build_where_statement(
-            sqlmodel.select(self.model), filters
-        )
-        order_by_statement = where_statement.order_by(
-            sqlmodel.col(self.model.expire_at).desc()  # pylint: disable=no-member
-        )
-        return (await self.session.execute(order_by_statement)).scalar()

@@ -6,7 +6,7 @@ from sqlalchemy import exc
 import sqlmodel
 
 from app.models import base as base_models
-from app.models import helpers, pagination
+from app.models import helpers, pagination, sorting
 from app.services import base as base_services
 from app.tests.helpers import db
 
@@ -33,10 +33,6 @@ class DummyModelUpdate(base_models.BaseModel):
     city: str | None = None
 
 
-class DummyCRUD(base_services.AppCRUD):
-    model: type[DummyModel] = DummyModel
-
-
 async def create_entry(
     session: "conftest.AsyncSession", name: str, age: int
 ) -> DummyModel:
@@ -47,7 +43,9 @@ async def create_entry(
 @pytest.mark.anyio
 async def test_app_crud_create(session: "conftest.AsyncSession") -> None:
     model_create = DummyModel(name="Test Entry", age=25)
-    created_entry = await DummyCRUD(session).create(model_create)
+    created_entry = await base_services.AppCRUD(DummyModel, session).create(
+        model_create
+    )
 
     assert created_entry._sa_instance_state.expired  # pylint: disable=protected-access
     statement = sqlmodel.select(DummyModel).where(DummyModel.name == model_create.name)
@@ -57,7 +55,9 @@ async def test_app_crud_create(session: "conftest.AsyncSession") -> None:
 @pytest.mark.anyio
 async def test_app_crud_create_refresh(session: "conftest.AsyncSession") -> None:
     model_create = DummyModel(name="Test Entry", age=25)
-    created_entry = await DummyCRUD(session).create(model_create, refresh=True)
+    created_entry = await base_services.AppCRUD(DummyModel, session).create(
+        model_create, refresh=True
+    )
 
     assert (
         not created_entry._sa_instance_state.expired  # pylint: disable=protected-access
@@ -76,11 +76,45 @@ async def test_app_crud_read_many(session: "conftest.AsyncSession") -> None:
     entry_4 = await create_entry(session, name="Test Entry 4", age=25)
     filters = DummyModelFilters()
 
-    retrieved_entries = await DummyCRUD(session).read_many(
-        filters, pagination.Pagination()
+    retrieved_entries = await base_services.AppCRUD(DummyModel, session).read_many(
+        filters, pagination=pagination.Pagination()
     )
 
     assert retrieved_entries == [entry_1, entry_2, entry_3, entry_4]
+
+
+@pytest.mark.anyio
+async def test_app_crud_read_many_sort_asc(
+    session: "conftest.AsyncSession",
+) -> None:
+    entry_1 = await create_entry(session, name="Test Entry 1", age=25)
+    entry_2 = await create_entry(session, name="Test Entry 2", age=27)
+    entry_3 = await create_entry(session, name="Test Entry 3", age=26)
+    filters = DummyModelFilters()
+
+    retrieved_entries = await base_services.AppCRUD(DummyModel, session).read_many(
+        filters,
+        sorting=sorting.Sorting(column=DummyModel.age, way=sorting.SortingWay.ASC),
+    )
+
+    assert retrieved_entries == [entry_1, entry_3, entry_2]
+
+
+@pytest.mark.anyio
+async def test_app_crud_read_many_order_by_desc(
+    session: "conftest.AsyncSession",
+) -> None:
+    entry_1 = await create_entry(session, name="Test Entry 1", age=25)
+    entry_2 = await create_entry(session, name="Test Entry 2", age=27)
+    entry_3 = await create_entry(session, name="Test Entry 3", age=26)
+    filters = DummyModelFilters()
+
+    retrieved_entries = await base_services.AppCRUD(DummyModel, session).read_many(
+        filters,
+        sorting=sorting.Sorting(column=DummyModel.age, way=sorting.SortingWay.DESC),
+    )
+
+    assert retrieved_entries == [entry_2, entry_3, entry_1]
 
 
 @pytest.mark.anyio
@@ -91,8 +125,8 @@ async def test_app_crud_read_many_pagination(session: "conftest.AsyncSession") -
     await create_entry(session, name="Test Entry 4", age=25)
     filters = DummyModelFilters()
 
-    retrieved_entries = await DummyCRUD(session).read_many(
-        filters, pagination.Pagination(offset=1, limit=2)
+    retrieved_entries = await base_services.AppCRUD(DummyModel, session).read_many(
+        filters, pagination=pagination.Pagination(offset=1, limit=2)
     )
 
     assert retrieved_entries == [entry_2, entry_3]
@@ -105,7 +139,9 @@ async def test_app_crud_read_one(session: "conftest.AsyncSession") -> None:
     entry = await create_entry(session, name="Test Entry 2", age=25)
     entry_filters = DummyModelFilters(name="Test Entry 2", age=25)
 
-    retrieved_entry = await DummyCRUD(session).read_one(entry_filters)
+    retrieved_entry = await base_services.AppCRUD(DummyModel, session).read_one(
+        entry_filters
+    )
 
     assert retrieved_entry == entry
 
@@ -116,7 +152,9 @@ async def test_app_crud_update(session: "conftest.AsyncSession") -> None:
     entry = await create_entry(session, name="Test Entry 2", age=25)
     entry_update = DummyModelUpdate(name="Updated Entry", age=30)
 
-    updated_entry = await DummyCRUD(session).update(entry, entry_update)
+    updated_entry = await base_services.AppCRUD(DummyModel, session).update(
+        entry, entry_update
+    )
 
     assert updated_entry._sa_instance_state.expired  # pylint: disable=protected-access
     statement = sqlmodel.select(DummyModel).where(
@@ -132,7 +170,9 @@ async def test_app_crud_update_refresh(session: "conftest.AsyncSession") -> None
     entry = await create_entry(session, name="Test Entry 2", age=25)
     entry_update = DummyModelUpdate(name="Updated Entry", age=30)
 
-    updated_entry = await DummyCRUD(session).update(entry, entry_update, refresh=True)
+    updated_entry = await base_services.AppCRUD(DummyModel, session).update(
+        entry, entry_update, refresh=True
+    )
 
     assert (
         not updated_entry._sa_instance_state.expired  # pylint: disable=protected-access
@@ -150,7 +190,7 @@ async def test_app_crud_update_refresh(session: "conftest.AsyncSession") -> None
 async def test_app_crud_delete(session: "conftest.AsyncSession") -> None:
     entry = await create_entry(session, name="Test Entry", age=25)
 
-    await DummyCRUD(session).delete(entry)
+    await base_services.AppCRUD(DummyModel, session).delete(entry)
 
     with pytest.raises(exc.NoResultFound):
         statement = sqlmodel.select(DummyModel).where(DummyModel.name == entry.name)
@@ -166,25 +206,6 @@ async def test_app_crud_count(
     await create_entry(session, name="Test Entry 3", age=25)
     entry_filters = DummyModelFilters()
 
-    num_users = await DummyCRUD(session).count(entry_filters)
+    num_users = await base_services.AppCRUD(DummyModel, session).count(entry_filters)
 
     assert num_users == 3
-
-
-@pytest.mark.anyio
-async def test_build_where_statement(
-    session: "conftest.AsyncSession",
-) -> None:
-    name = "Test Entry"
-    age = 25
-    entry_filters = DummyModelFilters(name=name, age=age)
-
-    filters_statement = DummyCRUD(session).build_where_statement(
-        sqlmodel.select(DummyModel), entry_filters
-    )
-
-    assert str(filters_statement) == str(
-        sqlmodel.select(DummyModel)
-        .where(DummyModel.name == name)
-        .where(DummyModel.age == age)
-    )
