@@ -1,4 +1,4 @@
-FROM node:18-slim as build
+FROM node:19-slim as build
 
 WORKDIR /frontend
 
@@ -14,7 +14,7 @@ COPY ./frontend/public /frontend/public
 RUN yarn build
 
 
-FROM nginx:1.21.6
+FROM nginx:1.23.2
 
 COPY --from=build /frontend/dist /var/www/html
 COPY ./config/proxy/nginx.conf /var/nginx.conf
