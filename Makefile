@@ -41,7 +41,7 @@ lint: lint-backend lint-frontend
 
 lint-backend:
 	$(COMPOSE_DEV) run --rm --no-deps backend bash -c " \
-		find . -name '*.py' -not -path '*migrations*' -type f | xargs pyupgrade --py310-plus && \
+		find . -name '*.py' -not -path '*migrations*' -type f | xargs pyupgrade --py311-plus && \
 		isort . --check-only && \
 		black . --check --exclude=migrations && \
 		flake8 . && \
