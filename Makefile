@@ -68,7 +68,7 @@ run:
 
 setup:
 	git config blame.ignoreRevsFile .git-blame-ignore-revs
-	pre-commit install --hook-type pre-commit --hook-type pre-push
+	pre-commit install
 
 stop:
 	$(COMPOSE_DEV) stop
