@@ -1,8 +1,8 @@
 import typing
 from unittest import mock
 
-from fastapi import status
 import pytest
+from fastapi import status
 
 if typing.TYPE_CHECKING:
     from app.tests import conftest

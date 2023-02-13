@@ -2,11 +2,11 @@ import enum
 import json
 import typing
 
+import pyseto
 from fastapi import exceptions, security, status
 from fastapi.openapi import models
 from fastapi.security import utils
 from passlib import context
-import pyseto
 from starlette import requests as starlette_requests
 
 from app.config import general

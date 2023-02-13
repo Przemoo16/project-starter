@@ -2,8 +2,8 @@ import socket
 import typing
 from unittest import mock
 
-from kombu import exceptions as kombu_exceptions
 import pytest
+from kombu import exceptions as kombu_exceptions
 from redis import exceptions as redis_exceptions
 from sqlalchemy import exc
 

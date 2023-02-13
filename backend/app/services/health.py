@@ -1,11 +1,11 @@
 import socket
 import typing
 
-from kombu import exceptions as kombu_exceptions
 import redis
+import sqlmodel
+from kombu import exceptions as kombu_exceptions
 from redis import exceptions as redis_exceptions
 from sqlalchemy import exc
-import sqlmodel
 
 from app.config import general
 from app.exceptions.http import health as health_exceptions

@@ -2,8 +2,8 @@ import logging
 import typing
 
 import fastapi
-from fastapi import status
 import fastapi_paseto_auth as paseto_auth
+from fastapi import status
 
 from app.api.deps import user as user_deps
 from app.config import db

@@ -3,9 +3,9 @@ import typing
 import httpx
 import pytest
 import redis
+import sqlmodel
 from sqlalchemy import orm
 from sqlalchemy.ext import asyncio
-import sqlmodel
 
 from app import main
 from app.celery import worker

@@ -2,8 +2,8 @@ import typing
 
 import fastapi
 import fastapi_paseto_auth as paseto_auth
-from fastapi_paseto_auth import exceptions
 import pytest
+from fastapi_paseto_auth import exceptions
 from starlette import datastructures
 
 from app.api.deps import user as user_deps
