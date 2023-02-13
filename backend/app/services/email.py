@@ -1,9 +1,9 @@
-from email.mime import multipart, text
 import logging
 import smtplib
 import socket
 import ssl
 import typing
+from email.mime import multipart, text
 
 from app.config import general
 from app.utils import jinja, translation

@@ -1,8 +1,8 @@
 import datetime
 import logging
 
-from dateutil import parser
 import fastapi_paseto_auth as paseto_auth
+from dateutil import parser
 
 from app.config import auth as auth_config
 from app.config import db, general

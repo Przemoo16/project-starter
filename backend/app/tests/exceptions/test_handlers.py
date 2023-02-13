@@ -1,8 +1,8 @@
 import fastapi
+import orjson
 from fastapi import exceptions as fastapi_exceptions
 from fastapi import status
 from fastapi_paseto_auth import exceptions as paseto_exceptions
-import orjson
 from pydantic import error_wrappers, errors
 from starlette import exceptions as starlette_exceptions
 

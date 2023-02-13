@@ -1,8 +1,8 @@
 import typing
 from unittest import mock
 
-from fastapi import status
 import pytest
+from fastapi import status
 
 from app.models import config as config_models
 from app.tests.helpers import response as response_helpers

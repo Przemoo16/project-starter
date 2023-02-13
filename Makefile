@@ -44,10 +44,10 @@ lint-backend:
 		find . -name '*.py' -not -path '*migrations*' -type f | xargs pyupgrade --py311-plus && \
 		isort . --check-only && \
 		black . --check --exclude=migrations && \
-		flake8 . && \
+		ruff . && \
 		mypy . && \
 		pylint app && \
-		bandit . --exclude migrations,tests --recursive \
+		bandit . -c pyproject.toml --recursive \
 	"
 
 lint-frontend:

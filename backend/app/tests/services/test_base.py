@@ -2,8 +2,8 @@ import typing
 import uuid
 
 import pytest
-from sqlalchemy import exc
 import sqlmodel
+from sqlalchemy import exc
 
 from app.models import base as base_models
 from app.models import helpers, pagination, sorting

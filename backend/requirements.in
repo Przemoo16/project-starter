@@ -25,11 +25,8 @@ starlette
 uvicorn[standard]
 # dev
 anyio
-bandit
+bandit[toml]
 black
-flake8
-flake8-docstrings
-flake8-print
 freezegun
 httpx
 isort
@@ -39,6 +36,7 @@ pylint
 pytest
 pytest-cov
 pyupgrade
+ruff
 types-freezegun
 types-orjson
 types-python-dateutil

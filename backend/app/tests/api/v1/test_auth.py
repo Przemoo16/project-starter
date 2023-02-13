@@ -1,9 +1,9 @@
 import typing
 from unittest import mock
 
-from fastapi import status
 import fastapi_paseto_auth as paseto_auth
 import pytest
+from fastapi import status
 
 from app.models import auth as auth_models
 

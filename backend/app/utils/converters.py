@@ -3,9 +3,9 @@ import decimal
 import typing
 import uuid
 
-from humps import main
 import orjson
 import pydantic
+from humps import main
 
 
 def to_uuid(text: str, version: int = 4) -> uuid.UUID:
