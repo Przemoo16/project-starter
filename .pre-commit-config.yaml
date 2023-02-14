@@ -34,7 +34,7 @@ repos:
     rev: v0.982
     hooks:
       - id: mypy
-        args: [--config-file, backend/pyproject.toml]
+        args: [--config-file=backend/pyproject.toml]
         additional_dependencies:
           [
             fastapi==0.85.0,
@@ -52,7 +52,7 @@ repos:
     rev: v2.15.5
     hooks:
       - id: pylint
-        args: [--rcfile, backend/pyproject.toml]
+        args: [--rcfile=backend/pyproject.toml]
         additional_dependencies:
           [
             fastapi==0.85.0,
@@ -65,7 +65,7 @@ repos:
     rev: 1.7.4
     hooks:
       - id: bandit
-        args: [-c, backend/pyproject.toml]
+        args: [-c=backend/pyproject.toml]
         additional_dependencies: [".[toml]"]
   - repo: https://github.com/pre-commit/mirrors-prettier
     rev: v3.0.0-alpha.3
